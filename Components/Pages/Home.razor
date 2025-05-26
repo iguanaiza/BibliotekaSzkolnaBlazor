@@ -1,0 +1,65 @@
+﻿@page "/"
+@using BibliotekaSzkolnaBlazor.DataTransferObjects
+@using BibliotekaSzkolnaBlazor.Models
+@using BibliotekaSzkolnaBlazor.Services
+@inject IBookService<Book> BookService
+
+<PageTitle>Home</PageTitle>
+
+<h3>Lista książek</h3>
+
+@if (books == null)
+{
+    <p><em>Ładowanie danych...</em></p>
+}
+else if (!books.Any())
+{
+    <p>Brak książek w bazie.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tytuł</th>
+                <th>Autor</th>
+                <th>Wydawca</th>
+                <th>Typ</th>
+                <th>Kategoria</th>
+                <th>ISBN</th>
+                <th>Rok</th>
+                <th>Strony</th>
+                <th>Widoczna</th>
+                <th>Gatunki</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in books)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.BookAuthor</td>
+                    <td>@book.BookPublisher</td>
+                    <td>@book.BookType</td>
+                    <td>@book.BookCategory</td>
+                    <td>@book.Isbn</td>
+                    <td>@book.Year</td>
+                    <td>@book.PageCount</td>
+                    <td>@(book.IsVisible ? "Tak" : "Nie")</td>
+                    <td>
+                        @string.Join(", ", book.BookGenres)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BookGetDto> books;
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = await BookService.GetBooksAsync();
+    }
+}
