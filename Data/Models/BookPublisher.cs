@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BibliotekaSzkolnaBlazor.Models
+namespace BibliotekaSzkolnaBlazor.Data.Models
 {
     public class BookPublisher
     {

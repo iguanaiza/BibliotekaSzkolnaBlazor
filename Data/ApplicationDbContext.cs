@@ -1,4 +1,4 @@
-using BibliotekaSzkolnaBlazor.Models;
+using BibliotekaSzkolnaBlazor.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

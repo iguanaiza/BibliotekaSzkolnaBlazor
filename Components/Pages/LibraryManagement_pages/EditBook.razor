@@ -1,0 +1,192 @@
+﻿@page "/editbook/{BookId:int}"
+@inject IBookRepository BookRepository
+@inject IDictionaryRepository DictionaryRepository
+@inject NavigationManager NavigationManager
+
+<h3>Edytuj książkę</h3>
+
+@if (IsLoading)
+{
+    <p><em>Ładowanie...</em></p>
+}
+else if (book == null)
+{
+    <p><em>Książka nie znaleziona.</em></p>
+}
+else
+{
+    <EditForm Model="book" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label>Tytuł książki</label>
+            <InputText @bind-Value="book.Title" class="form-control" placeholder="Tytuł książki" />
+        </div>
+
+        <div class="mb-3">
+            <label>Rok wydania</label>
+            <InputText @bind-Value="book.Year" class="form-control" placeholder="2000" />
+        </div>
+
+        <div class="mb-3">
+            <label>Opis książki</label>
+            <InputTextArea @bind-Value="book.Description" placeholder="Opis książki" />
+        </div>
+
+        <div class="mb-3">
+            <label>Numer ISBN</label>
+            <InputText @bind-Value="book.Isbn" placeholder="978-83-7278-000-3" />
+        </div>
+
+        <div class="mb-3">
+            <label>Liczba stron</label>
+            <InputText @bind-Value="book.PageCount" placeholder="123" />
+        </div>
+
+        <div class="mb-3">
+            <label>Autor</label>
+            <InputSelect class="form-control mb-2" @bind-Value="book.BookAuthorId">
+                <option value="">-- Wybierz autora --</option>
+                @foreach (var author in Authors)
+                {
+                    <option value="@author.Id">@author.Surname, @author.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label>Wydawca</label>
+            <InputSelect class="form-control mb-2" @bind-Value="book.BookPublisherId">
+                @foreach (var publisher in Publishers)
+                {
+                    <option value="@publisher.Id">@publisher.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label>Seria książek</label>
+            <InputSelect class="form-control mb-2" @bind-Value="book.BookSeriesId">
+                <option value="">-- Wybierz serię --</option>
+                @foreach (var series in Series)
+                {
+                    <option value="@series.Id">@series.Title</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label>Typ książki</label>
+            <InputSelect class="form-control mb-2" @bind-Value="book.BookTypeId">
+                <option value="">-- Wybierz typ --</option>
+                @foreach (var type in Types)
+                {
+                    <option value="@type.Id">@type.Title</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label>Kategoria</label>
+            <InputSelect class="form-control mb-2" @bind-Value="book.BookCategoryId">
+                <option value="">-- Wybierz kategorię --</option>
+                @foreach (var category in Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <fieldset class="mb-3">
+            <legend>Gatunki</legend>
+            @foreach (var genre in Genres)
+            {
+                <div>
+                    <input type="checkbox"
+                           id="genre-@genre.Id"
+                           value="@genre.Id"
+                           checked="@book.BookGenreIds.Contains(genre.Id)"
+                           @onchange="@(() => ToggleGenre(genre.Id))" />
+                    <label for="genre-@genre.Id">@genre.Title</label>
+                </div>
+            }
+        </fieldset>
+
+        <div class="form-check mt-2 mb-3">
+            <label class="form-check-label" for="visibleCheck">Widoczność w katalogu</label>
+            <InputCheckbox class="form-check-input" @bind-Value="book.IsVisible" id="visibleCheck" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int BookId { get; set; }
+
+    private BookPutDto? book;
+    private bool IsLoading = true;
+
+    private List<BookAuthor> Authors = new();
+    private List<BookPublisher> Publishers = new();
+    private List<BookSeries> Series = new();
+    private List<BookType> Types = new();
+    private List<BookCategory> Categories = new();
+    private List<BookGenre> Genres = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+        IsLoading = false;
+    }
+
+    private async Task LoadData()
+    {
+        Authors = (await DictionaryRepository.GetBookAuthorsAsync()).ToList();
+        Publishers = (await DictionaryRepository.GetBookPublishersAsync()).ToList();
+        Series = (await DictionaryRepository.GetBookSeriesAsync()).ToList();
+        Types = (await DictionaryRepository.GetBookTypesAsync()).ToList();
+        Categories = (await DictionaryRepository.GetBookCategoriesAsync()).ToList();
+        Genres = (await DictionaryRepository.GetBookGenresAsync()).ToList();
+
+        var bookDto = await BookRepository.GetBookByIdAsync(BookId);
+        if (bookDto != null)
+        {
+            book = new BookPutDto
+                {
+                    Title = bookDto.Title,
+                    Year = bookDto.Year,
+                    Description = bookDto.Description,
+                    Isbn = bookDto.Isbn,
+                    PageCount = bookDto.PageCount,
+                    IsVisible = bookDto.IsVisible,
+                    BookAuthorId = Authors.FirstOrDefault(a => $"{a.Surname}, {a.Name}" == bookDto.BookAuthor)?.Id ?? 0,
+                    BookPublisherId = Publishers.FirstOrDefault(p => p.Name == bookDto.BookPublisher)?.Id ?? 0,
+                    BookSeriesId = Series.FirstOrDefault(s => s.Title == bookDto.BookSeries)?.Id ?? 0,
+                    BookTypeId = Types.FirstOrDefault(t => t.Title == bookDto.BookType)?.Id ?? 0,
+                    BookCategoryId = Categories.FirstOrDefault(c => c.Name == bookDto.BookCategory)?.Id ?? 0,
+                    BookGenreIds = Genres.Where(g => bookDto.BookGenres.Contains(g.Title)).Select(g => g.Id).ToList()
+                };
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (book != null)
+        {
+            await BookRepository.UpdateBookAsync(BookId, book);
+            NavigationManager.NavigateTo("/booklist");
+        }
+    }
+
+    private void ToggleGenre(int genreId)
+    {
+        if (book == null) return;
+
+        if (book.BookGenreIds.Contains(genreId))
+            book.BookGenreIds.Remove(genreId);
+        else
+            book.BookGenreIds.Add(genreId);
+    }
+}

@@ -1,8 +1,9 @@
 using BibliotekaSzkolnaBlazor.Components;
 using BibliotekaSzkolnaBlazor.Components.Account;
 using BibliotekaSzkolnaBlazor.Data;
-using BibliotekaSzkolnaBlazor.Models;
-using BibliotekaSzkolnaBlazor.Services;
+using BibliotekaSzkolnaBlazor.Data.Models;
+using BibliotekaSzkolnaBlazor.Repository;
+using BibliotekaSzkolnaBlazor.Repository.IRepository;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,18 +16,10 @@ namespace BibliotekaSzkolnaBlazor
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            /*
-            //dodanie domyslnej identity (domyslnego usera) z frameworka
-            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = false; //wymaganie potwierdzenia konta np mailem, zeby moc sie zalogowac - niepotrzebne w celach testowych
-            })
-                .AddRoles<IdentityRole>() //dodaje role userowi (ze moze posiadac)
-                .AddEntityFrameworkStores<ApplicationDbContext>(); //ustawienie gdzie trzymamy tego usera (w mojej bazie)
-            */
             //rejestracja uslugi w kontenerze Dependency Injection (DI), ktora mowi: Jesli ktos poprosi o IBookService<Book>, daj mu instancje BookService.
             //Scoped - Jedna instancja Book zostanie utworzona na czas jednego zadania HTTP (dla jednej sesji uzytkownika w obrebie danego requestu).
-            builder.Services.AddScoped<IBookService<Book>, BookService>();
+            builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<IDictionaryRepository, DictionaryRepository>();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

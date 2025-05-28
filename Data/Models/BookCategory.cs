@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BibliotekaSzkolnaBlazor.Models
+namespace BibliotekaSzkolnaBlazor.Data.Models
 {
     //kategoria czyli lektura, podrecznik, pozostałe - to nie gatunek ksiazki ani nie typ!!!
     public class BookCategory

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BibliotekaSzkolnaBlazor.Models
+namespace BibliotekaSzkolnaBlazor.Data.Models
 {
     //genre czyli gatunek np. fantastyka - to nie kategoria ksiazki ani nie typ!!!
     public class BookGenre

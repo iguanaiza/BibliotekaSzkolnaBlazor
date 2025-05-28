@@ -1,0 +1,250 @@
+﻿@page "/addbook"
+@inject IBookRepository BookRepository
+@inject IDictionaryRepository DictionaryRepository
+@inject NavigationManager _navigationManager
+@inject IJSRuntime JS
+
+<style>
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+@if (IsLoading)
+{
+    <div class="position-absolute w-75  h-75 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="/images/loading-book.gif" alt="loading" />
+        <p>Ładowanie...</p>
+    </div>
+}
+
+else
+{
+    <div class="card shadow border-0 m-4">
+        <div class="card-header bg-black bg-gradient ml-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">Dodaj nową książkę</h2>
+                </div>
+            </div>
+        </div>
+
+        <EditForm Model="newBook" FormName="AddNewBook" OnValidSubmit="AddNewBook">
+            <DataAnnotationsValidator />
+            <ValidationSummary/>
+
+            <!--Tytuł książki-->
+            <div class="mb-3">
+                <label for="title-add" class="form-label">Tytuł książki</label>
+                <InputText  id="title-add"
+                            @bind-Value="newBook.Title" 
+                            class="form-control" 
+                            placeholder="Tytuł książki" />
+            </div>
+
+            <!--Rok wydania-->
+            <div class="mb-3">
+                <label for="year-add" class="form-label">Rok wydania</label>
+                <InputText  id="year-add"
+                            @bind-Value="newBook.Year"
+                            class="form-control"
+                            placeholder="2000"
+                            type="number"
+                            inputmode="numeric"
+                            pattern="\d{4}"
+                            minLength="4"
+                             maxlength="4" />
+            </div>
+
+            <!--Opis książki-->
+            <div class="mb-3">
+                <label for="desc-add" class="form-label">Opis książki</label>
+                <InputTextArea  id="desc-add" 
+                                @bind-Value="newBook.Description"
+                                placeholder="Opis książki" />
+            </div>
+
+            <!--Numer ISBN-->
+            <div class="mb-3">
+                <label for="isbn-add" class="form-label">Numer ISBN</label>
+                <InputText  id="isbn-add"
+                            @bind-Value="newBook.Isbn"
+                            placeholder="978-83-7278-000-3"
+                            maxlength="17"
+                            inputmode="numeric" />
+            </div>
+
+            <!--Liczba stron-->
+            <div class="mb-3">
+                <label for="pages-add" class="form-label">Liczba stron</label>
+                <InputText  id="pages-add"
+                            @bind-Value="newBook.PageCount"
+                            placeholder="123" />
+            </div>
+
+            <!--Autor-->
+            <div class="mb-3">
+                <label for="author-add" class="form-label">Autor</label>
+                <InputSelect id="author-add"
+                             @bind-Value="newBook.BookAuthorId"
+                             class="form-select">
+
+                    <option value="">-- Wybierz autora --</option>
+                    @foreach (var author in Authors)
+                    {
+                        <option value="@author.Id">@author.Surname, @author.Name</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <!--Wydawca-->
+            <div class="mb-3">
+                <label for="publisher-add" class="form-label">Wydawca</label>
+                <InputSelect id="publisher-add"
+                             @bind-Value="newBook.BookPublisherId" 
+                             class="form-select">
+
+                    <option value="">-- Wybierz wydawcę --</option>
+                    @foreach (var publisher in Publishers)
+                    {
+                        <option value="@publisher.Id">@publisher.Name</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <!--Seria-->
+            <div class="mb-3">
+                <label for="series-add" class="form-label">Seria książek</label>
+                <InputSelect id="series-add"
+                             @bind-Value="newBook.BookSeriesId" 
+                             class="form-select">
+                    
+                    <option value="">-- Wybierz serię --</option>
+                    @foreach (var series in Series)
+                    {
+                        <option value="@series.Id">@series.Title</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <!--Typ-->
+            <div class="mb-3">
+                <label for="type-add" class="form-label">Typ książki</label>
+                <InputSelect id="type-add"
+                             @bind-Value="newBook.BookTypeId" 
+                             class="form-select">
+
+                    <option value="">-- Wybierz typ --</option>
+                    @foreach (var type in Types)
+                    {
+                        <option value="@type.Id">@type.Title</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <!--Kategoria (lektura, podręcznik, pozostałe)-->
+            <div class="mb-3">
+                <label for="cat-add" class="form-label">Kategoria (lektura, podręcznik, pozostałe)</label>
+                <InputSelect id="cat-add"
+                             @bind-Value="newBook.BookCategoryId" 
+                             class="form-select">
+
+                    <option value="">-- Wybierz kategorię --</option>
+                    @foreach (var category in Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <!--Gatunki-->
+            <fieldset class="mb-3">
+                <legend class="form-label">Gatunki</legend>
+                @foreach (var genre in Genres)
+                {
+                    <div>
+                        <input type="checkbox"
+                               class="form-check-input
+                               id="genre-@genre.Id"
+                               value="@genre.Id"
+                               @onchange="e => ToggleGenre(genre.Id, e.Value)" />
+                        <label for="genre-@genre.Id">@genre.Title</label>
+                    </div>
+                }
+            </fieldset>
+
+            <!--Widoczność w katalogu-->
+            <div class="mb-3 form-check">
+                <label for="vis-add" class="form-label">Widoczność w katalogu</label>
+                <InputCheckbox id="vis-add" @bind-Value="newBook.IsVisible" class="form-check-input" />
+            </div>
+
+            <!--Potwierdzenie-->
+            <button class="btn btn-primary" type="submit">Zapisz</button>
+        </EditForm>
+    </div>
+
+}
+@code {
+    private bool IsLoading { get; set; } = true;
+
+    private BookPostDto newBook = new()
+    {
+       BookGenreIds = new List<int>(),
+       IsVisible = true
+    };
+
+    private List<BookAuthor> Authors = new();
+    private List<BookPublisher> Publishers = new();
+    private List<BookSeries> Series = new();
+    private List<BookType> Types = new();
+    private List<BookCategory> Categories = new();
+    private List<BookGenre> Genres = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+        IsLoading = false;
+    }
+
+    private async Task LoadData()
+    {
+        Authors = (await DictionaryRepository.GetBookAuthorsAsync()).ToList();
+        Publishers = (await DictionaryRepository.GetBookPublishersAsync()).ToList();
+        Series = (await DictionaryRepository.GetBookSeriesAsync()).ToList();
+        Types = (await DictionaryRepository.GetBookTypesAsync()).ToList();
+        Categories = (await DictionaryRepository.GetBookCategoriesAsync()).ToList();
+        Genres = (await DictionaryRepository.GetBookGenresAsync()).ToList();
+    }
+
+    private async Task AddNewBook()
+    {
+        var result = await BookRepository.CreateBookAsync(newBook);
+
+        if (result != null)
+        {
+            newBook = new BookPostDto { BookGenreIds = new List<int>(), IsVisible = true };
+            _navigationManager.NavigateTo("/booklist");
+        }
+    }
+
+    private void ToggleGenre(int genreId, object checkedValue)
+    {
+        bool isChecked = (bool)checkedValue;
+        if (isChecked)
+        {
+            if (!newBook.BookGenreIds.Contains(genreId))
+                newBook.BookGenreIds.Add(genreId);
+        }
+        else
+        {
+            newBook.BookGenreIds.Remove(genreId);
+        }
+    }
+}

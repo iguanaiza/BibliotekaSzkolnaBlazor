@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace BibliotekaSzkolnaBlazor.Models
+namespace BibliotekaSzkolnaBlazor.Data.Models
 {
     public class Book
     {

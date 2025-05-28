@@ -1,20 +1,21 @@
 ﻿using BibliotekaSzkolnaBlazor.Data;
+using BibliotekaSzkolnaBlazor.Data.Models;
 using BibliotekaSzkolnaBlazor.DataTransferObjects;
-using BibliotekaSzkolnaBlazor.Models;
+using BibliotekaSzkolnaBlazor.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
-namespace BibliotekaSzkolnaBlazor.Services
+namespace BibliotekaSzkolnaBlazor.Repository
 {
-    public class BookService : IBookService<Book>
+    public class BookRepository : IBookRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public BookService(ApplicationDbContext context)
+        public BookRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<List<BookGetDto>> GetBooksAsync()
+        public async Task<IEnumerable<BookGetDto>> GetBooksAsync()
         {
             return await _context.Books
                 .Include(b => b.BookAuthor)

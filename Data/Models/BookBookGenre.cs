@@ -1,4 +1,4 @@
-﻿namespace BibliotekaSzkolnaBlazor.Models
+﻿namespace BibliotekaSzkolnaBlazor.Data.Models
 {
     public class BookBookGenre
     {
