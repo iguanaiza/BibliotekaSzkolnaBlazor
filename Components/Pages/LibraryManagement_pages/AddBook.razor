@@ -7,12 +7,12 @@
 <style>
     input[type=number]::-webkit-outer-spin-button,
     input[type=number]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
     }
 
     input[type=number] {
-        -moz-appearance: textfield;
+    -moz-appearance: textfield;
     }
 </style>
 
@@ -35,7 +35,7 @@ else
             </div>
         </div>
 
-        <EditForm Model="newBook" FormName="AddNewBook" OnValidSubmit="AddNewBook">
+        <EditForm Model="newBook" FormName="AddNewBookForm" OnValidSubmit="AddNewBookFormSubmit">
             <DataAnnotationsValidator />
             <ValidationSummary/>
 
@@ -43,57 +43,62 @@ else
             <div class="mb-3">
                 <label for="title-add" class="form-label">Tytuł książki</label>
                 <InputText  id="title-add"
-                            @bind-Value="newBook.Title" 
-                            class="form-control" 
-                            placeholder="Tytuł książki" />
+                @bind-Value="newBook.Title" 
+                class="form-control" 
+                placeholder="Tytuł książki"
+                minlength="3"
+                maxlength="60" />
             </div>
 
             <!--Rok wydania-->
             <div class="mb-3">
                 <label for="year-add" class="form-label">Rok wydania</label>
                 <InputText  id="year-add"
-                            @bind-Value="newBook.Year"
-                            class="form-control"
-                            placeholder="2000"
-                            type="number"
-                            inputmode="numeric"
-                            pattern="\d{4}"
-                            minLength="4"
-                             maxlength="4" />
+                @bind-Value="newBook.Year"
+                class="form-control"
+                placeholder="2000"
+                type="number"
+                inputmode="numeric"
+                pattern="\d{4}"
+                minlength="4"
+                maxlength="4" />
             </div>
 
             <!--Opis książki-->
             <div class="mb-3">
                 <label for="desc-add" class="form-label">Opis książki</label>
                 <InputTextArea  id="desc-add" 
-                                @bind-Value="newBook.Description"
-                                placeholder="Opis książki" />
+                @bind-Value="newBook.Description"
+                placeholder="Opis książki" />
             </div>
 
             <!--Numer ISBN-->
             <div class="mb-3">
                 <label for="isbn-add" class="form-label">Numer ISBN</label>
                 <InputText  id="isbn-add"
-                            @bind-Value="newBook.Isbn"
-                            placeholder="978-83-7278-000-3"
-                            maxlength="17"
-                            inputmode="numeric" />
+                @bind-Value="newBook.Isbn"
+                placeholder="978-83-7278-000-3"
+                minlength="17"
+                maxlength="17"
+                inputmode="numeric" />
             </div>
 
             <!--Liczba stron-->
             <div class="mb-3">
                 <label for="pages-add" class="form-label">Liczba stron</label>
                 <InputText  id="pages-add"
-                            @bind-Value="newBook.PageCount"
-                            placeholder="123" />
+                @bind-Value="newBook.PageCount"
+                placeholder="123"
+                minlength="1"
+                maxlength="4" />
             </div>
 
             <!--Autor-->
             <div class="mb-3">
                 <label for="author-add" class="form-label">Autor</label>
                 <InputSelect id="author-add"
-                             @bind-Value="newBook.BookAuthorId"
-                             class="form-select">
+                @bind-Value="newBook.BookAuthorId"
+                class="form-select">
 
                     <option value="">-- Wybierz autora --</option>
                     @foreach (var author in Authors)
@@ -107,8 +112,8 @@ else
             <div class="mb-3">
                 <label for="publisher-add" class="form-label">Wydawca</label>
                 <InputSelect id="publisher-add"
-                             @bind-Value="newBook.BookPublisherId" 
-                             class="form-select">
+                @bind-Value="newBook.BookPublisherId" 
+                class="form-select">
 
                     <option value="">-- Wybierz wydawcę --</option>
                     @foreach (var publisher in Publishers)
@@ -122,9 +127,9 @@ else
             <div class="mb-3">
                 <label for="series-add" class="form-label">Seria książek</label>
                 <InputSelect id="series-add"
-                             @bind-Value="newBook.BookSeriesId" 
-                             class="form-select">
-                    
+                @bind-Value="newBook.BookSeriesId" 
+                class="form-select">
+
                     <option value="">-- Wybierz serię --</option>
                     @foreach (var series in Series)
                     {
@@ -137,8 +142,8 @@ else
             <div class="mb-3">
                 <label for="type-add" class="form-label">Typ książki</label>
                 <InputSelect id="type-add"
-                             @bind-Value="newBook.BookTypeId" 
-                             class="form-select">
+                @bind-Value="newBook.BookTypeId" 
+                class="form-select">
 
                     <option value="">-- Wybierz typ --</option>
                     @foreach (var type in Types)
@@ -152,8 +157,8 @@ else
             <div class="mb-3">
                 <label for="cat-add" class="form-label">Kategoria (lektura, podręcznik, pozostałe)</label>
                 <InputSelect id="cat-add"
-                             @bind-Value="newBook.BookCategoryId" 
-                             class="form-select">
+                @bind-Value="newBook.BookCategoryId" 
+                class="form-select">
 
                     <option value="">-- Wybierz kategorię --</option>
                     @foreach (var category in Categories)
@@ -170,10 +175,10 @@ else
                 {
                     <div>
                         <input type="checkbox"
-                               class="form-check-input
-                               id="genre-@genre.Id"
-                               value="@genre.Id"
-                               @onchange="e => ToggleGenre(genre.Id, e.Value)" />
+                        class="form-check-input"
+                        id="genre-@genre.Id"
+                        value="@genre.Id"
+                        @onchange="e => ToggleGenre(genre.Id, e.Value)" />
                         <label for="genre-@genre.Id">@genre.Title</label>
                     </div>
                 }
@@ -192,13 +197,13 @@ else
 
 }
 @code {
-    private bool IsLoading { get; set; } = true;
+    [Parameter]
+    public int Id { get; set; }
 
-    private BookPostDto newBook = new()
-    {
-       BookGenreIds = new List<int>(),
-       IsVisible = true
-    };
+    [SupplyParameterFromForm]
+    private BookPostDto newBook { get; set; } = new BookPostDto();
+
+    private bool IsLoading { get; set; } = true;
 
     private List<BookAuthor> Authors = new();
     private List<BookPublisher> Publishers = new();
@@ -223,15 +228,11 @@ else
         Genres = (await DictionaryRepository.GetBookGenresAsync()).ToList();
     }
 
-    private async Task AddNewBook()
+    private async Task AddNewBookFormSubmit()
     {
-        var result = await BookRepository.CreateBookAsync(newBook);
-
-        if (result != null)
-        {
-            newBook = new BookPostDto { BookGenreIds = new List<int>(), IsVisible = true };
-            _navigationManager.NavigateTo("/booklist");
-        }
+        await BookRepository.CreateBookAsync(newBook);
+        await JS.ToastrSuccess("Category Created Successfully");
+        _navigationManager.NavigateTo("/bookslist");
     }
 
     private void ToggleGenre(int genreId, object checkedValue)

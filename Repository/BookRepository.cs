@@ -101,28 +101,32 @@ namespace BibliotekaSzkolnaBlazor.Repository
         public async Task<BookGetDto?> UpdateBookAsync(int id, BookPutDto dto)
         {
             var book = await _context.Books
+                .Include(b => b.BookAuthor)
+                .Include(b => b.BookPublisher)
+                .Include(b => b.BookSeries)
+                .Include(b => b.BookType)
+                .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
             if (book == null) return null;
 
-            foreach (var prop in typeof(BookPutDto).GetProperties())
-            {
-                var value = prop.GetValue(dto);
-                if (value != null)
-                {
-                    var bookProp = typeof(Book).GetProperty(prop.Name);
-                    if (bookProp != null && bookProp.CanWrite)
-                    {
-                        bookProp.SetValue(book, value);
-                    }
-                }
-            }
+            book.Title = dto.Title;
+            book.Year = dto.Year;
+            book.Description = dto.Description;
+            book.Isbn = dto.Isbn;
+            book.PageCount = dto.PageCount;
+            book.IsVisible = dto.IsVisible;
+            book.BookAuthorId = dto.BookAuthorId;
+            book.BookPublisherId = dto.BookPublisherId;
+            book.BookSeriesId = dto.BookSeriesId;
+            book.BookTypeId = dto.BookTypeId;
+            book.BookCategoryId = dto.BookCategoryId;
 
             if (dto.BookGenreIds != null)
             {
                 book.BookBookGenres = dto.BookGenreIds
-                    .Select(id => new BookBookGenre { BookGenreId = id })
+                    .Select(id => new BookBookGenre { BookGenreId = id, BookId = book.Id })
                     .ToList();
             }
 
