@@ -3,6 +3,7 @@
 @inject IDictionaryRepository DictionaryRepository
 @inject NavigationManager _navigationManager
 @inject IJSRuntime JS
+@rendermode InteractiveServer
 
 <style>
     input[type=number]::-webkit-outer-spin-button,
@@ -53,7 +54,7 @@ else
             <!--Rok wydania-->
             <div class="mb-3">
                 <label for="year-add" class="form-label">Rok wydania</label>
-                <InputText  id="year-add"
+                <InputNumber id="year-add"
                 @bind-Value="newBook.Year"
                 class="form-control"
                 placeholder="2000"
@@ -79,14 +80,13 @@ else
                 @bind-Value="newBook.Isbn"
                 placeholder="978-83-7278-000-3"
                 minlength="17"
-                maxlength="17"
-                inputmode="numeric" />
+                maxlength="17"/>
             </div>
 
             <!--Liczba stron-->
             <div class="mb-3">
                 <label for="pages-add" class="form-label">Liczba stron</label>
-                <InputText  id="pages-add"
+                <InputNumber id="pages-add"
                 @bind-Value="newBook.PageCount"
                 placeholder="123"
                 minlength="1"
@@ -197,11 +197,11 @@ else
 
 }
 @code {
-    [Parameter]
-    public int Id { get; set; }
-
-    [SupplyParameterFromForm]
-    private BookPostDto newBook { get; set; } = new BookPostDto();
+    //inicjalizacja nowej instancji oraz listy gatunkow (bez tego program sie psuje przy checkboxach)
+    private BookPostDto newBook { get; set; } = new()
+    {
+            BookGenreIds = new List<int>()
+    };
 
     private bool IsLoading { get; set; } = true;
 
@@ -230,11 +230,18 @@ else
 
     private async Task AddNewBookFormSubmit()
     {
-        await BookRepository.CreateBookAsync(newBook);
-        await JS.ToastrSuccess("Category Created Successfully");
+        var result = await BookRepository.CreateBookAsync(newBook);
+        if (result != null)
+        {
+            await JS.ToastrSuccess("Książka dodana pomyślnie");
+        }
+        else
+        {
+            await JS.ToastrError("Nie udało się dodać książki");
+        }
         _navigationManager.NavigateTo("/bookslist");
     }
-
+    
     private void ToggleGenre(int genreId, object checkedValue)
     {
         bool isChecked = (bool)checkedValue;

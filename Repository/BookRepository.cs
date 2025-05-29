@@ -125,6 +125,10 @@ namespace BibliotekaSzkolnaBlazor.Repository
 
             if (dto.BookGenreIds != null)
             {
+                //usunięcie starych relacji
+                _context.BooksBookGenres.RemoveRange(book.BookBookGenres);
+
+                //dodanie nowych
                 book.BookBookGenres = dto.BookGenreIds
                     .Select(id => new BookBookGenre { BookGenreId = id, BookId = book.Id })
                     .ToList();

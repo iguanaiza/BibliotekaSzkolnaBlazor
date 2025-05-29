@@ -3,6 +3,7 @@
 @inject IDictionaryRepository DictionaryRepository
 @inject NavigationManager _navigationManager
 @inject IJSRuntime JS
+@rendermode InteractiveServer
 
 <style>
     input[type=number]::-webkit-outer-spin-button,
@@ -52,7 +53,7 @@ else
         <!--Rok wydania-->
         <div class="mb-3">
             <label for="year-add" class="form-label">Rok wydania</label>
-            <InputText id="year-add"
+            <InputNumber id="year-add"
                        @bind-Value="book.Year"
                        class="form-control"
                        placeholder="2000"
@@ -80,14 +81,13 @@ else
                        @bind-Value="book.Isbn"
                        placeholder="978-83-7278-000-3"
                        minlength="17"
-                       maxlength="17"
-                       inputmode="numeric" />
+                       maxlength="17"/>
         </div>
 
         <!--Liczba stron-->
         <div class="mb-3">
             <label for="pages-add" class="form-label">Liczba stron</label>
-            <InputText id="pages-add"
+                <InputNumber id="pages-add"
                        @bind-Value="book.PageCount"
                        placeholder="123"
                        minlength="1"
@@ -202,7 +202,6 @@ else
     [Parameter]
     public int BookId { get; set; }
 
-    [SupplyParameterFromForm]
     private BookPutDto? book;
 
     private bool IsLoading = true;
@@ -232,6 +231,20 @@ else
         var bookDto = await BookRepository.GetBookByIdAsync(BookId);
         if (bookDto != null)
         {
+            var author = Authors.FirstOrDefault(a => $"{a.Surname}, {a.Name}" == bookDto.BookAuthor);
+            var publisher = Publishers.FirstOrDefault(p => p.Name == bookDto.BookPublisher);
+            var series = Series.FirstOrDefault(s => s.Title == bookDto.BookSeries);
+            var type = Types.FirstOrDefault(t => t.Title == bookDto.BookType);
+            var category = Categories.FirstOrDefault(c => c.Name == bookDto.BookCategory);
+            var genres = Genres.Where(g => bookDto.BookGenres.Contains(g.Title)).ToList();
+
+            if (author == null || publisher == null || type == null || series == null || category == null)
+            {
+                await JS.ToastrError("Nie udało się odnaleźć wszystkich danych słownikowych.");
+                _navigationManager.NavigateTo("/bookslist");
+                return;
+            }
+
             book = new BookPutDto
                 {
                     Title = bookDto.Title,
@@ -240,24 +253,28 @@ else
                     Isbn = bookDto.Isbn,
                     PageCount = bookDto.PageCount,
                     IsVisible = bookDto.IsVisible,
-                    BookAuthorId = Authors.FirstOrDefault(a => $"{a.Surname}, {a.Name}" == bookDto.BookAuthor)?.Id ?? 0,
-                    BookPublisherId = Publishers.FirstOrDefault(p => p.Name == bookDto.BookPublisher)?.Id ?? 0,
-                    BookSeriesId = Series.FirstOrDefault(s => s.Title == bookDto.BookSeries)?.Id ?? 0,
-                    BookTypeId = Types.FirstOrDefault(t => t.Title == bookDto.BookType)?.Id ?? 0,
-                    BookCategoryId = Categories.FirstOrDefault(c => c.Name == bookDto.BookCategory)?.Id ?? 0,
-                    BookGenreIds = Genres.Where(g => bookDto.BookGenres.Contains(g.Title)).Select(g => g.Id).ToList()
+                    BookAuthorId = author.Id,
+                    BookPublisherId = publisher.Id,
+                    BookSeriesId = series.Id,
+                    BookTypeId = type.Id,
+                    BookCategoryId = category.Id,
+                    BookGenreIds = genres.Select(g => g.Id).ToList()
                 };
         }
     }
 
     private async Task EditBookFormSubmit()
     {
-        if (book != null)
+        var result = await BookRepository.UpdateBookAsync(BookId, book);
+        if (result != null)
         {
-            await BookRepository.UpdateBookAsync(BookId, book);
-            await JS.ToastrSuccess("Category Created Successfully");
-            _navigationManager.NavigateTo("/bookslist");
+            await JS.ToastrSuccess("Książka zaktualizowana pomyślnie");
         }
+        else
+        {
+            await JS.ToastrError("Nie udało się zaktualizować książki");
+        }
+        //_navigationManager.NavigateTo("/bookslist");
     }
 
     private void ToggleGenre(int genreId)

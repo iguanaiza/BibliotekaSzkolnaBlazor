@@ -2,7 +2,7 @@
 
 namespace BibliotekaSzkolnaBlazor.Services.Extensions
 {
-    public static class IJSRuntimeExtension
+    public static class IJSRuntimeExtensions
     {
         public static async Task ToastrSuccess(this IJSRuntime js, string message)
         {
