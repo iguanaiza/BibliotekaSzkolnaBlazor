@@ -32,5 +32,8 @@ namespace BibliotekaSzkolnaBlazor.Repository
 
         public Task<List<BookType>> GetBookTypesAsync()
             => _context.BookTypes.OrderBy(t => t.Title).ToListAsync();
+
+        public Task<List<BookCopy>> GetBookCopiesAsync()
+            => _context.BookCopies.OrderBy(c => c.Signature).ThenBy(c => c.InventoryNum).ThenBy(c => c.Available).ToListAsync();
     }
 }

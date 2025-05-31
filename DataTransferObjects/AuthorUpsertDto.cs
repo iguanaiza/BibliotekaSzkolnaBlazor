@@ -2,7 +2,7 @@
 
 namespace BibliotekaSzkolnaBlazor.DataTransferObjects
 {
-    public class BookAuthorPutDto
+    public class AuthorUpsertDto
     {
         public string Name { get; set; }
 

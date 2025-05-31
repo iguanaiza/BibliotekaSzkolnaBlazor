@@ -1,0 +1,456 @@
+﻿@page "/booklist/create"
+@page "/booklist/edit/{BookId:int}"
+
+@inject IBookRepository _bookRepository
+@inject IDictionaryRepository _dictionaryRepository
+@inject IJSRuntime _JS
+@inject NavigationManager _navigationManager
+@inject IWebHostEnvironment _webHostEnvironment
+
+@rendermode InteractiveServer
+
+@if (IsLoading)
+{
+    <div class="position-absolute w-75  h-75 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="/images/loading-book.gif" alt="loading" />
+        <p>Ładowanie...</p>
+    </div>
+}
+
+else
+{
+    <div class="col-6 col-md-3">
+        <a @onclick="GoBack" class="btn btn-primary">
+            <i class="bi bi-arrow-bar-left"></i> Powrót
+        </a>
+    </div>
+    <div class="card shadow border-0 m-4">
+        <div class="card-header bg-black bg-gradient ml-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">@(BookId == 0 ? "Dodaj" : "Edytuj") książkę</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive-xxl">
+            <EditForm Model="book" FormName="UpsertBookForm" OnValidSubmit="UpsertBookFormSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+                    <table class="table table-striped table-bordered table-sm align-middle table-hover text-nowrap">
+                        <tbody>
+                        <!--Tytuł i okładka-->
+                            <tr>
+                                <th class="text-end" width="200"><label for="title-add" class="form-label">Tytuł książki</label></th>
+                                <td>
+                                        <div class="col-sm-10">
+                                            <InputText id="title-add"
+                                                       @bind-Value="book.Title"
+                                                       class="form-control"
+                                                       placeholder="Tytuł książki"
+                                                       minlength="3"
+                                                       maxlength="60" />
+                                        </div>
+                                    </td>
+                            
+                            <!--Okładka-->
+                                <td rowspan="12" width="300" class="align-top">
+                                    @if (book.ImageUrl != null)
+                                    {
+                                        <div class="d-flex flex-column align-items-center">
+                                            <button class="btn btn-danger flex-fill" @onclick="DeleteImage">
+                                                <i class="bi bi-trash"></i> Usuń okładkę
+                                            </button>
+
+                                            <img src=@book.ImageUrl alt="Okładka książki" class="img-thumbnail">   
+                                        </div>
+                                    }
+                                    
+                                    @if (book.ImageUrl == null)
+                                    {
+                                        <div class="d-flex flex-column align-items-center">
+                                            <label for="customFile">Dodaj okładkę</label>
+                                            <InputFile OnChange="LoadFiles" class="form-control" id="customFile"
+                                                       accept="image/x-png,image/jpeg"></InputFile>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+
+                        <!--Autor-->
+                            <tr>
+                                <th class="text-end" width="200"> <label for="author-add" class="form-label">Autor</label></th>
+                                <td>
+                                    <div class="col-sm-10">
+                                        <InputSelect id="author-add"
+                                                     @bind-Value="book.BookAuthorId"
+                                                     class="form-select">
+
+                                            <option value="">-- Wybierz autora --</option>
+                                            @foreach (var author in Authors)
+                                            {
+                                                <option value="@author.Id">@author.Surname, @author.Name</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        <!--Rok wydania-->
+                            <tr>
+                                <th class="text-end" width="200">
+                                    <label for="year-add" class="form-label">Rok wydania</label>
+                                </th>
+                                <td>
+                                    <div class="col-sm-10">
+                                        <InputNumber id="year-add"
+                                                     @bind-Value="book.Year"
+                                                     class="form-control"
+                                                     placeholder="2000"
+                                                     type="number"
+                                                     inputmode="numeric"
+                                                     pattern="\d{4}"
+                                                     minlength="4"
+                                                     maxlength="4" />
+                                    </div>
+                                </td>
+                            </tr>
+
+                        <!--Wydawca-->
+                            <tr>
+                                <th class="text-end" width="200"> <label for="publisher-add" class="form-label">Wydawca</label> </th>
+                                <td>
+                                    
+                                    <div class="col-sm-10">
+                                        <InputSelect id="publisher-add"
+                                                     @bind-Value="book.BookPublisherId"
+                                                     class="form-select">
+
+                                            <option value="">-- Wybierz wydawcę --</option>
+                                            @foreach (var publisher in Publishers)
+                                            {
+                                                <option value="@publisher.Id">@publisher.Name</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        <!--ISBN-->
+                            <tr>
+                                <th class="text-end" width="200"><label for="isbn-add" class="form-label">Numer ISBN</label></th>
+                                <td>
+                                    <div class="col-sm-10">
+                                        <InputText id="isbn-add"
+                                                   @bind-Value="book.Isbn"
+                                                   class="form-control"
+                                                   placeholder="978-83-7278-000-3"
+                                                   minlength="17"
+                                                   maxlength="17" />
+                                    </div>
+                                </td>
+                            </tr>
+
+                        <!--Liczba stron-->
+                            <tr>
+                                <th class="text-end" width="200"> <label for="pages-add" class="form-label">Liczba stron</label></th>
+                                <td>
+                                    <div class="col-sm-10">
+                                        <InputNumber id="pages-add"
+                                                     @bind-Value="book.PageCount"
+                                                     class="form-control"
+                                                     placeholder="123"
+                                                     minlength="1"
+                                                     maxlength="4" />
+                                    </div>
+                                </td>
+                            </tr>
+
+                        <!--Opis-->
+                            <tr>
+                                <th class="text-end" width="200"> <label for="desc-add" class="form-label">Opis książki</label></th>
+                                <td>
+                                    
+                                    <div class="col-sm-10">
+                                        <InputTextArea id="desc-add"
+                                                       @bind-Value="book.Description"
+                                                       class="form-control"
+                                                       placeholder="Opis książki"
+                                                       minlength="3"
+                                                       maxlength="255" />
+                                    </div>
+                                </td>
+                            </tr>
+
+                        <!--Seria-->
+                            <tr>
+                                <th class="text-end" width="200"> <label for="series-add" class="form-label">Seria książek</label></th>
+                                <td>
+                                    <div class="col-sm-10">
+                                        <InputSelect id="series-add"
+                                                     @bind-Value="book.BookSeriesId"
+                                                     class="form-select">
+
+                                            <option value="">-- Wybierz serię --</option>
+                                            @foreach (var series in Series)
+                                            {
+                                                <option value="@series.Id">@series.Title</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        <!--Typ-->
+                            <tr>
+                                <th class="text-end" width="200"><label for="type-add" class="form-label">Typ książki</label></th>
+                                <td>
+                                    <div class="col-sm-10">
+                                        <InputSelect id="type-add"
+                                                     @bind-Value="book.BookTypeId"
+                                                     class="form-select">
+
+                                            <option value="">-- Wybierz typ --</option>
+                                            @foreach (var type in Types)
+                                            {
+                                                <option value="@type.Id">@type.Title</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        <!--Kategorie-->
+                            <tr>
+                                <th class="text-end" width="200"><label for="cat-add" class="form-label">Kategoria</label></th>
+                                <td>
+                                    <div class="col-sm-10">
+                                        <InputSelect id="cat-add"
+                                                     @bind-Value="book.BookCategoryId"
+                                                     class="form-select">
+
+                                            <option value="">-- Wybierz kategorię --</option>
+                                            @foreach (var category in Categories)
+                                            {
+                                                <option value="@category.Id">@category.Name</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        <!--Gatunki-->
+                            <tr>
+                                <th class="text-end" width="200"><label class="form-label">Gatunki</label></th>
+                                <td>
+                                   @foreach (var genre in Genres)
+                                    {
+                                      <div>
+                                         <input type="checkbox"
+                                                class="form-check-input"
+                                                id="genre-@genre.Id"
+                                                value="@genre.Id"
+                                                checked="@book.BookGenreIds.Contains(genre.Id)"
+                                                @onchange="@(() => ToggleGenre(genre.Id))" />
+                                          <label for="genre-@genre.Id">@genre.Title</label>
+                                      </div>
+                                    }
+                                </td>
+                            </tr>
+
+                         <!--Widoczność w katalogu-->
+                            <tr>
+                                <th class="text-end" width="200"> <label for="vis-add" class="form-label">Widoczność w katalogu</label></th>
+                                    <td>
+                                        <div class="col-sm-10">
+                                            <InputCheckbox id="vis-add" @bind-Value="book.IsVisible" class="form-check-input" />
+                                        </div>
+                                    </td>
+                            </tr>
+
+                         <!--Potwierdzenie-->
+                            <tr>
+                                <td colspan="2">
+                                    <div class="container d-flex gap-2">
+                                        <a @onclick="GoBack" class="btn btn-danger">
+                                            <i class="bi bi-x-circle"></i> Anuluj
+                                        </a>
+
+                                        <button class="btn btn-success" type="submit">
+                                            <i class="bi bi-check-circle"></i>@(BookId == 0 ? "Utwórz książkę" : "Zapisz zmiany")
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </EditForm>
+            </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int BookId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    private BookUpsertDto book { get; set; } = new ()
+    {
+       BookGenreIds = new List<int>()
+    };
+
+    private string? _directoryPath { get; set; }
+    private bool IsLoading = true;
+
+    private void GoBack()
+    {
+        if (!string.IsNullOrEmpty(ReturnUrl))
+            _navigationManager.NavigateTo(ReturnUrl);
+        else
+            _navigationManager.NavigateTo("/bookslist");
+    }
+
+    private List<BookAuthor> Authors = new();
+    private List<BookPublisher> Publishers = new();
+    private List<BookSeries> Series = new();
+    private List<BookType> Types = new();
+    private List<BookCategory> Categories = new();
+    private List<BookGenre> Genres = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _directoryPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "books");
+        await LoadData();
+        IsLoading = false;
+    }
+
+    private async Task LoadData()
+    {
+        Authors = (await _dictionaryRepository.GetBookAuthorsAsync()).ToList();
+        Publishers = (await _dictionaryRepository.GetBookPublishersAsync()).ToList();
+        Series = (await _dictionaryRepository.GetBookSeriesAsync()).ToList();
+        Types = (await _dictionaryRepository.GetBookTypesAsync()).ToList();
+        Categories = (await _dictionaryRepository.GetBookCategoriesAsync()).ToList();
+        Genres = (await _dictionaryRepository.GetBookGenresAsync()).ToList();
+
+        var bookDto = await _bookRepository.GetBookByIdAsync(BookId);
+
+        if (bookDto != null)
+        {
+            var author = Authors.FirstOrDefault(a => $"{a.Surname}, {a.Name}" == bookDto.BookAuthor);
+            var publisher = Publishers.FirstOrDefault(p => p.Name == bookDto.BookPublisher);
+            var series = Series.FirstOrDefault(s => s.Title == bookDto.BookSeries);
+            var type = Types.FirstOrDefault(t => t.Title == bookDto.BookType);
+            var category = Categories.FirstOrDefault(c => c.Name == bookDto.BookCategory);
+            var genres = Genres.Where(g => bookDto.BookGenres.Contains(g.Title)).ToList();
+
+            if (author == null || publisher == null || type == null || series == null || category == null)
+            {
+                await _JS.ToastrError("Nie udało się odnaleźć wszystkich danych.");
+                _navigationManager.NavigateTo("/bookslist");
+                return;
+            }
+
+            book = new BookUpsertDto
+                {
+                    Title = bookDto.Title,
+                    Year = bookDto.Year,
+                    Description = bookDto.Description,
+                    Isbn = bookDto.Isbn,
+                    PageCount = bookDto.PageCount,
+                    IsVisible = bookDto.IsVisible,
+                    ImageUrl = bookDto.ImageUrl,
+                    BookAuthorId = author.Id,
+                    BookPublisherId = publisher.Id,
+                    BookSeriesId = series.Id,
+                    BookTypeId = type.Id,
+                    BookCategoryId = category.Id,
+                    BookGenreIds = genres.Select(g => g.Id).ToList()
+                };
+        }
+    }
+
+    private async Task UpsertBookFormSubmit()
+    {
+        if (BookId == 0)
+        {
+            var create = await _bookRepository.CreateBookAsync(book);
+            if (create != null)
+            {
+                await _JS.ToastrSuccess("Książka dodana pomyślnie");
+            }
+            else
+            {
+                await _JS.ToastrError("Nie udało się dodać książki");
+            }
+
+        }
+        else
+        {
+            var update = await _bookRepository.UpdateBookAsync(BookId, book);
+            if (update != null)
+            {
+                await _JS.ToastrSuccess("Książka zaktualizowana pomyślnie");
+            }
+            else
+            {
+                await _JS.ToastrError("Nie udało się zaktualizować książki");
+            }
+        }
+
+        //_navigationManager.NavigateTo("/bookslist");
+    }
+
+    private void ToggleGenre(int genreId)
+    {
+        if (book == null) return;
+
+        if (book.BookGenreIds.Contains(genreId))
+            book.BookGenreIds.Remove(genreId);
+        else
+            book.BookGenreIds.Add(genreId);
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        IsLoading = true;
+        var file = e.File;
+        System.IO.FileInfo fileInfo = new(file.Name);
+        var newFileName = $"{Guid.NewGuid()}.{fileInfo.Extension}";
+        if (!Directory.Exists(_directoryPath))
+        {
+            Directory.CreateDirectory(_directoryPath);
+        }
+        var path = Path.Combine(_directoryPath, newFileName);
+
+        await using FileStream fileStream = new(path, FileMode.Create);
+        await file.OpenReadStream(file.Size).CopyToAsync(fileStream);
+        book.ImageUrl = $"/images/books/{newFileName}";
+        IsLoading = false;
+    }
+
+    void DeleteImage()
+    {
+        if (book.ImageUrl == null)
+            return;
+
+
+        var fileToDelete = book.ImageUrl.Split('/').Reverse().First();
+
+        var filePathToDeleteImage = Path.Combine(_directoryPath, fileToDelete);
+
+        if (!File.Exists(filePathToDeleteImage))
+        {
+            book.ImageUrl = null;
+            return;
+        }
+
+        File.Delete(filePathToDeleteImage);
+
+        book.ImageUrl = null;
+        return;
+    }
+}

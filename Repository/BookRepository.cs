@@ -32,13 +32,17 @@ namespace BibliotekaSzkolnaBlazor.Repository
                     Description = b.Description,
                     Isbn = b.Isbn,
                     PageCount = b.PageCount,
+                    IsDeleted= b.IsDeleted,
                     IsVisible = b.IsVisible,
+                    ImageUrl = b.ImageUrl,
+                    SpecialTag = b.SpecialTag,
                     BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
                     BookPublisher = b.BookPublisher.Name,
                     BookSeries = b.BookSeries.Title,
                     BookType = b.BookType.Title,
                     BookCategory = b.BookCategory.Name,
-                    BookGenres = b.BookBookGenres.Select(bb => bb.BookGenre.Title).ToList()
+                    BookGenres = b.BookBookGenres.Select(bb => bb.BookGenre.Title).ToList(),
+                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0
                 })
                 .ToListAsync();
         }
@@ -52,6 +56,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 .Include(b => b.BookType)
                 .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
+                .Include(b => b.BookCopies)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
             if (b == null) return null;
@@ -65,16 +70,27 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 Isbn = b.Isbn,
                 PageCount = b.PageCount,
                 IsVisible = b.IsVisible,
+                ImageUrl = b.ImageUrl,
+                SpecialTag = b.SpecialTag,
                 BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
                 BookPublisher = b.BookPublisher.Name,
                 BookSeries = b.BookSeries.Title,
                 BookType = b.BookType.Title,
                 BookCategory = b.BookCategory.Name,
-                BookGenres = b.BookBookGenres.Select(g => g.BookGenre.Title).ToList()
+                BookGenres = b.BookBookGenres
+                            .Select(g => g.BookGenre.Title).ToList(),
+                BookCopies = b.BookCopies?
+                            .Select(c => new CopyGetDto
+                            {
+                                Signature = c.Signature,
+                                Available = c.Available,
+                                InventoryNum = c.InventoryNum
+                            }).ToList(),
+                CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0
             };
         }
 
-        public async Task<BookGetDto> CreateBookAsync(BookPostDto dto)
+        public async Task<BookGetDto> CreateBookAsync(BookUpsertDto dto)
         {
             var book = new Book
             {
@@ -84,6 +100,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 Isbn = dto.Isbn,
                 PageCount = dto.PageCount,
                 IsVisible = dto.IsVisible,
+                ImageUrl = dto.ImageUrl,
                 BookAuthorId = dto.BookAuthorId,
                 BookPublisherId = dto.BookPublisherId,
                 BookSeriesId = dto.BookSeriesId,
@@ -98,7 +115,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
             return await GetBookByIdAsync(book.Id) ?? throw new Exception("Book not found after creation.");
         }
 
-        public async Task<BookGetDto?> UpdateBookAsync(int id, BookPutDto dto)
+        public async Task<BookGetDto?> UpdateBookAsync(int id, BookUpsertDto dto)
         {
             var book = await _context.Books
                 .Include(b => b.BookAuthor)
@@ -117,6 +134,8 @@ namespace BibliotekaSzkolnaBlazor.Repository
             book.Isbn = dto.Isbn;
             book.PageCount = dto.PageCount;
             book.IsVisible = dto.IsVisible;
+            book.ImageUrl = dto.ImageUrl;
+            book.SpecialTag = dto.SpecialTag;
             book.BookAuthorId = dto.BookAuthorId;
             book.BookPublisherId = dto.BookPublisherId;
             book.BookSeriesId = dto.BookSeriesId;
@@ -138,6 +157,20 @@ namespace BibliotekaSzkolnaBlazor.Repository
 
             return await GetBookByIdAsync(id);
         }
+
+        public async Task<BookGetDto?> BinBookAsync(int id)
+        {
+            var book = await _context.Books.FindAsync(id);
+            if (book == null) return null;
+
+            book.IsDeleted = true;
+            book.IsVisible = false;
+
+            await _context.SaveChangesAsync();
+
+            return await GetBookByIdAsync(id);
+        }
+
 
         public async Task<bool> DeleteBookAsync(int id)
         {

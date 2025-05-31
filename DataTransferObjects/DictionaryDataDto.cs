@@ -10,5 +10,6 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         public List<BookType> Types { get; set; }
         public List<BookCategory> Categories { get; set; }
         public List<BookGenre> Genres { get; set; }
+        public List<BookCopy> Copies { get; set; }
     }
 }

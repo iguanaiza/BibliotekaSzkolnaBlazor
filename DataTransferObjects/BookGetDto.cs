@@ -6,17 +6,22 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
     public class BookGetDto
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string Title { get; set; } = null!;
         public int Year { get; set; }
-        public string Description { get; set; }
-        public string Isbn { get; set; }
+        public string Description { get; set; } = null!;
+        public string Isbn { get; set; } = null!;
         public int PageCount { get; set; }
+        public bool IsDeleted { get; set; }
         public bool IsVisible { get; set; }
-        public string BookAuthor { get; set; }
-        public string BookPublisher { get; set; }
-        public string BookSeries { get; set; }
-        public string BookCategory { get; set; }
-        public string BookType { get; set; }
-        public List<string> BookGenres { get; set; }
+        public string? ImageUrl { get; set; }
+        public string? SpecialTag { get; set; }
+        public string BookAuthor { get; set; } = null!;
+        public string BookPublisher { get; set; } = null!;
+        public string BookSeries { get; set; } = null!;
+        public string BookCategory { get; set; } = null!;
+        public string BookType { get; set; } = null!;
+        public List<string> BookGenres { get; set; } = null!;
+        public List<CopyGetDto>? BookCopies { get; set; }
+        public int CopyCount;
     }
 }

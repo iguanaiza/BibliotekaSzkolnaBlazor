@@ -1,7 +1,6 @@
 ﻿using BibliotekaSzkolnaBlazor.Components.Pages;
 using BibliotekaSzkolnaBlazor.Data.Models;
 using BibliotekaSzkolnaBlazor.DataTransferObjects;
-using Humanizer.Localisation;
 
 namespace BibliotekaSzkolnaBlazor.Repository.IRepository
 {
@@ -13,5 +12,6 @@ namespace BibliotekaSzkolnaBlazor.Repository.IRepository
         Task<List<BookType>> GetBookTypesAsync();
         Task<List<BookCategory>> GetBookCategoriesAsync();
         Task<List<BookGenre>> GetBookGenresAsync();
+        Task<List<BookCopy>> GetBookCopiesAsync();
     }
 }
