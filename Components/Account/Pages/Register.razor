@@ -7,10 +7,11 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using BibliotekaSzkolnaBlazor.Data
 
-@inject UserManager<IdentityUser> UserManager
-@inject IUserStore<IdentityUser> UserStore
-@inject SignInManager<IdentityUser> SignInManager
-@inject IEmailSender<IdentityUser> EmailSender
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+@inject RoleManager<IdentityRole> RoleManager
+@inject IEmailSender<ApplicationUser> EmailSender
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
@@ -24,7 +25,7 @@
         <StatusMessage Message="@Message" />
         <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
+            <h2>Dodaj nowego czytelnika</h2>
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
@@ -42,15 +43,19 @@
                 <label for="confirm-password">Confirm Password</label>
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
+
+            <div class="form-floating mb-3">
+                <InputSelect @bind-Value="Input.Role" class="form-select">
+                    <option value="@Roles.USER" selected>@Roles.USER</option>
+                    <option value="@Roles.LIBRARIAN">@Roles.LIBRARIAN</option>
+                    <option value="@Roles.ADMIN">@Roles.ADMIN</option>
+                </InputSelect>
+                <label for="role">Select Role</label>
+                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+            </div>
+
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
     </div>
 </div>
 
@@ -82,6 +87,22 @@
 
         Logger.LogInformation("User created a new account with password.");
 
+        if (!await RoleManager.RoleExistsAsync(Roles.USER))
+        {
+            await RoleManager.CreateAsync(new IdentityRole(Roles.ADMIN));
+            await RoleManager.CreateAsync(new IdentityRole(Roles.LIBRARIAN));
+            await RoleManager.CreateAsync(new IdentityRole(Roles.USER));
+        }
+        if (Input.Role is not null)
+        {
+            await UserManager.AddToRoleAsync(user, Input.Role);
+        }
+        else
+        {
+            await UserManager.AddToRoleAsync(user, Roles.USER);
+        }
+
+
         var userId = await UserManager.GetUserIdAsync(user);
         var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -102,26 +123,26 @@
         RedirectManager.RedirectTo(ReturnUrl);
     }
 
-    private IdentityUser CreateUser()
+    private ApplicationUser CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<IdentityUser>();
+            return Activator.CreateInstance<ApplicationUser>();
         }
         catch
         {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor.");
+            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
         }
     }
 
-    private IUserEmailStore<IdentityUser> GetEmailStore()
+    private IUserEmailStore<ApplicationUser> GetEmailStore()
     {
         if (!UserManager.SupportsUserEmail)
         {
             throw new NotSupportedException("The default UI requires a user store with email support.");
         }
-        return (IUserEmailStore<IdentityUser>)UserStore;
+        return (IUserEmailStore<ApplicationUser>)UserStore;
     }
 
     private sealed class InputModel
@@ -141,5 +162,7 @@
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
+
+        public string? Role { get; set; }
     }
 }

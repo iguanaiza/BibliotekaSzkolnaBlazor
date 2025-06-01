@@ -7,6 +7,7 @@ using BibliotekaSzkolnaBlazor.Repository.IRepository;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace BibliotekaSzkolnaBlazor
 {
@@ -43,13 +44,14 @@ namespace BibliotekaSzkolnaBlazor
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-            var app = builder.Build();
+        var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
