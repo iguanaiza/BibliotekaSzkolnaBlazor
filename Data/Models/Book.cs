@@ -21,7 +21,6 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
         public bool IsDeleted { get; set; } = false;//do soft delete
         public bool IsVisible { get; set; } = true;//do widoku w katalogu
         public string? ImageUrl { get; set; } //okładka książki - URL do folderu
-        public string? SpecialTag { get; set; } //specjalne oznaczenie np "polecane" itd
 
         #region Odwołania do innych
         public int BookAuthorId { get; set; }
@@ -45,6 +44,7 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
         public BookCategory BookCategory { get; set; } = null!;//jedno z trzech: lektura, podręcznik, pozostałe
 
         public ICollection<BookBookGenre> BookBookGenres { get; set; } = null!;//gatunek ksiazki np. fantasy - moze byc wiele
+        public ICollection<BookBookSpecialTag>? BookBookSpecialTags { get; set; } //special tag
         public ICollection<BookCopy>? BookCopies { get; set; }//lista kopii
         public int CopyCount => BookCopies?.Count ?? 0; //liczba kopii
         #endregion

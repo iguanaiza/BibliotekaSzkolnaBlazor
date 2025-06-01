@@ -1,4 +1,4 @@
-﻿@page "/booklist/view/{BookId:int}"
+﻿@page "/bookslist/view/{BookId:int}"
 
 @inject IBookRepository _bookRepository
 @inject IDictionaryRepository _dictionaryRepository
@@ -36,92 +36,111 @@ else
         <div class="card-body p-4">
             <div class="row pb-3">
                 <div class="col-12 text-end">
-                    <a href="/booklist/edit/@book.Id?returnUrl=/booklist/view/@book.Id" class="btn btn-primary btn-lg" style="width:250px;">
+                    <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
                         <i class="bi bi-pencil-square"></i> Edytuj
                     </a>
 
-                    <button class="btn btn-danger btn-lg" style="width:250px;" @onclick="()=>HandleDelete(book.Id)">
+                    <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
                         <i class="bi bi-trash3"></i> Usuń
                     </button>
                 </div>
             </div>
 
-            <div class="table-responsive-xxl">
-                <table class="table table-striped table-bordered table-sm align-middle table-hover">
-                    <tbody>
-                        <tr>
-                            <th class="text-end"> Tytuł</th>
-                            <td> @book.Title </td>
-                            <td rowspan="12" width="300" class="align-top">
-                                <div class="d-flex flex-column align-items-center">
-                                    @if (book.ImageUrl == null)
-                                    {
-                                        <p>Brak okładki.</p>
-                                    }
-                                    @if (book.ImageUrl != null)
-                                    {
-                                        <img src=@book.ImageUrl class="img-thumbnail" alt="Okładka książki">
-                                    }
-                                </div>
-                            </td>
-                        </tr>
+            <!--Informacje o książce-->
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <!--Okładka-->
+                    <div class="col-md-4 d-flex justify-content-center align-items-center">
+                        @if (book.ImageUrl == null)
+                        {
+                            <p class="text-muted">Brak okładki.</p>
+                        }
+                        @if (book.ImageUrl != null)
+                        {
+                            <img src=@book.ImageUrl class="img-thumbnail" alt="Okładka książki" style="max-height: 600px">
+                        }
+                    </div>
+                    <!--Opis-->
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <table class="table table-striped align-middle">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            @if (book.BookSpecialTags != null && book.BookSpecialTags.Any())
+                                            {
+                                                foreach (var tag in book.BookSpecialTags)
+                                                {
+                                                    <label class="@GetBadgeClass(tag) me-1">@tag</label>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Autor </th>
-                            <td> @book.BookAuthor </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Tytuł</th>
+                                        <td> @book.Title </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Rok wydania </th>
-                            <td> @book.Year </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Autor </th>
+                                        <td> @book.BookAuthor </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Wydawca </th>
-                            <td> @book.BookPublisher </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Rok wydania </th>
+                                        <td> @book.Year </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Numer ISBN </th>
-                            <td> @book.Isbn </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Wydawca </th>
+                                        <td> @book.BookPublisher </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Liczba stron </th>
-                            <td> @book.PageCount </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Numer ISBN </th>
+                                        <td> @book.Isbn </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Opis książki </th>
-                            <td> @book.Description </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Liczba stron </th>
+                                        <td> @book.PageCount </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Seria </th>
-                            <td> @book.BookSeries </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Opis książki </th>
+                                        <td> @book.Description </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Typ </th>
-                            <td> @book.BookType </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Seria </th>
+                                        <td> @book.BookSeries </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Kategoria </th>
-                            <td> @book.BookCategory </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Typ </th>
+                                        <td> @book.BookType </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Gatunki </th>
-                            <td> @string.Join(", ", book.BookGenres) </td>
-                        </tr>
+                                    <tr>
+                                        <th class="text-end"> Kategoria </th>
+                                        <td> @book.BookCategory </td>
+                                    </tr>
 
-                        <tr>
-                            <th class="text-end"> Widoczność w katalogu </th>
-                            <td> @(book.IsVisible ? "Tak" : "Nie")</td>
-                        </tr>
-                    </tbody>
-                </table>
+                                    <tr>
+                                        <th class="text-end"> Gatunki </th>
+                                        <td> @string.Join(", ", book.BookGenres) </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th class="text-end"> Widoczność w katalogu </th>
+                                        <td> @(book.IsVisible ? "Tak" : "Nie")</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     
@@ -169,12 +188,14 @@ else
                                         <td>@copy.InventoryNum</td>
                                         <td>@(copy.Available ? "Tak" : "Nie")</td>
                                         <td>
-                                            <a class="btn btn-primary btn-sm">
-                                                <i class="bi bi-pencil-square"></i> Edytuj
-                                            </a>
-                                            <button class="btn btn-danger btn-sm">
-                                                <i class="bi bi-trash3"></i> Kosz
-                                            </button>
+                                            <div class="d-flex justify-content-start gap-2">
+                                                <a  class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                                    <i class="bi bi-pencil-square"></i> Edytuj
+                                                </a>
+                                                <button class="btn btn-danger btn-sm"  title="Usuń">
+                                                    <i class="bi bi-trash3"></i> Usuń
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                     index++;
@@ -235,5 +256,16 @@ else
         }
         DeleteBookID = 0;
         IsLoading = false;
+    }
+
+    private string GetBadgeClass(string tag)
+    {
+        return tag switch
+        {
+            "Polecane" => "badge bg-success",
+            "Nowości" => "badge bg-warning text-dark",
+            "Popularne" => "badge bg-info text-dark",
+            _ => "badge bg-secondary"
+        };
     }
 }

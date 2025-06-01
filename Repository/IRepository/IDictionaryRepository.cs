@@ -12,6 +12,7 @@ namespace BibliotekaSzkolnaBlazor.Repository.IRepository
         Task<List<BookType>> GetBookTypesAsync();
         Task<List<BookCategory>> GetBookCategoriesAsync();
         Task<List<BookGenre>> GetBookGenresAsync();
+        Task<List<BookSpecialTag>> GetBookSpecialTagsAsync();
         Task<List<BookCopy>> GetBookCopiesAsync();
     }
 }

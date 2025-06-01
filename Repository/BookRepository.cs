@@ -24,6 +24,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 .Include(b => b.BookType)
                 .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
+                .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
                 .Select(b => new BookGetDto
                 {
                     Id = b.Id,
@@ -35,13 +36,13 @@ namespace BibliotekaSzkolnaBlazor.Repository
                     IsDeleted= b.IsDeleted,
                     IsVisible = b.IsVisible,
                     ImageUrl = b.ImageUrl,
-                    SpecialTag = b.SpecialTag,
                     BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
                     BookPublisher = b.BookPublisher.Name,
                     BookSeries = b.BookSeries.Title,
                     BookType = b.BookType.Title,
                     BookCategory = b.BookCategory.Name,
                     BookGenres = b.BookBookGenres.Select(bb => bb.BookGenre.Title).ToList(),
+                    BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
                     CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0
                 })
                 .ToListAsync();
@@ -56,6 +57,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 .Include(b => b.BookType)
                 .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
+                .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
                 .Include(b => b.BookCopies)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
@@ -71,14 +73,13 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 PageCount = b.PageCount,
                 IsVisible = b.IsVisible,
                 ImageUrl = b.ImageUrl,
-                SpecialTag = b.SpecialTag,
                 BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
                 BookPublisher = b.BookPublisher.Name,
                 BookSeries = b.BookSeries.Title,
                 BookType = b.BookType.Title,
                 BookCategory = b.BookCategory.Name,
-                BookGenres = b.BookBookGenres
-                            .Select(g => g.BookGenre.Title).ToList(),
+                BookGenres = b.BookBookGenres.Select(g => g.BookGenre.Title).ToList(),
+                BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
                 BookCopies = b.BookCopies?
                             .Select(c => new CopyGetDto
                             {
@@ -106,7 +107,8 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 BookSeriesId = dto.BookSeriesId,
                 BookTypeId = dto.BookTypeId,
                 BookCategoryId = dto.BookCategoryId,
-                BookBookGenres = dto.BookGenreIds.Select(id => new BookBookGenre { BookGenreId = id }).ToList()
+                BookBookGenres = dto.BookGenreIds.Select(id => new BookBookGenre { BookGenreId = id }).ToList(),
+                BookBookSpecialTags = dto.BookSpecialTagIds.Select(id => new BookBookSpecialTag { BookSpecialTagId = id }).ToList()
             };
 
             _context.Books.Add(book);
@@ -124,6 +126,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 .Include(b => b.BookType)
                 .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres)
+                .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
             if (book == null) return null;
@@ -135,7 +138,6 @@ namespace BibliotekaSzkolnaBlazor.Repository
             book.PageCount = dto.PageCount;
             book.IsVisible = dto.IsVisible;
             book.ImageUrl = dto.ImageUrl;
-            book.SpecialTag = dto.SpecialTag;
             book.BookAuthorId = dto.BookAuthorId;
             book.BookPublisherId = dto.BookPublisherId;
             book.BookSeriesId = dto.BookSeriesId;
@@ -150,6 +152,17 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 //dodanie nowych
                 book.BookBookGenres = dto.BookGenreIds
                     .Select(id => new BookBookGenre { BookGenreId = id, BookId = book.Id })
+                    .ToList();
+            }
+
+            if (dto.BookSpecialTagIds != null)
+            {
+                //usunięcie starych relacji
+                _context.BooksBookSpecialTags.RemoveRange(book.BookBookSpecialTags);
+
+                //dodanie nowych
+                book.BookBookSpecialTags = dto.BookSpecialTagIds
+                    .Select(id => new BookBookSpecialTag { BookSpecialTagId = id, BookId = book.Id })
                     .ToList();
             }
 

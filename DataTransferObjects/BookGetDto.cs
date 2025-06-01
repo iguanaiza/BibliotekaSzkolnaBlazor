@@ -14,13 +14,13 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         public bool IsDeleted { get; set; }
         public bool IsVisible { get; set; }
         public string? ImageUrl { get; set; }
-        public string? SpecialTag { get; set; }
         public string BookAuthor { get; set; } = null!;
         public string BookPublisher { get; set; } = null!;
         public string BookSeries { get; set; } = null!;
         public string BookCategory { get; set; } = null!;
         public string BookType { get; set; } = null!;
         public List<string> BookGenres { get; set; } = null!;
+        public List<string>? BookSpecialTags { get; set; }
         public List<CopyGetDto>? BookCopies { get; set; }
         public int CopyCount;
     }

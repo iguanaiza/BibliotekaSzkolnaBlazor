@@ -27,7 +27,6 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         public bool IsVisible { get; set; }
 
         public string? ImageUrl { get; set; }
-        public string? SpecialTag { get; set; }
 
         [Required(ErrorMessage = "Wybierz autora książki.")]
         public int BookAuthorId { get; set; }
@@ -45,6 +44,7 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         public int BookCategoryId { get; set; }
 
         public List<int> BookGenreIds { get; set; } = null!;
+        public List<int>? BookSpecialTagIds { get; set; }
         public List<int>? BookCopiesIds { get; set; }
     }
 }

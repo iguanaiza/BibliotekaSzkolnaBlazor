@@ -24,6 +24,9 @@ namespace BibliotekaSzkolnaBlazor.Repository
         public Task<List<BookGenre>> GetBookGenresAsync()
             => _context.BookGenres.OrderBy(g => g.Title).ToListAsync();
 
+        public Task<List<BookSpecialTag>> GetBookSpecialTagsAsync()
+            => _context.BookSpecialTags.OrderBy(g => g.Title).ToListAsync();
+
         public Task<List<BookPublisher>> GetBookPublishersAsync()
             => _context.BookPublishers.OrderBy(p => p.Name).ToListAsync();
 

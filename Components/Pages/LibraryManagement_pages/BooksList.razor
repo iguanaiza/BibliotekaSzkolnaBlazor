@@ -29,7 +29,7 @@ else
         <div class="card-body p-4">
             <div class="row pb-3">
                 <div class="col-12 text-end">
-                    <a href="/booklist/create" class="btn btn-lg btn-success" style="width:250px;">
+                    <a href="/bookslist/create" class="btn btn-lg btn-success" style="width:250px;">
                         <i class="bi bi-plus-square-fill"></i> Dodaj nową książkę
                     </a>
                 </div>
@@ -50,7 +50,7 @@ else
                                 <th scope="col">Kategoria</th>
                                 <th scope="col">ISBN</th>
                                 <th scope="col">Rok wydania</th>
-                                <th scope="col">Liczba kopii</th>
+                                <th scope="col">Ilość</th>
                                 <th scope="col">Katalog</th>
                                 <th scope="col">Oznaczenia</th>
                                 <th scope="col">Akcje</th>
@@ -61,7 +61,7 @@ else
                             {
                                 <tr>
                                     <td>
-                                        <a href="/booklist/view/@book.Id" class="btn btn-outline-primary btn-sm">
+                                        <a href="/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm">
                                             <i class="bi bi-info-square"></i>
                                         </a>
                                         
@@ -75,15 +75,26 @@ else
                                     <td>@book.Year</td>
                                     <td>@book.CopyCount</td>
                                     <td>@(book.IsVisible ? "Tak" : "Nie")</td>
-                                    <td><span class="badge text-bg-info"> @book.SpecialTag</span></td>
                                     <td>
-                                        <a href="/booklist/edit/@book.Id?returnUrl=/bookslist" class="btn btn-primary btn-sm">
-                                            <i class="bi bi-pencil-square"></i> Edytuj
-                                        </a>
-                                        <button class="btn btn-danger btn-sm" @onclick="()=>HandleDelete(book.Id)">
-                                            <i class="bi bi-trash3"></i> Usuń
-                                        </button>
+                                        @if (book.BookSpecialTags != null && book.BookSpecialTags.Any())
+                                        {
+                                            foreach (var tag in book.BookSpecialTags)
+                                            {
+                                                <label class="@GetBadgeClass(tag) me-1">@tag</label>
+                                            }
+                                        }
                                     </td>
+                                    <td class="text-end">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist" class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                                <i class="bi bi-pencil-square"></i> Edytuj
+                                            </a>
+                                            <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
+                                                <i class="bi bi-trash3"></i> Usuń
+                                            </button>
+                                        </div>
+                                    </td>
+
                                 </tr>
                                 index++;
                             }
@@ -139,5 +150,16 @@ else
         }
         DeleteBookID = 0;
         IsLoading = false;
+    }
+
+    private string GetBadgeClass(string tag)
+    {
+        return tag switch
+        {
+            "Polecane" => "badge bg-success",
+            "Nowości" => "badge bg-warning text-dark",
+            "Popularne" => "badge bg-info text-dark",
+            _ => "badge bg-secondary"
+        };
     }
 }
