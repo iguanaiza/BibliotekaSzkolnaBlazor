@@ -325,14 +325,6 @@ else
     private string? _directoryPath { get; set; }
     private bool IsLoading = true;
 
-    private void GoBack()
-    {
-        if (!string.IsNullOrEmpty(ReturnUrl))
-            _navigationManager.NavigateTo(ReturnUrl);
-        else
-            _navigationManager.NavigateTo("/bookslist");
-    }
-
     private List<BookAuthor> Authors = new();
     private List<BookPublisher> Publishers = new();
     private List<BookSeries> Series = new();
@@ -486,5 +478,13 @@ else
 
         book.ImageUrl = null;
         return;
+    }
+
+    private void GoBack()
+    {
+        if (!string.IsNullOrEmpty(ReturnUrl))
+            _navigationManager.NavigateTo(ReturnUrl);
+        else
+            _navigationManager.NavigateTo("/bookslist");
     }
 }

@@ -20,10 +20,11 @@
 else
 {
     <div class="col-12 text-start">
-        <a href="/bookslist" class="btn btn-primary">
+        <a @onclick="GoBack" class="btn btn-primary">
             <i class="bi bi-arrow-bar-left"></i> Powrót
         </a>
     </div>
+
     <div class="card shadow border-0 m-4">
         <div class="card-header bg-black bg-gradient ml-0 py-3">
             <div class="row">
@@ -34,6 +35,7 @@ else
         </div>
 
         <div class="card-body p-4">
+        <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
             <div class="row pb-3">
                 <div class="col-12 text-end">
                     <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
@@ -45,6 +47,7 @@ else
                     </button>
                 </div>
             </div>
+        </AuthorizeView>
 
             <!--Informacje o książce-->
             <div class="card mb-3">
@@ -154,6 +157,7 @@ else
             </div>
 
             <div class="card-body p-4">
+                 <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
                 <div class="row pb-3">
                     <div class="col-12 text-end">
                         <a  class="btn btn-lg btn-success" style="width:250px;">
@@ -161,6 +165,7 @@ else
                         </a>
                     </div>
                 </div>
+                </AuthorizeView>
 
                 @if (book.BookCopies.Any())
                 {
@@ -188,14 +193,37 @@ else
                                         <td>@copy.InventoryNum</td>
                                         <td>@(copy.Available ? "Tak" : "Nie")</td>
                                         <td>
-                                            <div class="d-flex justify-content-start gap-2">
-                                                <a  class="btn btn-outline-primary btn-sm" title="Edytuj">
-                                                    <i class="bi bi-pencil-square"></i> Edytuj
-                                                </a>
-                                                <button class="btn btn-danger btn-sm"  title="Usuń">
-                                                    <i class="bi bi-trash3"></i> Usuń
-                                                </button>
-                                            </div>
+                                             <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
+                                                <Authorized>
+                                                    <div class="d-flex justify-content-start gap-2">
+                                                        <a  class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                                            <i class="bi bi-pencil-square"></i> Edytuj
+                                                        </a>
+                                                        <button class="btn btn-danger btn-sm"  title="Usuń">
+                                                            <i class="bi bi-trash3"></i> Usuń
+                                                        </button>
+                                                    </div>
+                                                </Authorized>
+                                            </AuthorizeView>
+
+                                            <AuthorizeView Roles="@Roles.USER">
+                                                <Authorized>
+                                                    <div class="d-flex justify-content-start gap-2">
+                                                        <a class="btn btn-outline-primary btn-sm" title="Rezerwuj">
+                                                            <i class="bi bi-journal-plus"></i> Rezerwuj
+                                                        </a>
+                                                        <button class="btn btn-danger btn-sm" title="Wypożycz">
+                                                            <i class="bi bi-journal-check"></i> Wypożycz
+                                                        </button>
+                                                    </div>
+                                                </Authorized>
+                                            </AuthorizeView>
+
+                                            <AuthorizeView>
+                                                <NotAuthorized>
+                                                    <span class="text-muted fst-italic">Zaloguj się, aby wypożyczyć</span>
+                                                </NotAuthorized>
+                                            </AuthorizeView>
                                         </td>
                                     </tr>
                                     index++;
@@ -214,6 +242,11 @@ else
     public int BookId { get; set; }
     private BookGetDto book { get; set; }
     private int DeleteBookID { get; set; } = 0;
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+    private string? _directoryPath { get; set; }
 
     private bool IsLoading = true;
 
@@ -267,5 +300,13 @@ else
             "Popularne" => "badge bg-info text-dark",
             _ => "badge bg-secondary"
         };
+    }
+
+    private void GoBack()
+    {
+        if (!string.IsNullOrEmpty(ReturnUrl))
+            _navigationManager.NavigateTo(ReturnUrl);
+        else
+            _navigationManager.NavigateTo("/bookslist");
     }
 }

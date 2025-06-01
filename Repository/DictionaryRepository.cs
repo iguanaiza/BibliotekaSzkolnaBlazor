@@ -1,6 +1,5 @@
 ﻿using BibliotekaSzkolnaBlazor.Data.Models;
 using BibliotekaSzkolnaBlazor.Data;
-using BibliotekaSzkolnaBlazor.DataTransferObjects;
 using BibliotekaSzkolnaBlazor.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 

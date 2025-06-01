@@ -1,211 +1,62 @@
 ﻿@page "/cataloghome"
 
+@inject IBookRepository _bookRepository
+@inject IDictionaryRepository _dictionaryRepository
+@inject IJSRuntime _JS
+@inject NavigationManager _navigationManager
+
+@rendermode InteractiveServer
+
 <!--Menu główne i searchbar-->
 <CatalogNavbar></CatalogNavbar>
+
 <!--Body-->
-<div class="strona-glowna">
-    <div class="scroll">
-        <div class="main-content">
-            <div class="polecane">
-                <div class="tytul1">
-                    <b class="polecane1">Polecane</b>
-                </div>
-                <div class="page-previous-parent">
-                    <div class="page-previous">
-                        <img class="icon1" alt="" src="/images/square-caret-left-solid.svg">
+@foreach (var tag in BooksByTag.Keys)
+{
+    <div class="card m-4 p-3">
+        <div class="row g-0">
+            <h2 class="mb-4 fw-bold px-2">@tag</h2>
 
-                    </div>
-                    <div class="elementy">
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie-container">
-                                <span>
-                                    <p class="szkoa-podstawowa-nr">Harry Potter </p>
-                                    <p class="szkoa-podstawowa-nr">i Kamień Filozoficzny</p>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Alicja w Krainie Czarów. Wydanie ilustrowane</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Tajemniczy ogród</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Opowieści z Narnii. Lew, czarownica i stara szafa</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Zielone piórko Zbigniewa</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">W 80 dni dookoła świata</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Biuro dzieci znalezionych</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Drzewo życzeń</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Las szeptów</div>
-                        </div>
-                    </div>
-                    <div class="page-previous">
-                        <img class="icon2" alt="" src="/images/square-caret-right-solid.svg">
-
-                    </div>
-                </div>
-            </div>
-            <div class="polecane">
-                <div class="tytul1">
-                    <b class="polecane1">Nowości w katalogu biblioteki</b>
-                </div>
-                <div class="page-previous-parent">
-                    <div class="page-previous">
-                        <img class="icon1" alt="" src="/images/square-caret-left-solid.svg">
-
-                    </div>
-                    <div class="elementy">
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Magiczne drzewo. Czerwone Krzesło</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Drzewo życzeń</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Zielone piórko Zbigniewa</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Las szeptów</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Zielone piórko Zbigniewa</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Biuro dzieci znalezionych</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Biuro dzieci znalezionych</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Drzewo życzeń</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Las szeptów</div>
-                        </div>
-                    </div>
-                    <div class="page-previous">
-                        <img class="icon2" alt="" src="/images/square-caret-right-solid.svg">
-
-                    </div>
-                </div>
-            </div>
-            <div class="polecane">
-                <div class="tytul1">
-                    <b class="polecane1">Najczęściej wypożyczane</b>
-                </div>
-                <div class="page-previous-parent">
-                    <div class="page-previous">
-                        <img class="icon1" alt="" src="/images/square-caret-left-solid.svg">
-
-                    </div>
-                    <div class="elementy">
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie-container">
-                                <span>
-                                    <p class="szkoa-podstawowa-nr">Harry Potter </p>
-                                    <p class="szkoa-podstawowa-nr">i Kamień Filozoficzny</p>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Pan Tadeusz</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Akademia Pana Kleksa</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Opowieści z Narnii. Lew, czarownica i stara szafa</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Zielone piórko Zbigniewa</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">W pustyni i w puszczy</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Biuro dzieci znalezionych</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Drzewo życzeń</div>
-                        </div>
-                        <div class="element-books-list">
-                            <img class="element-books-list-child" alt="" src="/images/harrypotter-kamien.png">
-
-                            <div class="harry-potter-i-kamie">Las szeptów</div>
-                        </div>
-                    </div>
-                    <div class="page-previous">
-                        <img class="icon2" alt="" src="/images/square-caret-right-solid.svg">
-
-                    </div>
+            <div class="position-relative px-2">
+                <div class="d-flex overflow-auto gap-4 scroll-container pb-3">
+                    @foreach (var book in BooksByTag[tag])
+                    {
+                        <a href="/bookslist/view/@book.Id?returnUrl=/cataloghome"
+                           class="book-card text-decoration-none text-dark">
+                            <img src="@book.ImageUrl" alt="@book.Title" class="book-cover" />
+                            <div class="book-title">@book.Title</div>
+                        </a>
+                    }
                 </div>
             </div>
         </div>
     </div>
-</div>
+}
 
 @code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+    private string? _directoryPath { get; set; }
 
+    private Dictionary<string, IEnumerable<BookGetDto>> BooksByTag = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        // Pobierz listę tagów specjalnych z bazy
+        var tags = await _dictionaryRepository.GetBookSpecialTagsAsync();
+
+        // Dla każdego tagu pobierz książki i zapisz w słowniku
+        foreach (var tag in tags)
+        {
+            var books = await _bookRepository.GetBooksByTagAsync(tag.Title);
+            BooksByTag[tag.Title] = books;
+        }
+    }
 }
