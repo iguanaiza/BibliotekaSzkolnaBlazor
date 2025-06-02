@@ -12,8 +12,8 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         [Range(1000, 2200, ErrorMessage = "Niepoprawny rok: pisz cyfry z zakresu 1000-2200.")]
         public int Year { get; set; }
 
-        [Required(ErrorMessage = "Wprowadź krótki opis książki (maksymalnie 255 znaków).")]
-        [StringLength(255, ErrorMessage = "Niepoprawny opis: wpisz maksymalnie 255 znaków")]
+        [Required(ErrorMessage = "Wprowadź krótki opis książki (maksymalnie 800 znaków).")]
+        [StringLength(800, ErrorMessage = "Niepoprawny opis: wpisz maksymalnie 800 znaków")]
         public string Description { get; set; } = null!;
 
         [Required(ErrorMessage = "Wprowadź numer ISBN książki (13 cyfr we formacie XXX-XX-XXXX-XXX-X).")]

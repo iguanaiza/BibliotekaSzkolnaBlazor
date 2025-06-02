@@ -47,6 +47,7 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
         public ICollection<BookBookSpecialTag>? BookBookSpecialTags { get; set; } //special tag
         public ICollection<BookCopy>? BookCopies { get; set; }//lista kopii
         public int CopyCount => BookCopies?.Count ?? 0; //liczba kopii
+        public int AvailableCopyCount => BookCopies?.Count(c => c.Available) ?? 0; //liczba dostępnych
         #endregion
     }
 }

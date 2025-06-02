@@ -23,5 +23,7 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         public List<string>? BookSpecialTags { get; set; }
         public List<CopyGetDto>? BookCopies { get; set; }
         public int CopyCount;
+        public int AvailableCopyCount;
+
     }
 }

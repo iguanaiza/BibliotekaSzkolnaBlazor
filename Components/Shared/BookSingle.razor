@@ -1,4 +1,7 @@
 ﻿@page "/bookslist/view/{BookId:int}"
+@page "/cataloghome/view/{BookId:int}"
+@page "/cataloghome/search/{BookId:int}/view"
+@page "/cataloghome/catalog/view/{BookId:int}"
 
 @inject IBookRepository _bookRepository
 @inject IDictionaryRepository _dictionaryRepository
@@ -60,7 +63,7 @@ else
                         }
                         @if (book.ImageUrl != null)
                         {
-                            <img src=@book.ImageUrl class="img-thumbnail" alt="Okładka książki" style="max-height: 600px">
+                            <img src=@book.ImageUrl alt="Okładka książki" style="max-height: 524px; width: 100%; object-fit: contain;">
                         }
                     </div>
                     <!--Opis-->

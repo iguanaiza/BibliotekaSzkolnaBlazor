@@ -43,7 +43,8 @@ namespace BibliotekaSzkolnaBlazor.Repository
                     BookCategory = b.BookCategory.Name,
                     BookGenres = b.BookBookGenres.Select(bb => bb.BookGenre.Title).ToList(),
                     BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
-                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0
+                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
+                    AvailableCopyCount = b.BookCopies != null ? b.BookCopies.Count(c => c.Available) : 0
                 })
                 .ToListAsync();
         }
@@ -87,15 +88,16 @@ namespace BibliotekaSzkolnaBlazor.Repository
                                 Available = c.Available,
                                 InventoryNum = c.InventoryNum
                             }).ToList(),
-                CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0
+                CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
+                AvailableCopyCount = b.BookCopies != null ? b.BookCopies.Count(c => c.Available) : 0
             };
         }
 
         public async Task<IEnumerable<BookGetDto>> GetBooksByTagAsync(string tagName)
         {
             return await _context.Books
-                .Include(b => b.BookBookSpecialTags)
-                .Where(b => b.BookBookSpecialTags.Any(bb => bb.BookSpecialTag.Title == tagName))
+                .Include(b => b.BookAuthor)
+                .Include(b => b.BookBookSpecialTags).Where(b => b.BookBookSpecialTags.Any(bb => bb.BookSpecialTag.Title == tagName))
                 .Select(b => new BookGetDto
                 {
                     Id = b.Id,
@@ -108,13 +110,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                     IsVisible = b.IsVisible,
                     ImageUrl = b.ImageUrl,
                     BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
-                    BookPublisher = b.BookPublisher.Name,
-                    BookSeries = b.BookSeries.Title,
-                    BookType = b.BookType.Title,
-                    BookCategory = b.BookCategory.Name,
-                    BookGenres = b.BookBookGenres.Select(bb => bb.BookGenre.Title).ToList(),
                     BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
-                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0
                 })
                 .ToListAsync();
         }
@@ -211,7 +207,6 @@ namespace BibliotekaSzkolnaBlazor.Repository
 
             return await GetBookByIdAsync(id);
         }
-
 
         public async Task<bool> DeleteBookAsync(int id)
         {
