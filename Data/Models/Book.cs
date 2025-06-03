@@ -6,6 +6,7 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
     public class Book
     {
         public int Id { get; set; }
+
         public DateTime Created { get; set; } = DateTime.Now;
 
         public string Title { get; set; } = null!;
@@ -19,7 +20,9 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
         public int PageCount { get; set; } //ilość stron
 
         public bool IsDeleted { get; set; } = false;//do soft delete
+
         public bool IsVisible { get; set; } = true;//do widoku w katalogu
+
         public string? ImageUrl { get; set; } //okładka książki - URL do folderu
 
         #region Odwołania do innych
@@ -44,10 +47,15 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
         public BookCategory BookCategory { get; set; } = null!;//jedno z trzech: lektura, podręcznik, pozostałe
 
         public ICollection<BookBookGenre> BookBookGenres { get; set; } = null!;//gatunek ksiazki np. fantasy - moze byc wiele
+
         public ICollection<BookBookSpecialTag>? BookBookSpecialTags { get; set; } //special tag
+
         public ICollection<BookCopy>? BookCopies { get; set; }//lista kopii
         public int CopyCount => BookCopies?.Count ?? 0; //liczba kopii
         public int AvailableCopyCount => BookCopies?.Count(c => c.Available) ?? 0; //liczba dostępnych
+
+        public ICollection<FavoriteBook> FavoriteByUsers { get; set; } //ulubione przez
+        public int FavoriteCount => FavoriteByUsers?.Count ?? 0;
         #endregion
     }
 }

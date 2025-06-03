@@ -4,6 +4,7 @@ using BibliotekaSzkolnaBlazor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BibliotekaSzkolnaBlazor.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250603071916_obslugaRezerwacjiObslugaUsera")]
+    partial class obslugaRezerwacjiObslugaUsera
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,7 +167,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasIndex("BookTypeId");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookAuthor", b =>
@@ -185,7 +188,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BookAuthors", (string)null);
+                    b.ToTable("BookAuthors");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookBookGenre", b =>
@@ -200,7 +203,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasIndex("BookGenreId");
 
-                    b.ToTable("BooksBookGenres", (string)null);
+                    b.ToTable("BooksBookGenres");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookBookSpecialTag", b =>
@@ -215,7 +218,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasIndex("BookSpecialTagId");
 
-                    b.ToTable("BooksBookSpecialTags", (string)null);
+                    b.ToTable("BooksBookSpecialTags");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookCategory", b =>
@@ -232,7 +235,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BookCategories", (string)null);
+                    b.ToTable("BookCategories");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookCopy", b =>
@@ -257,7 +260,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("BookCopies", (string)null);
+                    b.ToTable("BookCopies");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookGenre", b =>
@@ -274,7 +277,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BookGenres", (string)null);
+                    b.ToTable("BookGenres");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookLoan", b =>
@@ -311,7 +314,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BookLoans", (string)null);
+                    b.ToTable("BookLoans");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookPublisher", b =>
@@ -328,7 +331,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BookPublishers", (string)null);
+                    b.ToTable("BookPublishers");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookReservationCart", b =>
@@ -355,7 +358,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BookReservationCarts", (string)null);
+                    b.ToTable("BookReservationCarts");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookSeries", b =>
@@ -372,7 +375,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BookSeries", (string)null);
+                    b.ToTable("BookSeries");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookSpecialTag", b =>
@@ -389,7 +392,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BookSpecialTags", (string)null);
+                    b.ToTable("BookSpecialTags");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.BookType", b =>
@@ -406,7 +409,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BookTypes", (string)null);
+                    b.ToTable("BookTypes");
                 });
 
             modelBuilder.Entity("BibliotekaSzkolnaBlazor.Data.Models.FavoriteBook", b =>
@@ -424,7 +427,7 @@ namespace BibliotekaSzkolnaBlazor.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("FavoriteBooks", (string)null);
+                    b.ToTable("FavoriteBooks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

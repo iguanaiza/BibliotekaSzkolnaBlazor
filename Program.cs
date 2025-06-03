@@ -21,6 +21,7 @@ namespace BibliotekaSzkolnaBlazor
             //Scoped - Jedna instancja Book zostanie utworzona na czas jednego zadania HTTP (dla jednej sesji uzytkownika w obrebie danego requestu).
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<IDictionaryRepository, DictionaryRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
@@ -43,7 +44,7 @@ namespace BibliotekaSzkolnaBlazor
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()

@@ -10,6 +10,7 @@ namespace BibliotekaSzkolnaBlazor.Data
         {
 
         }
+
         public DbSet<Book> Books { get; set; }
         public DbSet<BookAuthor> BookAuthors { get; set; }
         public DbSet<BookCategory> BookCategories { get; set; }
@@ -21,6 +22,9 @@ namespace BibliotekaSzkolnaBlazor.Data
         public DbSet<BookType> BookTypes { get; set; }
         public DbSet<BookBookGenre> BooksBookGenres { get; set; }
         public DbSet<BookBookSpecialTag> BooksBookSpecialTags { get; set; }
+        public DbSet<BookLoan> BookLoans { get; set; }
+        public DbSet<BookReservationCart> BookReservationCarts { get; set; }
+        public DbSet<FavoriteBook> FavoriteBooks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -55,6 +59,42 @@ namespace BibliotekaSzkolnaBlazor.Data
                 .HasOne(bb => bb.BookSpecialTag)
                 .WithMany(bg => bg.BookBookSpecialTags)
                 .HasForeignKey(bb => bb.BookSpecialTagId);
+
+            //ulubione ksiazki usera
+            modelBuilder.Entity<FavoriteBook>()
+                .HasKey(fb => new { fb.UserId, fb.BookId });
+
+            modelBuilder.Entity<FavoriteBook>()
+                .HasOne(fb => fb.User)
+                .WithMany(u => u.FavoriteBooks)
+                .HasForeignKey(fb => fb.UserId);
+
+            modelBuilder.Entity<FavoriteBook>()
+                .HasOne(fb => fb.Book)
+                .WithMany(b => b.FavoriteByUsers)
+                .HasForeignKey(fb => fb.BookId);
+
+            //koszyk
+            modelBuilder.Entity<BookReservationCart>()
+                .HasOne(rc => rc.User)
+                .WithMany(u => u.ReservationCart)
+                .HasForeignKey(rc => rc.UserId);
+
+            modelBuilder.Entity<BookReservationCart>()
+                .HasOne(rc => rc.BookCopy)
+                .WithMany(bc => bc.ReservationCart)
+                .HasForeignKey(rc => rc.BookCopyId);
+
+            // book loan
+            modelBuilder.Entity<BookLoan>()
+                .HasOne(bl => bl.User)
+                .WithMany(u => u.BookLoans)
+                .HasForeignKey(bl => bl.UserId);
+
+            modelBuilder.Entity<BookLoan>()
+                .HasOne(bl => bl.BookCopy)
+                .WithMany(bc => bc.BookLoans)
+                .HasForeignKey(bl => bl.BookCopyId);
         }
     }
 }

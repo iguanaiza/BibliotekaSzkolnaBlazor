@@ -43,8 +43,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                     BookCategory = b.BookCategory.Name,
                     BookGenres = b.BookBookGenres.Select(bb => bb.BookGenre.Title).ToList(),
                     BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
-                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
-                    AvailableCopyCount = b.BookCopies != null ? b.BookCopies.Count(c => c.Available) : 0
+                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0
                 })
                 .ToListAsync();
         }
@@ -89,7 +88,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                                 InventoryNum = c.InventoryNum
                             }).ToList(),
                 CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
-                AvailableCopyCount = b.BookCopies != null ? b.BookCopies.Count(c => c.Available) : 0
+                //AvailableCopyCount = b.BookCopies.Count(c => c.Available)
             };
         }
 

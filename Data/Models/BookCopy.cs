@@ -12,12 +12,15 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
 
         public int InventoryNum { get; set; } //numer inwentarzowy, format: 00000
 
-        [Required]
-        public bool Available { get; set; } //czy aktualnie dostepny tak/nie
+        public bool Available => BookLoans == null || BookLoans.All(l => l.ReturnDate != null);//czy aktualnie dostepny tak/nie
 
         public int BookId { get; set; } //klucz ksiazki (oryginalu)
         [ForeignKey(nameof(BookId))]
         public Book Book { get; set; } = null!;//odwolanie, musi miec oryginal
+
+        public ICollection<BookReservationCart> ReservationCart { get; set; }
+
+        public ICollection<BookLoan> BookLoans { get; set; }
     }
 }
 
