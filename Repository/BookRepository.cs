@@ -24,6 +24,8 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 .Include(b => b.BookType)
                 .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
+                .Include(b => b.BookCopies)
+                    .ThenInclude(c => c.BookLoans)
                 .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
                 .Select(b => new BookGetDto
                 {
@@ -49,7 +51,9 @@ namespace BibliotekaSzkolnaBlazor.Repository
                     BookGenreIds = b.BookBookGenres.Select(bg => bg.BookGenre.Id).ToList(),
                     BookGenres = b.BookBookGenres.Select(bg => bg.BookGenre.Title).ToList(),
                     BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
-                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0
+                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
+                    AvailableCopyCount = b.BookCopies.Count(c =>
+                        c.BookLoans == null || c.BookLoans.All(l => l.ReturnDate != null))
                 })
                 .ToListAsync();
         }

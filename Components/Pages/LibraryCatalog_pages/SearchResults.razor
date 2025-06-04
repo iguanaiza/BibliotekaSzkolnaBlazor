@@ -1,5 +1,5 @@
 ﻿@page "/cataloghome/catalog"
-@page "/cataloghome/search/{term?}"
+@page "/cataloghome/search"
 
 @inject IBookRepository _bookRepository
 @inject IDictionaryRepository _dictionaryRepository
@@ -7,15 +7,22 @@
 
 @rendermode InteractiveServer
 
+<PageTitle>Katalog</PageTitle>
+
+<CatalogTopBar />
 <div class="w-100">
     <div class="mx-auto px-3" style="max-width: 1366px;">
         <!--Menu główne i searchbar-->
-        <CatalogNavbar OnSearchChanged="HandleSearchChanged"/>
-
-        <p>Wyniki dla frazy: @SearchTerm</p>
+        <CatalogNavbar OnSearchChanged="HandleSearchChanged" />
 
         <!--Filtry i wyniki-->
         <div class="row gx-3">
+            @if (term != null)
+            {
+                <div class="col-12">
+                    <p>Wyniki dla frazy: "@SearchTerm"</p>
+                </div>
+            }
 
             <!--Filtry-->
             <!--Przycisk do widoku mobilnego-->
@@ -25,7 +32,7 @@
 
             <!--Widok na dużym ekranie-->
             <div class="col-12 col-lg-3 d-none d-lg-block">
-                <div class="border rounded p-3 shadow-sm">
+                <div class="card p-3 shadow-sm">
                     <h5 class="mb-3">Filtry</h5>
 
                     <!-- Autorzy -->
@@ -36,8 +43,8 @@
                             {
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="author_@author.Id"
-                                    value="@author.Id"
-                                    @onchange="() => ToggleAuthor(author.Id)">
+                                           value="@author.Id"
+                                           @onchange="() => ToggleAuthor(author.Id)">
                                     <label class="form-check-label" for="author_@author.Id">
                                         @author.Surname, @author.Name
                                     </label>
@@ -54,8 +61,8 @@
                             {
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="publisher_@publisher.Id"
-                                    value="@publisher.Id"
-                                    @onchange="() => TogglePublisher(publisher.Id)">
+                                           value="@publisher.Id"
+                                           @onchange="() => TogglePublisher(publisher.Id)">
                                     <label class="form-check-label" for="publisher_@publisher.Id">
                                         @publisher.Name
                                     </label>
@@ -72,8 +79,8 @@
                             {
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="series_@series.Id"
-                                    value="@series.Id"
-                                    @onchange="() => ToggleSeries(series.Id)">
+                                           value="@series.Id"
+                                           @onchange="() => ToggleSeries(series.Id)">
                                     <label class="form-check-label" for="series_@series.Id">
                                         @series.Title
                                     </label>
@@ -90,8 +97,8 @@
                             {
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="genre_@genre.Id"
-                                    value="@genre.Id"
-                                    @onchange="() => ToggleGenre(genre.Id)">
+                                           value="@genre.Id"
+                                           @onchange="() => ToggleGenre(genre.Id)">
                                     <label class="form-check-label" for="genre_@genre.Id">
                                         @genre.Title
                                     </label>
@@ -108,8 +115,8 @@
                             {
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="category_@category.Id"
-                                    value="@category.Id"
-                                    @onchange="() => ToggleCategory(category.Id)">
+                                           value="@category.Id"
+                                           @onchange="() => ToggleCategory(category.Id)">
                                     <label class="form-check-label" for="category_@category.Id">
                                         @category.Name
                                     </label>
@@ -126,8 +133,8 @@
                             {
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="type_@type.Id"
-                                    value="@type.Id"
-                                    @onchange="() => ToggleType(type.Id)">
+                                           value="@type.Id"
+                                           @onchange="() => ToggleType(type.Id)">
                                     <label class="form-check-label" for="type_@type.Id">
                                         @type.Title
                                     </label>
@@ -144,8 +151,8 @@
                             {
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="tag_@tag.Title"
-                                    value="@tag.Title"
-                                    @onchange="() => ToggleTag(tag.Title)">
+                                           value="@tag.Title"
+                                           @onchange="() => ToggleTag(tag.Title)">
                                     <label class="form-check-label" for="tag_@tag.Title">
                                         @tag.Title
                                     </label>
@@ -177,8 +184,8 @@
                                 {
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="author_@author.Id"
-                                        value="@author.Id"
-                                        @onchange="() => ToggleAuthor(author.Id)">
+                                               value="@author.Id"
+                                               @onchange="() => ToggleAuthor(author.Id)">
                                         <label class="form-check-label" for="author_@author.Id">
                                             @author.Surname, @author.Name
                                         </label>
@@ -195,8 +202,8 @@
                                 {
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="publisher_@publisher.Id"
-                                        value="@publisher.Id"
-                                        @onchange="() => TogglePublisher(publisher.Id)">
+                                               value="@publisher.Id"
+                                               @onchange="() => TogglePublisher(publisher.Id)">
                                         <label class="form-check-label" for="publisher_@publisher.Id">
                                             @publisher.Name
                                         </label>
@@ -213,8 +220,8 @@
                                 {
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="series_@series.Id"
-                                        value="@series.Id"
-                                        @onchange="() => ToggleSeries(series.Id)">
+                                               value="@series.Id"
+                                               @onchange="() => ToggleSeries(series.Id)">
                                         <label class="form-check-label" for="series_@series.Id">
                                             @series.Title
                                         </label>
@@ -231,8 +238,8 @@
                                 {
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="genre_@genre.Id"
-                                        value="@genre.Id"
-                                        @onchange="() => ToggleGenre(genre.Id)">
+                                               value="@genre.Id"
+                                               @onchange="() => ToggleGenre(genre.Id)">
                                         <label class="form-check-label" for="genre_@genre.Id">
                                             @genre.Title
                                         </label>
@@ -249,8 +256,8 @@
                                 {
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="category_@category.Id"
-                                        value="@category.Id"
-                                        @onchange="() => ToggleCategory(category.Id)">
+                                               value="@category.Id"
+                                               @onchange="() => ToggleCategory(category.Id)">
                                         <label class="form-check-label" for="category_@category.Id">
                                             @category.Name
                                         </label>
@@ -267,8 +274,8 @@
                                 {
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="type_@type.Id"
-                                        value="@type.Id"
-                                        @onchange="() => ToggleType(type.Id)">
+                                               value="@type.Id"
+                                               @onchange="() => ToggleType(type.Id)">
                                         <label class="form-check-label" for="type_@type.Id">
                                             @type.Title
                                         </label>
@@ -285,8 +292,8 @@
                                 {
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="tag_@tag.Title"
-                                        value="@tag.Title"
-                                        @onchange="() => ToggleTag(tag.Title)">
+                                               value="@tag.Title"
+                                               @onchange="() => ToggleTag(tag.Title)">
                                         <label class="form-check-label" for="tag_@tag.Title">
                                             @tag.Title
                                         </label>
@@ -333,7 +340,7 @@
                                     </div>
 
                                     <div class="d-flex flex-wrap gap-2">
-                                        <a class="btn btn-sm btn-outline-success" role="button">Ulubione</a>
+                                        <a class="btn btn-sm btn-outline-primary" role="button">Ulubione</a>
                                         <a href="/cataloghome/catalog/view/@book.Id?returnUrl=/cataloghome/catalog" class="btn btn-sm btn-primary" role="button">Szczegóły</a>
                                     </div>
                                 </div>
@@ -346,7 +353,7 @@
 
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <p class="card-text mb-0">Dostępnych: <b>@book.AvailableCopyCount</b></p>
-                                    <a class="btn btn-sm btn-success" role="button">Wypożycz</a>
+                                    <a class="btn btn-sm btn-primary" role="button">Wypożycz</a>
                                 </div>
                             </div>
                         </div>
@@ -404,8 +411,12 @@
         if (!string.IsNullOrWhiteSpace(term))
         {
             SearchTerm = term;
-            await LoadBooks();
         }
+        else
+        {
+            SearchTerm = "";
+        }
+        await LoadBooks();
     }
 
     private async Task LoadData()

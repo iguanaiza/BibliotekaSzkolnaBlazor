@@ -1,17 +1,58 @@
+:root {
+    /* Domyslny motyw - zielony */
+    --primary: #055055;
+    --primary-75: rgba(5, 80, 85, 0.75);
+    --primary-50: rgba(5, 80, 85, 0.50);
+    --primary-25: rgba(5, 80, 85, 0.25);
+    --secondary: #9ACBD0;
+    --secondary-75: rgba(154, 203, 208, 0.75);
+    --secondary-50: rgba(154, 203, 208, 0.50);
+    --secondary-25: rgba(154, 203, 208, 0.25);
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+body.theme-blue {
+    /* Motyw niebieski */
+    --primary: #13457E;
+    --primary-75: rgba(19, 69, 126, 0.75);
+    --primary-50: rgba(19, 69, 126, 0.50);
+    --primary-25: rgba(19, 69, 126, 0.25);
+    --secondary: #84A3D3;
+    --secondary-75: rgba(132, 163, 211, 0.75);
+    --secondary-50: rgba(132, 163, 211, 0.50);
+    --secondary-25: rgba(132, 163, 211, 0.25);
+}
+
 a, .btn-link {
-    color: #006bb7;
+        color: #006bb7;
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: var(--primary-75);
+    border-color: var(--primary);
 }
 
+    .btn-primary:hover {
+        color: #fff;
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+    .btn-outline-primary:hover {
+        color: #fff;
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+    
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
