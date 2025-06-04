@@ -93,6 +93,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 BookCopies = b.BookCopies?
                             .Select(c => new CopyGetDto
                             {
+                                Id = c.Id,
                                 Signature = c.Signature,
                                 Available = c.Available,
                                 InventoryNum = c.InventoryNum

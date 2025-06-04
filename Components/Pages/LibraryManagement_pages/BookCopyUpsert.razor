@@ -1,0 +1,168 @@
+﻿@page "/bookslist/view/{BookId:int}/create"
+@page "/bookslist/view/{BookId:int}/edit/{CopyId:int}"
+
+@inject ICopyRepository _copyRepository
+@inject IBookRepository _bookRepository
+@inject IJSRuntime _JS
+@inject NavigationManager _navigationManager
+
+@rendermode InteractiveServer
+
+@if (IsLoading)
+{
+    <div class="text-center m-5">
+        <img src="/images/loading-book.gif" alt="Ładowanie" />
+        <p>Ładowanie...</p>
+    </div>
+}
+else
+{
+     <div class="col-6 col-md-3">
+        <a @onclick="GoBack" class="btn btn-primary">
+            <i class="bi bi-arrow-bar-left"></i> Powrót
+        </a>
+    </div>
+
+    <div class="card shadow border-0 m-4">
+        <div class="card-header bg-theme bg-gradient ml-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">
+                        @(CopyId == null || CopyId == 0
+                            ? $"Dodaj egzemplarz książki „{book?.Title}”"
+                            : $"Edytuj egzemplarz książki „{book?.Title}”")
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <EditForm Model="copy" FormName="UpsertCopyForm" OnValidSubmit="UpsertCopyFormSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label">Sygnatura</label>
+                <InputText class="form-control" @bind-Value="copy.Signature" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Numer inwentarzowy</label>
+                <InputNumber class="form-control" @bind-Value="copy.InventoryNum" />
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Zapisz</button>
+                <button type="button" class="btn btn-secondary" @onclick="GoBack">Anuluj</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int BookId { get; set; }
+
+    [Parameter]
+    public int? CopyId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    private bool IsLoading { get; set; } = true;
+
+    private CopyUpsertDto copy = new();
+    private BookGetDto? book;
+
+    private bool _isRendered;
+    private bool _pendingError;
+    private string? _pendingErrorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        IsLoading = true;
+
+        book = await _bookRepository.GetBookByIdAsync(BookId);
+        if (book is null)
+        {
+            _pendingError = true;
+            _pendingErrorMessage = "Nie znaleziono książki.";
+            _navigationManager.NavigateTo("/bookslist");
+            return;
+        }
+
+        if (CopyId.HasValue)
+        {
+            var existingCopy = await _copyRepository.GetCopyByIdAsync(CopyId.Value);
+            if (existingCopy is null)
+            {
+                _pendingError = true;
+                _pendingErrorMessage = "Nie znaleziono egzemplarza.";
+                _navigationManager.NavigateTo($"/bookslist/view/{BookId}");
+                return;
+            }
+
+            copy = new CopyUpsertDto
+                {
+                    Signature = existingCopy.Signature,
+                    InventoryNum = existingCopy.InventoryNum,
+                    BookId = existingCopy.BookId
+                };
+        }
+        else
+        {
+            copy = new CopyUpsertDto
+                {
+                    BookId = BookId
+                };
+        }
+
+        IsLoading = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isRendered = true;
+
+            if (_pendingError)
+            {
+                await _JS.ToastrError(_pendingErrorMessage ?? "Wystąpił błąd.");
+            }
+        }
+    }
+
+    private async Task UpsertCopyFormSubmit()
+    {
+        if (!CopyId.HasValue)
+        {
+            var created = await _copyRepository.CreateCopyAsync(copy);
+            if (created is not null)
+            {
+                await _JS.ToastrSuccess("Dodano egzemplarz.");
+            }
+            else
+            {
+                await _JS.ToastrError("Wystąpił błąd przy dodawaniu egzemplarza.");
+            }
+        }
+        else
+        {
+            var updated = await _copyRepository.UpdateCopyAsync(CopyId.Value, copy);
+            if (updated is not null)
+            {
+                await _JS.ToastrSuccess("Zaktualizowano egzemplarz.");
+            }
+            else
+            {
+                await _JS.ToastrError("Wystąpił błąd przy aktualizacji egzemplarza.");
+            }
+        }
+    }
+
+    private void GoBack()
+    {
+        _navigationManager.NavigateTo(ReturnUrl ?? $"/bookslist/view/{BookId}");
+    }
+}

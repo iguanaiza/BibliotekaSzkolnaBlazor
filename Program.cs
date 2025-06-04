@@ -20,6 +20,7 @@ namespace BibliotekaSzkolnaBlazor
             //rejestracja uslugi w kontenerze Dependency Injection (DI), ktora mowi: Jesli ktos poprosi o IBookService<Book>, daj mu instancje BookService.
             //Scoped - Jedna instancja Book zostanie utworzona na czas jednego zadania HTTP (dla jednej sesji uzytkownika w obrebie danego requestu).
             builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<ICopyRepository, CopyRepository>();
             builder.Services.AddScoped<IDictionaryRepository, DictionaryRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 

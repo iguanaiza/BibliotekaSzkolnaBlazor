@@ -29,7 +29,7 @@ else
     </div>
 
     <div class="card shadow border-0 m-4">
-        <div class="card-header bg-black bg-gradient ml-0 py-3">
+        <div class="card-header bg-theme bg-gradient ml-0 py-3">
             <div class="row">
                 <div class="col-12 text-center">
                     <h2 class="text-white py-2">@book.Title </h2>
@@ -151,7 +151,7 @@ else
         </div>
     
         <div>
-            <div class="card-header bg-black bg-gradient ml-0 py-3">
+            <div class="card-header bg-theme bg-gradient ml-0 py-3">
                 <div class="row">
                     <div class="col-12 text-center">
                         <h2 class="text-white py-2">Lista egzemplarzy (@book.CopyCount)</h2>
@@ -163,7 +163,7 @@ else
                  <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
                 <div class="row pb-3">
                     <div class="col-12 text-end">
-                        <a  class="btn btn-lg btn-success" style="width:250px;">
+                            <a href="/bookslist/view/@book.Id/create?returnUrl=/bookslist/view/@book.Id" class="btn btn-lg btn-primary" style="width:250px;">
                             <i class="bi bi-plus-square-fill"></i> Dodaj nowy
                         </a>
                     </div>
@@ -199,7 +199,7 @@ else
                                              <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
                                                 <Authorized>
                                                     <div class="d-flex justify-content-start gap-2">
-                                                        <a  class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                                        <a href="/bookslist/view/@book.Id/edit/@copy.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
                                                             <i class="bi bi-pencil-square"></i> Edytuj
                                                         </a>
                                                         <button class="btn btn-danger btn-sm"  title="Usuń">

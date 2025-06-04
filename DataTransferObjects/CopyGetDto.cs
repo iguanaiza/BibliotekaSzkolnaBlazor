@@ -9,5 +9,6 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         public int InventoryNum { get; set; }
         public bool Available { get; set; }
         public string Book { get; set; } = null!;
+        public int BookId { get; set; }
     }
 }

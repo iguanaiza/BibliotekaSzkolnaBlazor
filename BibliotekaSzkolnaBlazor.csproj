@@ -26,4 +26,10 @@
     <Folder Include="wwwroot\images\books\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Components\Pages\LibraryManagement_pages\BookCopyUpsert.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>
