@@ -1,5 +1,7 @@
-﻿<div class="card shadow border-0 m-4" style="max-width:1366px;">
-    <div class="d-flex justify-content-center p-4 gap-3">
+﻿@inject NavigationManager Navigation
+
+<div class="card shadow border-0 m-4">
+    <div class="d-flex flex-wrap justify-content-center p-4 gap-3">
         <a class="btn btn-outline-primary" aria-current="Strona główna" href="/cataloghome">Strona główna</a>
         <a class="btn btn-outline-primary" href="/cataloghome/catalog">Katalog</a>
         <a class="btn btn-outline-primary" href="#">Lektury</a>
@@ -10,22 +12,33 @@
     <div class="d-flex justify-content-center">
         <div class="card-body p-4" style="max-width: 800px; width: 100%;">
             <div class="d-flex align-items-center">
-                <!-- Obrazek po lewej stronie -->
+                <!-- Logo -->
                 <img class="books-icon me-4" alt="Symbol katalogu" src="/images/book-open-solid.svg" width="96">
 
-                <!-- Tytuł i wyszukiwarka po prawej stronie -->
-                <div class="flex-grow-1">
+                <!-- Tytuł i wyszukiwarka -->
+                <form class="flex-grow-1" @onsubmit="OnFormSubmit" @onsubmit:preventDefault>
                     <h1 class="mb-3">Katalog Online</h1>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <div class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
+                               @bind="SearchTerm">
                         <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
 </div>
 @code {
+    [Parameter]
+    public EventCallback<string> OnSearchChanged { get; set; }
 
+    private string SearchTerm { get; set; } = "";
+
+    private async Task OnFormSubmit()
+    {
+        await OnSearchChanged.InvokeAsync(SearchTerm);
+        var encodedTerm = Uri.EscapeDataString(SearchTerm);
+        Navigation.NavigateTo($"/cataloghome/search/?term={encodedTerm}");
+    }
 }

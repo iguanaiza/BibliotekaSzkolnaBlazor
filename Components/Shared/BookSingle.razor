@@ -61,7 +61,7 @@ else
                         {
                             <p class="text-muted">Brak okładki.</p>
                         }
-                        @if (book.ImageUrl != null)
+                        else
                         {
                             <img src=@book.ImageUrl alt="Okładka książki" style="max-height: 524px; width: 100%; object-fit: contain;">
                         }

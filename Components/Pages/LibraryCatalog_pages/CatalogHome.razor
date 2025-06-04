@@ -12,7 +12,7 @@
 <div class="w-100">
     <div class="mx-auto px-3" style="max-width: 1366px;">
         <!--Menu główne i searchbar-->
-        <CatalogNavbar />
+        <CatalogNavbar/>
 
         <!--Body-->
         @foreach (var tag in BooksByTag.Keys)
@@ -47,6 +47,10 @@
     public string? ReturnUrl { get; set; }
     private string? _directoryPath { get; set; }
 
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? term { get; set; }
+
     private Dictionary<string, IEnumerable<BookGetDto>> BooksByTag = new();
 
 
@@ -72,5 +76,4 @@
     {
         await _JS.InvokeVoidAsync("scrollCarousel", $"carousel-{tag}", direction);
     }
-
 }
