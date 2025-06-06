@@ -1,5 +1,4 @@
-﻿
-@page "/view/{BookId:int}"
+﻿@page "/view/{BookId:int}"
 @page "/search/{BookId:int}/view"
 @page "/catalog/view/{BookId:int}"
 
@@ -9,8 +8,6 @@
 @inject NavigationManager _navigationManager
 
 @rendermode InteractiveServer
-
-<Modal OnModalConfirmation="ConfirmDelete_Click"></Modal>
 
 <PageTitle>Podgląd</PageTitle>
 
@@ -48,15 +45,6 @@
                                     <i class="bi bi-arrow-bar-left"></i> Powrót
                                 </a>
                             </div>
-                            <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
-                                <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
-                                    <i class="bi bi-pencil-square"></i> Edytuj
-                                </a>
-
-                                <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
-                                    <i class="bi bi-trash3"></i> Usuń
-                                </button>
-                            </AuthorizeView>
                         </div>
                     </div>
 
@@ -169,15 +157,6 @@
                     </div>
 
                     <div class="card-body p-4">
-                        <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
-                            <div class="row pb-3">
-                                <div class="col-12 text-end">
-                                    <a href="/bookslist/view/@book.Id/create?returnUrl=/bookslist/view/@book.Id" class="btn btn-lg btn-primary" style="width:250px;">
-                                        <i class="bi bi-plus-square-fill"></i> Dodaj nowy
-                                    </a>
-                                </div>
-                            </div>
-                        </AuthorizeView>
 
                         @if (book.BookCopies.Any())
                         {
@@ -205,20 +184,7 @@
                                                 <td>@copy.InventoryNum</td>
                                                 <td>@(copy.Available ? "Tak" : "Nie")</td>
                                                 <td>
-                                                    <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
-                                                        <Authorized>
-                                                            <div class="d-flex justify-content-start gap-2">
-                                                                <a href="/bookslist/view/@book.Id/edit/@copy.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
-                                                                    <i class="bi bi-pencil-square"></i> Edytuj
-                                                                </a>
-                                                                <button class="btn btn-danger btn-sm" title="Usuń">
-                                                                    <i class="bi bi-trash3"></i> Usuń
-                                                                </button>
-                                                            </div>
-                                                        </Authorized>
-                                                    </AuthorizeView>
-
-                                                    <AuthorizeView Roles="@Roles.USER">
+                                                    <AuthorizeView>
                                                         <Authorized>
                                                             <div class="d-flex justify-content-start gap-2">
                                                                 <a class="btn btn-outline-primary btn-sm" title="Rezerwuj">
@@ -255,7 +221,6 @@
     [Parameter]
     public int BookId { get; set; }
     private BookGetDto book { get; set; }
-    private int DeleteBookID { get; set; } = 0;
 
     [Parameter]
     [SupplyParameterFromQuery]
@@ -273,36 +238,6 @@
     private async Task LoadData()
     {
         book = await _bookRepository.GetBookByIdAsync(BookId);
-    }
-
-    private void HandleDelete(int id)
-    {
-        DeleteBookID = id;
-        _JS.InvokeVoidAsync("ShowConfirmationModal");
-    }
-
-    private async Task ConfirmDelete_Click(bool isConfirmed)
-    {
-        IsLoading = true;
-        await _JS.InvokeVoidAsync("HideConfirmationModal");
-
-        if (isConfirmed && DeleteBookID != 0)
-        {
-            var result = await _bookRepository.BinBookAsync(DeleteBookID);
-
-            if (result == null)
-            {
-                await _JS.ToastrError("Nie udało się usunąć książki.");
-            }
-            else
-            {
-                await _JS.ToastrSuccess("Książka przeniesiona do kosza.");
-            }
-
-            await LoadData();
-        }
-        DeleteBookID = 0;
-        IsLoading = false;
     }
 
     private string GetBadgeClass(string tag)

@@ -39,7 +39,7 @@ else
                             <i class="bi bi-arrow-bar-left"></i> Powrót
                         </a>
                     </div>
-                    <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
+                   
                     <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
                         <i class="bi bi-pencil-square"></i> Edytuj
                     </a>
@@ -47,7 +47,7 @@ else
                     <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
                         <i class="bi bi-trash3"></i> Usuń
                     </button>
-                </AuthorizeView>
+
                 </div>
             </div>
 
@@ -196,8 +196,7 @@ else
                                         <td>@copy.InventoryNum</td>
                                         <td>@(copy.Available ? "Tak" : "Nie")</td>
                                         <td>
-                                             <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
-                                                <Authorized>
+                                            
                                                     <div class="d-flex justify-content-start gap-2">
                                                         <a href="/bookslist/view/@book.Id/edit/@copy.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
                                                             <i class="bi bi-pencil-square"></i> Edytuj
@@ -206,27 +205,6 @@ else
                                                             <i class="bi bi-trash3"></i> Usuń
                                                         </button>
                                                     </div>
-                                                </Authorized>
-                                            </AuthorizeView>
-
-                                            <AuthorizeView Roles="@Roles.USER">
-                                                <Authorized>
-                                                    <div class="d-flex justify-content-start gap-2">
-                                                        <a class="btn btn-outline-primary btn-sm" title="Rezerwuj">
-                                                            <i class="bi bi-journal-plus"></i> Rezerwuj
-                                                        </a>
-                                                        <button class="btn btn-danger btn-sm" title="Wypożycz">
-                                                            <i class="bi bi-journal-check"></i> Wypożycz
-                                                        </button>
-                                                    </div>
-                                                </Authorized>
-                                            </AuthorizeView>
-
-                                            <AuthorizeView>
-                                                <NotAuthorized>
-                                                    <span class="text-muted fst-italic">Zaloguj się, aby wypożyczyć</span>
-                                                </NotAuthorized>
-                                            </AuthorizeView>
                                         </td>
                                     </tr>
                                     index++;
