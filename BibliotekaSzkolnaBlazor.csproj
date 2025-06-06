@@ -27,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Components\Pages\LibraryCatalog_pages\BookView.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
     <Content Update="Components\Pages\LibraryManagement_pages\BookCopyUpsert.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>

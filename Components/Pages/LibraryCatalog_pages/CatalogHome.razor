@@ -1,5 +1,4 @@
 ﻿@page "/"
-@page "/cataloghome"
 
 @inject IBookRepository _bookRepository
 @inject IDictionaryRepository _dictionaryRepository
@@ -21,7 +20,7 @@
         @foreach (var tag in BooksByTag.Keys)
         {
             <div class="card shadow mb-4 p-4">
-                <div class="row g-0">
+                <div class="row gx-3">
                     <h2 class="mb-4 fw-bold px-2">@tag</h2>
 
                     <div class="position-relative px-2" id="carousel-@tag">
@@ -29,7 +28,7 @@
                         <div class="d-flex overflow-auto gap-4 scroll-container pb-3">
                             @foreach (var book in BooksByTag[tag])
                             {
-                                <a href="/cataloghome/view/@book.Id?returnUrl=/cataloghome"
+                                <a href="/view/@book.Id?returnUrl=/"
                                    class="book-card text-decoration-none text-dark">
                                     <img src="@book.ImageUrl" alt="@book.Title" class="book-cover" />
                                     <div class="book-title">@book.Title</div>

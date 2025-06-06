@@ -1,7 +1,7 @@
 ﻿@page "/bookslist/view/{BookId:int}"
-@page "/cataloghome/view/{BookId:int}"
-@page "/cataloghome/search/{BookId:int}/view"
-@page "/cataloghome/catalog/view/{BookId:int}"
+@page "/view/{BookId:int}"
+@page "/search/{BookId:int}/view"
+@page "/catalog/view/{BookId:int}"
 
 @inject IBookRepository _bookRepository
 @inject IDictionaryRepository _dictionaryRepository
@@ -11,6 +11,15 @@
 @rendermode InteractiveServer
 
 <Modal OnModalConfirmation="ConfirmDelete_Click"></Modal>
+
+<PageTitle>Podgląd</PageTitle>
+
+<CatalogTopBar/>
+
+<div class="w-100">
+    <div class="mx-auto px-3" style="max-width: 1366px;">
+        <!--Menu główne i searchbar-->
+        <CatalogNavbar/>
 
 @if (IsLoading)
 {
@@ -22,12 +31,6 @@
 
 else
 {
-    <div class="col-12 text-start">
-        <a @onclick="GoBack" class="btn btn-primary">
-            <i class="bi bi-arrow-bar-left"></i> Powrót
-        </a>
-    </div>
-
     <div class="card shadow border-0 m-4">
         <div class="card-header bg-theme bg-gradient ml-0 py-3">
             <div class="row">
@@ -38,9 +41,14 @@ else
         </div>
 
         <div class="card-body p-4">
-        <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
             <div class="row pb-3">
                 <div class="col-12 text-end">
+                    <div class="col-12 text-start">
+                        <a @onclick="GoBack" class="btn btn-primary">
+                            <i class="bi bi-arrow-bar-left"></i> Powrót
+                        </a>
+                    </div>
+                    <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
                     <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
                         <i class="bi bi-pencil-square"></i> Edytuj
                     </a>
@@ -48,9 +56,10 @@ else
                     <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
                         <i class="bi bi-trash3"></i> Usuń
                     </button>
+                </AuthorizeView>
                 </div>
             </div>
-        </AuthorizeView>
+
 
             <!--Informacje o książce-->
             <div class="card mb-3">
@@ -239,6 +248,8 @@ else
         </div>
     </div>
 }
+</div>
+</div>
 
 @code {
     [Parameter]
