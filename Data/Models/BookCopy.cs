@@ -32,7 +32,7 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
  * Kolejność w serii lub numerze tomu (opcjonalnie)
  * Numer kopii
  *
- * Przykład: LP.RJ.HP.1-001
+ * Przykład: LP.FAN.RJ.HP.1-001
 
 LP.DZI.GA.KIC.1-001
 LP.DZI.GA.KIC.1-002

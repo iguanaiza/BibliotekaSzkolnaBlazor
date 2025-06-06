@@ -39,7 +39,7 @@ else
                 </div>
             </div>
 
-            <div class="card shadow mb-4 p-4">
+            <div class="form-custom card shadow mb-4 p-4 mx-auto">
                 <div class="mb-4 px-2">
                     <EditForm Model="book" FormName="UpsertBookForm" OnValidSubmit="UpsertBookFormSubmit">
                         <DataAnnotationsValidator />
@@ -58,9 +58,26 @@ else
                                                value="@tag.Id"
                                                checked="@book.BookSpecialTagIds.Contains(tag.Id)"
                                                @onchange="@(() => ToggleSpecialTag(tag.Id))" />
-                                        <label class="form-check-label" for="tag-@tag.Id">@tag.Title</label>
+                                        <label class="@GetBadgeClass(tag.Title) me-1" for="tag-@tag.Id">@tag.Title</label>
                                     </div>
                                 }
+                            </div>
+                        </div>
+
+                        <!--Kategoria-->
+                        <div class="row mb-3">
+                            <label for="type-add" class="col-sm-2 col-form-label text-end">Kategoria</label>
+                            <div class="col-sm-10">
+                                <InputSelect id="cat-add"
+                                             @bind-Value="book.BookCategoryId"
+                                             class="form-select">
+
+                                    <option value="">-- Wybierz kategorię --</option>
+                                    @foreach (var category in Categories)
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                </InputSelect>
                             </div>
                         </div>
 
@@ -93,218 +110,168 @@ else
                                 </InputSelect>
                             </div>
                         </div>
-                
-                    <table class="table table-borderless align-middle justify-content-center text-nowrap">
-                        <tbody>
-                      
-
-                        <!--Rok wydania-->
-                            <tr class="tr-form">
-                                <th class="th-form">
-                                    <label for="year-add" class="form-label">Rok wydania</label>
-                                </th>
-                                <td class="td-form">
-                                    <div class="col-sm-10">
-                                        <InputNumber id="year-add"
-                                                     @bind-Value="book.Year"
-                                                     class="form-control"
-                                                     placeholder="2000"
-                                                     type="number"
-                                                     inputmode="numeric"
-                                                     pattern="\d{4}"
-                                                     minlength="4"
-                                                     maxlength="4" />
-                                    </div>
-                                </td>
-                            </tr>
 
                         <!--Wydawca-->
-                            <tr class="tr-form">
-                                <th class="th-form"> <label for="publisher-add" class="form-label">Wydawca</label> </th>
-                                <td class="td-form">
-                                    
-                                    <div class="col-sm-10">
-                                        <InputSelect id="publisher-add"
-                                                     @bind-Value="book.BookPublisherId"
-                                                     class="form-select">
+                        <div class="row mb-3">
+                            <label for="publisher-add" class="col-sm-2 col-form-label text-end">Wydawca</label>
+                            <div class="col-sm-10">
+                                <InputSelect id="publisher-add"
+                                             @bind-Value="book.BookPublisherId"
+                                             class="form-select">
 
-                                            <option value="">-- Wybierz wydawcę --</option>
-                                            @foreach (var publisher in Publishers)
-                                            {
-                                                <option value="@publisher.Id">@publisher.Name</option>
-                                            }
-                                        </InputSelect>
-                                    </div>
-                                </td>
-                            </tr>
+                                    <option value="">-- Wybierz wydawcę --</option>
+                                    @foreach (var publisher in Publishers)
+                                    {
+                                        <option value="@publisher.Id">@publisher.Name</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
+
+                        <!--Rok wydania-->
+                        <div class="row mb-3">
+                            <label for="year-add" class="col-sm-2 col-form-label text-end">Rok wydania</label>
+                            <div class="col-sm-10">
+                                <InputNumber id="year-add"
+                                             @bind-Value="book.Year"
+                                             class="form-control p2"
+                                             placeholder="2000"
+                                             type="number"
+                                             inputmode="numeric"
+                                             pattern="\d{4}"
+                                             minlength="4"
+                                             maxlength="4" />
+                            </div>
+                        </div>
 
                         <!--ISBN-->
-                            <tr class="tr-form">
-                                <th class="th-form"><label for="isbn-add" class="form-label">Numer ISBN</label></th>
-                                <td class="td-form">
-                                    <div class="col-sm-10">
-                                        <InputText id="isbn-add"
-                                                   @bind-Value="book.Isbn"
-                                                   class="form-control"
-                                                   placeholder="978-83-7278-000-3"
-                                                   minlength="17"
-                                                   maxlength="17" />
-                                    </div>
-                                </td>
-                            </tr>
+                        <div class="row mb-3">
+                            <label for="isbn-add" class="col-sm-2 col-form-label text-end">Numer ISBN</label>
+                            <div class="col-sm-10">
+                                <InputText id="isbn-add"
+                                           @bind-Value="book.Isbn"
+                                           class="form-control p2"
+                                           placeholder="978-83-7278-000-3"
+                                           minlength="17"
+                                           maxlength="17" />
+                            </div>
+                        </div>
 
                         <!--Liczba stron-->
-                            <tr class="tr-form">
-                                <th class="th-form"> <label for="pages-add" class="form-label">Liczba stron</label></th>
-                                <td class="td-form">
-                                    <div class="col-sm-10">
-                                        <InputNumber id="pages-add"
-                                                     @bind-Value="book.PageCount"
-                                                     class="form-control"
-                                                     placeholder="123"
-                                                     minlength="1"
-                                                     maxlength="4" />
-                                    </div>
-                                </td>
-                            </tr>
+                        <div class="row mb-3">
+                            <label for="pages-add" class="col-sm-2 col-form-label text-end">Liczba stron</label>
+                            <div class="col-sm-10">
+                                <InputNumber id="pages-add"
+                                             @bind-Value="book.PageCount"
+                                             class="form-control p2"
+                                             placeholder="123"
+                                             minlength="1"
+                                             maxlength="4" />
+                            </div>
+                        </div>
 
                         <!--Opis-->
-                            <tr class="tr-form">
-                                <th class="th-form"> <label for="desc-add" class="form-label">Opis książki</label></th>
-                                <td class="td-form">
-                                    
-                                    <div class="col-sm-10">
-                                        <InputTextArea id="desc-add"
-                                                       @bind-Value="book.Description"
-                                                       class="form-control"
-                                                       placeholder="Opis książki"
-                                                       minlength="3"
-                                                       maxlength="255" />
-                                    </div>
-                                </td>
-                            </tr>
+                        <div class="row mb-3">
+                            <label for="desc-add" class="col-sm-2 col-form-label text-end">Opis książki</label>
+                            <div class="col-sm-10">
+                                <div class="w-100 col-sm-10">
+                                    <InputTextArea id="desc-add"
+                                                   @bind-Value="book.Description"
+                                                   class="form-control p2"
+                                                   placeholder="Opis książki"
+                                                   minlength="3"
+                                                   maxlength="800" />
+                                </div>
+                            </div>
+                        </div>
 
                         <!--Seria-->
-                            <tr class="tr-form">
-                                <th class="th-form"> <label for="series-add" class="form-label">Seria książek</label></th>
-                                <td class="td-form">
-                                    <div class="col-sm-10">
-                                        <InputSelect id="series-add"
-                                                     @bind-Value="book.BookSeriesId"
-                                                     class="form-select">
+                        <div class="row mb-3">
+                            <label for="series-add" class="col-sm-2 col-form-label text-end">Seria książek</label>
+                            <div class="col-sm-10">
+                                <InputSelect id="series-add"
+                                             @bind-Value="book.BookSeriesId"
+                                             class="form-select p2">
 
-                                            <option value="">-- Wybierz serię --</option>
-                                            @foreach (var series in Series)
-                                            {
-                                                <option value="@series.Id">@series.Title</option>
-                                            }
-                                        </InputSelect>
-                                    </div>
-                                </td>
-                            </tr>
+                                    <option value="">-- Wybierz serię --</option>
+                                    @foreach (var series in Series)
+                                    {
+                                        <option value="@series.Id">@series.Title</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
 
-                        <!--Typ-->
-                            <tr class="tr-form">
-                                <th class="th-form"><label for="type-add" class="form-label">Typ książki</label></th>
-                                <td class="td-form">
-                                    <div class="col-sm-10">
-                                        <InputSelect id="type-add"
-                                                     @bind-Value="book.BookTypeId"
-                                                     class="form-select">
+                        <!--Typ książki-->
+                        <div class="row mb-3">
+                            <label for="type-add" class="col-sm-2 col-form-label text-end">Typ książki</label>
+                            <div class="col-sm-10">
+                                <InputSelect id="type-add"
+                                             @bind-Value="book.BookTypeId"
+                                             class="form-select">
 
-                                            <option value="">-- Wybierz typ --</option>
-                                            @foreach (var type in Types)
-                                            {
-                                                <option value="@type.Id">@type.Title</option>
-                                            }
-                                        </InputSelect>
-                                    </div>
-                                </td>
-                            </tr>
-
-                        <!--Kategorie-->
-                            <tr class="tr-form">
-                                <th class="th-form"><label for="cat-add" class="form-label">Kategoria</label></th>
-                                <td class="td-form">
-                                    <div class="col-sm-10">
-                                        <InputSelect id="cat-add"
-                                                     @bind-Value="book.BookCategoryId"
-                                                     class="form-select">
-
-                                            <option value="">-- Wybierz kategorię --</option>
-                                            @foreach (var category in Categories)
-                                            {
-                                                <option value="@category.Id">@category.Name</option>
-                                            }
-                                        </InputSelect>
-                                    </div>
-                                </td>
-                            </tr>
+                                    <option value="">-- Wybierz typ --</option>
+                                    @foreach (var type in Types)
+                                    {
+                                        <option value="@type.Id">@type.Title</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
 
                         <!--Gatunki-->
-                            <tr class="tr-form">
-                                <th class="th-form"><label class="form-label">Gatunki</label></th>
-                                <td class="td-form">
-                                    <div class="row">
-                                        @foreach (var genre in Genres)
-                                        {
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input type="checkbox"
-                                                           class="form-check-input"
-                                                           id="genre-@genre.Id"
-                                                           value="@genre.Id"
-                                                           checked="@book.BookGenreIds.Contains(genre.Id)"
-                                                           @onchange="@(() => ToggleGenre(genre.Id))" />
-                                                    <label class="form-check-label" for="genre-@genre.Id">@genre.Title</label>
-                                                </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label text-end">Gatunki</label>
+                            <div class="col-sm-10">
+                                <div class="row">
+                                    @foreach (var genre in Genres)
+                                    {
+                                        <div class="col-md-4">
+                                            <div class="form-check">
+                                                <input type="checkbox"
+                                                       class="form-check-input"
+                                                       id="genre-@genre.Id"
+                                                       value="@genre.Id"
+                                                       checked="@book.BookGenreIds.Contains(genre.Id)"
+                                                       @onchange="@(() => ToggleGenre(genre.Id))" />
+                                                <label class="form-check-label" for="genre-@genre.Id">@genre.Title</label>
                                             </div>
-                                        }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Okładka-->
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label text-end">Okładka</label>
+                            <div class="col-sm-10">
+                                @if (book.ImageUrl != null)
+                                {
+                                    <div class="d-flex align-items-start col-sm-10">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <img src=@book.ImageUrl alt="Okładka książki" class="img-thumbnail" style="height:128px">
+                                            <button class="btn btn-sm btn-danger" @onclick="DeleteImage">
+                                                <i class="bi bi-trash"></i> Usuń okładkę
+                                            </button>
+                                        </div>
                                     </div>
-                                </td>
-                            </tr>
+                                }
 
-                         <!--Widoczność w katalogu-->
-                            <tr class="tr-form">
-                                <th class="th-form"> <label for="vis-add" class="form-label">Widoczność w katalogu</label></th>
-                                    <td class="td-form">
-                                        <div class="col-sm-10">
-                                            <InputCheckbox id="vis-add" @bind-Value="book.IsVisible" class="form-check-input" />
-                                        </div>
-                                    </td>
-                            </tr>
+                                else
+                                {
+                                    <div class="d-flex align-items-start col-sm-10">
+                                        <InputFile OnChange="LoadFiles" class="form-control" id="customFile"
+                                                   accept="image/x-png,image/jpeg"></InputFile>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                         
-                         <!--Okładka-->
-                            <tr class="tr-form">
-                                <th class="th-form">Okładka</th>
-                                <td class="td-form">
-                                    @if (book.ImageUrl != null)
-                                    {
-                                        <div class="d-flex align-items-start col-sm-10">
-                                            <div class="d-flex flex-column align-items-center">
-                                                <img src=@book.ImageUrl alt="Okładka książki" class="img-thumbnail" style="height:128px">
-                                                <button class="btn btn-sm btn-danger" @onclick="DeleteImage">
-                                                    <i class="bi bi-trash"></i> Usuń okładkę
-                                                </button>
-                                            </div>
-                                        </div>
-                                    }
-
-                                    else
-                                    {
-                                        <div class="d-flex align-items-start col-sm-10">
-                                            <InputFile OnChange="LoadFiles" class="form-control" id="customFile"
-                                                       accept="image/x-png,image/jpeg"></InputFile>
-                                        </div>
-                                    }
-                                </td>
-                            </tr>
-
-                         <!--Potwierdzenie-->
-                        <tr class="tr-form">
-                            <td colspan="2">
-                                <div class="d-flex justify-content-end gap-2 mt-3">
-                                    <a @onclick="GoBack" class="btn btn-lg btn-outline-secondary">
+                        <!--Przyciski-->
+                        <div class="row mb-3">
+                            <div class="d-flex justify-content-between mt-3">
+                                    <a @onclick="GoBack" class="btn btn-lg btn-outline-danger">
                                         <i class="bi bi-x-circle"></i> Anuluj
                                     </a>
 
@@ -313,14 +280,11 @@ else
                                         @(BookId == 0 ? "Utwórz książkę" : "Zapisz zmiany")
                                     </button>
                                 </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </EditForm>
+                         </div>
+                    </EditForm>
+                </div>
             </div>
-    </div>
-    </div>
+        </div>
     </div>
 }
 
@@ -502,5 +466,16 @@ else
             _navigationManager.NavigateTo(ReturnUrl);
         else
             _navigationManager.NavigateTo("/bookslist");
+    }
+
+    private string GetBadgeClass(string tag)
+    {
+        return tag switch
+        {
+            "Polecane" => "badge bg-success",
+            "Nowości" => "badge bg-warning text-dark",
+            "Popularne" => "badge bg-info text-dark",
+            _ => "badge bg-secondary"
+        };
     }
 }

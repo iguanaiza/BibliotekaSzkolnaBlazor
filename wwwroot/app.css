@@ -148,3 +148,7 @@ input[type=number] {
     top: 0;
     z-index: 1;
 }
+
+.form-custom {
+    max-width: 800px;
+}
