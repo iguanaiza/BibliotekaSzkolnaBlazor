@@ -2,8 +2,8 @@
 
 <div class="card shadow mb-4 mt-4 border-1">
     <div class="d-flex flex-wrap justify-content-center p-4 gap-3">
-        <a class="btn btn-lg btn-primary" aria-current="Strona główna" href="/cataloghome">Strona główna</a>
-        <a class="btn btn-lg btn-primary" href="/cataloghome/catalog">Katalog</a>
+        <a class="btn btn-lg btn-primary" aria-current="Strona główna" href="/">Strona główna</a>
+        <a class="btn btn-lg btn-primary" href="/catalog">Katalog</a>
         <a class="btn btn-lg btn-primary" href="#">Lektury</a>
         <a class="btn btn-lg btn-primary" href="#">Podręczniki</a>
         <a class="btn btn-lg btn-primary" href="#">Polecane</a>
@@ -38,6 +38,6 @@
     {
         await OnSearchChanged.InvokeAsync(SearchTerm);
         var encodedTerm = Uri.EscapeDataString(SearchTerm);
-        Navigation.NavigateTo($"/cataloghome/search/?term={encodedTerm}");
+        Navigation.NavigateTo($"/search/?term={encodedTerm}");
     }
 }
