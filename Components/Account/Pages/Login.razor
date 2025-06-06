@@ -16,15 +16,16 @@
 
 <div class="w-100">
     <div class="mx-auto px-3" style="max-width: 1366px;">
-        <div class="card shadow mb-4 mt-4 border-1">
-            <h1>Log in</h1>
-            <div class="row">
-                <div class="col-lg-6">
+        <CatalogSearchBar />
+
+        <div class="mb-4 mt-4 p-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 p-4 card">
                     <section>
                         <StatusMessage Message="@errorMessage" />
                         <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                             <DataAnnotationsValidator />
-                            <h2>Use a local account to log in.</h2>
+                            <h2>Zaloguj się</h2>
                             <hr />
                             <ValidationSummary class="text-danger" role="alert" />
                             <div class="form-floating mb-3">
@@ -34,26 +35,27 @@
                             </div>
                             <div class="form-floating mb-3">
                                 <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                                <label for="Input.Password" class="form-label">Password</label>
+                                <label for="Input.Password" class="form-label">Hasło</label>
                                 <ValidationMessage For="() => Input.Password" class="text-danger" />
                             </div>
                             <div class="checkbox mb-3">
                                 <label class="form-label">
                                     <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
-                                    Remember me
+                                    Zapamiętaj mnie
                                 </label>
                             </div>
                             <div>
                                 <button type="submit" class="w-100 btn btn-lg btn-primary">Zaloguj</button>
                             </div>
                             <div>
-                                <p>
-                                    <a href="Account/ForgotPassword">Forgot your password?</a>
+                                <p class="mt-1">
+                                    <a href="Account/ForgotPassword">Nie pamiętam hasła</a>
                                 </p>
                             </div>
                         </EditForm>
                     </section>
                 </div>
+               
             </div>
         </div>
     </div>

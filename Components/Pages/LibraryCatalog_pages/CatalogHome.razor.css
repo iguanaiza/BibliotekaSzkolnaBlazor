@@ -14,8 +14,6 @@
     }
 
 .card {
-    background-color: var(--secondary-25);
-    border: 1px solid var(--primary);
     position: relative;
 }
 
@@ -83,19 +81,3 @@
     .carousel-btn.right {
         right: 0;
     }
-
-@media (max-width: 1366px) {
-    
-}
-
-@media (max-width: 1000px) {
-    
-}
-
-@media (max-width: 512px) {
-    
-}
-
-@media (max-width: 480px) {
-    
-}
