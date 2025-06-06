@@ -1,7 +1,4 @@
 ﻿@page "/bookslist/view/{BookId:int}"
-@page "/view/{BookId:int}"
-@page "/search/{BookId:int}/view"
-@page "/catalog/view/{BookId:int}"
 
 @inject IBookRepository _bookRepository
 @inject IDictionaryRepository _dictionaryRepository
@@ -14,12 +11,6 @@
 
 <PageTitle>Podgląd</PageTitle>
 
-<CatalogTopBar/>
-
-<div class="w-100">
-    <div class="mx-auto px-3" style="max-width: 1366px;">
-        <!--Menu główne i searchbar-->
-        <CatalogNavbar/>
 
 @if (IsLoading)
 {
@@ -248,8 +239,6 @@ else
         </div>
     </div>
 }
-</div>
-</div>
 
 @code {
     [Parameter]
