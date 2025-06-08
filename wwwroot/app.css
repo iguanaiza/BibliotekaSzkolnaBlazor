@@ -152,3 +152,12 @@ input[type=number] {
 .form-custom {
     max-width: 800px;
 }
+
+.catalog-footer {
+    background-color: var(--primary);
+    bottom: 0;
+}
+
+.catalog-width {
+    max-width: 1366px;
+}

@@ -33,21 +33,22 @@ else
 
         <div class="card-body p-4">
             <div class="row pb-3">
-                <div class="col-12 text-end">
-                    <div class="col-12 text-start">
-                        <a @onclick="GoBack" class="btn btn-primary">
-                            <i class="bi bi-arrow-bar-left"></i> Powrót
-                        </a>
-                    </div>
-                   
-                    <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
-                        <i class="bi bi-pencil-square"></i> Edytuj
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 m-auto">
+                    <a @onclick="GoBack" class="btn btn-primary">
+                        <i class="bi bi-arrow-bar-left"></i> Powrót
                     </a>
 
-                    <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
-                        <i class="bi bi-trash3"></i> Usuń
-                    </button>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a  href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id"
+                            class="btn btn-outline-primary"
+                            title="Edytuj">
+                                <i class="bi bi-pencil-square"></i> Edytuj
+                        </a>
 
+                        <button class="btn btn-outline-danger" @onclick="() => HandleDelete(book.Id)" title="Usuń">
+                            <i class="bi bi-trash3"></i> Usuń
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -164,8 +165,8 @@ else
                 <div class="row pb-3">
                     <div class="col-12 text-end">
                             <a href="/bookslist/view/@book.Id/create?returnUrl=/bookslist/view/@book.Id" class="btn btn-lg btn-primary" style="width:250px;">
-                            <i class="bi bi-plus-square-fill"></i> Dodaj nowy
-                        </a>
+                                <i class="bi bi-journal-plus"></i> Dodaj nowy
+                            </a>
                     </div>
                 </div>
                 </AuthorizeView>
@@ -201,7 +202,7 @@ else
                                                         <a href="/bookslist/view/@book.Id/edit/@copy.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
                                                             <i class="bi bi-pencil-square"></i> Edytuj
                                                         </a>
-                                                        <button class="btn btn-danger btn-sm"  title="Usuń">
+                                                        <button class="btn btn-outline-danger btn-sm"  title="Usuń">
                                                             <i class="bi bi-trash3"></i> Usuń
                                                         </button>
                                                     </div>

@@ -30,7 +30,7 @@
                     <div class="row pb-3">
                         <div class="col-12 text-end">
                             <a href="/bookslist/create?returnUrl=/bookslist" class="btn btn-lg btn-primary" style="width:250px;">
-                                <i class="bi bi-plus-square-fill"></i> Dodaj nową książkę
+                                <i class="bi bi-journal-plus"></i> Dodaj nową książkę
                             </a>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                                                     <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist" class="btn btn-outline-primary btn-sm" title="Edytuj">
                                                         <i class="bi bi-pencil-square"></i> Edytuj
                                                     </a>
-                                                    <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
+                                            <button class="btn btn-outline-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
                                                         <i class="bi bi-trash3"></i> Usuń
                                                     </button>
                                                 </div>

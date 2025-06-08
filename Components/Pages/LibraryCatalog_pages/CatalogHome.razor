@@ -13,13 +13,15 @@
 <CatalogNavbar/>
 
 <div class="w-100">
-    <div class="mx-auto px-3" style="max-width: 1366px;">
+    <div class="mx-auto px-3 catalog-width">
         <!--Menu główne i searchbar-->
         <CatalogSearchBar />
 
         <!--Body-->
+        
         @foreach (var tag in BooksByTag.Keys)
         {
+        <div class="container-fluid">
             <div class="card shadow mb-4 p-4">
                 <div class="mb-4 px-2">
                     <h2 class="fw-bold">@tag</h2>
@@ -41,9 +43,12 @@
                     <button class="carousel-btn right" @onclick="() => Scroll(tag, 1)">&#10095;</button>
                 </div>
             </div>
+            </div>
         }
     </div>
 </div>
+
+<CatalogFooter/>
 
 @code {
     [Parameter]
