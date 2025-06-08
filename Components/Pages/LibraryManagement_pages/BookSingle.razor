@@ -7,7 +7,7 @@
 
 @rendermode InteractiveServer
 
-<Modal OnModalConfirmation="ConfirmDelete_Click"></Modal>
+<BinModal OnModalConfirmation="ConfirmDelete_Click" />
 
 <PageTitle>Podgląd</PageTitle>
 
@@ -260,11 +260,12 @@ else
 
             if (result == null)
             {
-                await _JS.ToastrError("Nie udało się usunąć książki.");
+                await _JS.ToastrWarning("Nie znaleziono książki.", "Nie udało się usunąć książki.");
+
             }
             else
             {
-                await _JS.ToastrSuccess("Książka przeniesiona do kosza.");
+                await _JS.ToastrInfo("Możesz cofnąć akcję z widoku kosza.", "Książka przeniesiona do kosza.");
             }
 
             await LoadData();

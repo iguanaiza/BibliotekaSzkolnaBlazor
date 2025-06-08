@@ -53,11 +53,11 @@ else
                                 {
                                     <div class="form-check form-check-inline">
                                         <input type="checkbox"
-                                               class="form-check-input"
-                                               id="tag-@tag.Id"
-                                               value="@tag.Id"
-                                               checked="@book.BookSpecialTagIds.Contains(tag.Id)"
-                                               @onchange="@(() => ToggleSpecialTag(tag.Id))" />
+                                        class="form-check-input"
+                                        id="tag-@tag.Id"
+                                        value="@tag.Id"
+                                        checked="@book.BookSpecialTagIds.Contains(tag.Id)"
+                                        @onchange="@(() => ToggleSpecialTag(tag.Id))" />
                                         <label class="@GetBadgeClass(tag.Title) me-1" for="tag-@tag.Id">@tag.Title</label>
                                     </div>
                                 }
@@ -69,8 +69,8 @@ else
                             <label for="type-add" class="col-sm-2 col-form-label text-end">Kategoria</label>
                             <div class="col-sm-10">
                                 <InputSelect id="cat-add"
-                                             @bind-Value="book.BookCategoryId"
-                                             class="form-select">
+                                @bind-Value="book.BookCategoryId"
+                                class="form-select">
 
                                     <option value="">-- Wybierz kategorię --</option>
                                     @foreach (var category in Categories)
@@ -86,11 +86,11 @@ else
                             <label for="title-add" class="col-sm-2 col-form-label text-end">Tytuł książki</label>
                             <div class="col-sm-10">
                                 <InputText id="title-add"
-                                           @bind-Value="book.Title"
-                                           class="form-control p2"
-                                           placeholder="Tytuł książki"
-                                           minlength="3"
-                                           maxlength="60"/>
+                                @bind-Value="book.Title"
+                                class="form-control p2"
+                                placeholder="Tytuł książki"
+                                minlength="3"
+                                maxlength="60"/>
                             </div>
                         </div>
 
@@ -99,8 +99,8 @@ else
                             <label for="author-add" class="col-sm-2 col-form-label text-end">Autor</label>
                             <div class="col-sm-10">
                                 <InputSelect id="author-add"
-                                             @bind-Value="book.BookAuthorId"
-                                             class="form-select">
+                                @bind-Value="book.BookAuthorId"
+                                class="form-select">
 
                                     <option value="">-- Wybierz autora --</option>
                                     @foreach (var author in Authors)
@@ -116,8 +116,8 @@ else
                             <label for="publisher-add" class="col-sm-2 col-form-label text-end">Wydawca</label>
                             <div class="col-sm-10">
                                 <InputSelect id="publisher-add"
-                                             @bind-Value="book.BookPublisherId"
-                                             class="form-select">
+                                @bind-Value="book.BookPublisherId"
+                                class="form-select">
 
                                     <option value="">-- Wybierz wydawcę --</option>
                                     @foreach (var publisher in Publishers)
@@ -133,14 +133,14 @@ else
                             <label for="year-add" class="col-sm-2 col-form-label text-end">Rok wydania</label>
                             <div class="col-sm-10">
                                 <InputNumber id="year-add"
-                                             @bind-Value="book.Year"
-                                             class="form-control p2"
-                                             placeholder="2000"
-                                             type="number"
-                                             inputmode="numeric"
-                                             pattern="\d{4}"
-                                             minlength="4"
-                                             maxlength="4" />
+                                @bind-Value="book.Year"
+                                class="form-control p2"
+                                placeholder="2000"
+                                type="number"
+                                inputmode="numeric"
+                                pattern="\d{4}"
+                                minlength="4"
+                                maxlength="4" />
                             </div>
                         </div>
 
@@ -149,11 +149,11 @@ else
                             <label for="isbn-add" class="col-sm-2 col-form-label text-end">Numer ISBN</label>
                             <div class="col-sm-10">
                                 <InputText id="isbn-add"
-                                           @bind-Value="book.Isbn"
-                                           class="form-control p2"
-                                           placeholder="978-83-7278-000-3"
-                                           minlength="17"
-                                           maxlength="17" />
+                                @bind-Value="book.Isbn"
+                                class="form-control p2"
+                                placeholder="978-83-7278-000-3"
+                                minlength="17"
+                                maxlength="17" />
                             </div>
                         </div>
 
@@ -162,11 +162,11 @@ else
                             <label for="pages-add" class="col-sm-2 col-form-label text-end">Liczba stron</label>
                             <div class="col-sm-10">
                                 <InputNumber id="pages-add"
-                                             @bind-Value="book.PageCount"
-                                             class="form-control p2"
-                                             placeholder="123"
-                                             minlength="1"
-                                             maxlength="4" />
+                                @bind-Value="book.PageCount"
+                                class="form-control p2"
+                                placeholder="123"
+                                minlength="1"
+                                maxlength="4" />
                             </div>
                         </div>
 
@@ -176,11 +176,11 @@ else
                             <div class="col-sm-10">
                                 <div class="w-100 col-sm-10">
                                     <InputTextArea id="desc-add"
-                                                   @bind-Value="book.Description"
-                                                   class="form-control p2"
-                                                   placeholder="Opis książki"
-                                                   minlength="3"
-                                                   maxlength="800" />
+                                    @bind-Value="book.Description"
+                                    class="form-control p2"
+                                    placeholder="Opis książki"
+                                    minlength="3"
+                                    maxlength="800" />
                                 </div>
                             </div>
                         </div>
@@ -190,8 +190,8 @@ else
                             <label for="series-add" class="col-sm-2 col-form-label text-end">Seria książek</label>
                             <div class="col-sm-10">
                                 <InputSelect id="series-add"
-                                             @bind-Value="book.BookSeriesId"
-                                             class="form-select p2">
+                                @bind-Value="book.BookSeriesId"
+                                class="form-select p2">
 
                                     <option value="">-- Wybierz serię --</option>
                                     @foreach (var series in Series)
@@ -207,8 +207,8 @@ else
                             <label for="type-add" class="col-sm-2 col-form-label text-end">Typ książki</label>
                             <div class="col-sm-10">
                                 <InputSelect id="type-add"
-                                             @bind-Value="book.BookTypeId"
-                                             class="form-select">
+                                @bind-Value="book.BookTypeId"
+                                class="form-select">
 
                                     <option value="">-- Wybierz typ --</option>
                                     @foreach (var type in Types)
@@ -229,11 +229,11 @@ else
                                         <div class="col-md-4">
                                             <div class="form-check">
                                                 <input type="checkbox"
-                                                       class="form-check-input"
-                                                       id="genre-@genre.Id"
-                                                       value="@genre.Id"
-                                                       checked="@book.BookGenreIds.Contains(genre.Id)"
-                                                       @onchange="@(() => ToggleGenre(genre.Id))" />
+                                                class="form-check-input"
+                                                id="genre-@genre.Id"
+                                                value="@genre.Id"
+                                                checked="@book.BookGenreIds.Contains(genre.Id)"
+                                                @onchange="@(() => ToggleGenre(genre.Id))" />
                                                 <label class="form-check-label" for="genre-@genre.Id">@genre.Title</label>
                                             </div>
                                         </div>
@@ -262,25 +262,25 @@ else
                                 {
                                     <div class="d-flex align-items-start col-sm-10">
                                         <InputFile OnChange="LoadFiles" class="form-control" id="customFile"
-                                                   accept="image/x-png,image/jpeg"></InputFile>
+                                        accept="image/x-png,image/jpeg"></InputFile>
                                     </div>
                                 }
                             </div>
                         </div>
-                        
+
                         <!--Przyciski-->
                         <div class="row mb-3">
                             <div class="d-flex justify-content-between mt-3">
-                                    <a @onclick="GoBack" class="btn btn-lg btn-outline-danger">
-                                        <i class="bi bi-x-circle"></i> Anuluj
-                                    </a>
+                                <a @onclick="GoBack" class="btn btn-lg btn-gray">
+                                    <i class="bi bi-x-circle"></i> Anuluj
+                                </a>
 
-                                    <button class="btn btn-lg btn-primary" type="submit">
-                                        <i class="bi bi-check-circle"></i>
-                                        @(BookId == 0 ? "Utwórz książkę" : "Zapisz zmiany")
-                                    </button>
-                                </div>
-                         </div>
+                                <button class="btn btn-lg btn-primary" type="submit">
+                                    <i class="bi bi-check-circle"></i>
+                                    @(BookId == 0 ? "Utwórz książkę" : "Zapisz zmiany")
+                                </button>
+                            </div>
+                        </div>
                     </EditForm>
                 </div>
             </div>
@@ -344,7 +344,7 @@ else
 
             if (author == null || publisher == null || type == null || series == null || category == null)
             {
-                await _JS.ToastrError("Nie udało się odnaleźć wszystkich danych.");
+                await _JS.ToastrError("Wystąpił błąd ładowania", "Nie udało się odnaleźć wszystkich danych.");
                 _navigationManager.NavigateTo("/bookslist");
                 return;
             }
@@ -376,11 +376,16 @@ else
             var create = await _bookRepository.CreateBookAsync(book);
             if (create != null)
             {
-                await _JS.ToastrSuccess("Książka dodana pomyślnie");
+                await _JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Książka dodana pomyślnie.");
+                await Task.Delay(5000);
+                GoBack();
             }
+
             else
             {
-                await _JS.ToastrError("Nie udało się dodać książki");
+                await _JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Nie udało się dodać książki");
+                await Task.Delay(5000);
+                GoBack();
             }
 
         }
@@ -389,11 +394,11 @@ else
             var update = await _bookRepository.UpdateBookAsync(BookId, book);
             if (update != null)
             {
-                await _JS.ToastrSuccess("Książka zaktualizowana pomyślnie");
+                await _JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Książka zaktualizowana pomyślnie");
             }
             else
             {
-                await _JS.ToastrError("Nie udało się zaktualizować książki");
+                await _JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Nie udało się zaktualizować książki");
             }
         }
 

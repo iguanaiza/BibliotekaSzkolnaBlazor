@@ -18,6 +18,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
         public async Task<IEnumerable<BookGetDto>> GetBooksAsync()
         {
             return await _context.Books
+                .Where(b => !b.IsDeleted)
                 .Include(b => b.BookAuthor)
                 .Include(b => b.BookPublisher)
                 .Include(b => b.BookSeries)
@@ -56,6 +57,51 @@ namespace BibliotekaSzkolnaBlazor.Repository
                         c.BookLoans == null || c.BookLoans.All(l => l.ReturnDate != null))
                 })
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<BookGetDto>> GetDeletedBooksAsync()
+        {
+            return await _context.Books
+                .Where(b => b.IsDeleted)
+                .Include(b => b.BookAuthor)
+                .Include(b => b.BookPublisher)
+                .Include(b => b.BookSeries)
+                .Include(b => b.BookType)
+                .Include(b => b.BookCategory)
+                .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
+                .Include(b => b.BookCopies)
+                    .ThenInclude(c => c.BookLoans)
+                .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
+                .Select(b => new BookGetDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    Year = b.Year,
+                    Description = b.Description,
+                    Isbn = b.Isbn,
+                    PageCount = b.PageCount,
+                    IsDeleted = b.IsDeleted,
+                    IsVisible = b.IsVisible,
+                    ImageUrl = b.ImageUrl,
+                    BookAuthorId = b.BookAuthor.Id,
+                    BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
+                    BookPublisherId = b.BookPublisher.Id,
+                    BookPublisher = b.BookPublisher.Name,
+                    BookSeriesId = b.BookSeries != null ? b.BookSeries.Id : (int?)null,
+                    BookSeries = b.BookSeries != null ? b.BookSeries.Title : null,
+                    BookCategoryId = b.BookCategory.Id,
+                    BookCategory = b.BookCategory.Name,
+                    BookTypeId = b.BookType.Id,
+                    BookType = b.BookType.Title,
+                    BookGenreIds = b.BookBookGenres.Select(bg => bg.BookGenre.Id).ToList(),
+                    BookGenres = b.BookBookGenres.Select(bg => bg.BookGenre.Title).ToList(),
+                    BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
+                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
+                    AvailableCopyCount = b.BookCopies.Count(c =>
+                        c.BookLoans == null || c.BookLoans.All(l => l.ReturnDate != null))
+                })
+                .ToListAsync();
+
         }
 
         public async Task<BookGetDto?> GetBookByIdAsync(int id)
@@ -220,12 +266,43 @@ namespace BibliotekaSzkolnaBlazor.Repository
 
         public async Task<bool> DeleteBookAsync(int id)
         {
-            var book = await _context.Books.FindAsync(id);
-            if (book == null) return false;
+            var book = await _context.Books
+                .Include(b => b.BookCopies)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (book == null)
+                return false;
+
+            //Mozliwośc usunięcia tylko jeśli nie ma żadnych kopii
+            if (book.BookCopies.Any())
+                return false;
 
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<BookGetDto?> RestoreBookAsync(int id)
+        {
+            Console.WriteLine($"[RESTORE] Book {id}");
+
+            var book = await _context.Books.FindAsync(id);
+
+            if (book == null)
+            {
+                Console.WriteLine("[RESTORE] Book not found");
+                return null;
+            }
+
+            book.IsDeleted = false;
+            book.IsVisible = true;
+
+            Console.WriteLine($"[RESTORE] IsDeleted={book.IsDeleted}");
+
+
+            await _context.SaveChangesAsync();
+
+            return await GetBookByIdAsync(id);
         }
     }
 }

@@ -1,0 +1,37 @@
+﻿<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Potwierdzenie usunięcia</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Usunąć rekord?</p>
+                <p><span class="text-danger fw-bold">UWAGA!</span> Tej akcji nie można cofnąć.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-gray" data-bs-dismiss="modal"
+                        @onclick="()=>ConfirmationClicked(false)">
+                    Anuluj
+                </button>
+                <button type="button" class="btn btn-danger"
+                        @onclick="()=>ConfirmationClicked(true)">
+                    Potwierdź
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<bool> OnModalConfirmation { get; set; }
+
+    private async Task ConfirmationClicked(bool value)
+    {
+        if (value)
+        {
+            await OnModalConfirmation.InvokeAsync(true);
+        }
+    }
+}

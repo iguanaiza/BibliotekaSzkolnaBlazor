@@ -29,9 +29,6 @@ namespace BibliotekaSzkolnaBlazor.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //filtr - pokazuje tylko ksiazki nieusuniete (tzn nieoznaczone jako usuniete)
-            //modelBuilder.Entity<Book>().HasQueryFilter(b => !b.IsDeleted);
-
             //polaczenie ksiazka-gatunek (wiele-do-wielu)
             modelBuilder.Entity<BookBookGenre>()
                 .HasKey(bb => new { bb.BookId, bb.BookGenreId });

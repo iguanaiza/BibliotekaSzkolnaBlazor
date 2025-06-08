@@ -116,7 +116,7 @@ else
                         <!--Przyciski-->
                         <div class="row mb-3">
                             <div class="d-flex justify-content-between mt-3">
-                                <a @onclick="GoBack" class="btn btn-lg btn-outline-danger">
+                                <a @onclick="GoBack" class="btn btn-lg btn-gray">
                                     <i class="bi bi-x-circle"></i> Anuluj
                                 </a>
 
@@ -203,7 +203,7 @@ else
 
             if (_pendingError)
             {
-                await _JS.ToastrError(_pendingErrorMessage ?? "Wystąpił błąd.");
+                await _JS.ToastrError("Nie udało się załadować", _pendingErrorMessage ?? "Wystąpił błąd.");
             }
         }
     }
@@ -215,11 +215,15 @@ else
             var created = await _copyRepository.CreateCopyAsync(copy);
             if (created is not null)
             {
-                await _JS.ToastrSuccess("Dodano egzemplarz.");
+                await _JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Egzemplarz dodany pomyślnie.");
+                await Task.Delay(5000);
+                GoBack();
             }
             else
             {
-                await _JS.ToastrError("Wystąpił błąd przy dodawaniu egzemplarza.");
+                await _JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Nie udało się dodać egzemplarza.");
+                await Task.Delay(5000);
+                GoBack();
             }
         }
         else
@@ -227,11 +231,11 @@ else
             var updated = await _copyRepository.UpdateCopyAsync(CopyId.Value, copy);
             if (updated is not null)
             {
-                await _JS.ToastrSuccess("Zaktualizowano egzemplarz.");
+                await _JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Zaktualizowano egzemplarz.");
             }
             else
             {
-                await _JS.ToastrError("Wystąpił błąd przy aktualizacji egzemplarza.");
+                await _JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Wystąpił błąd przy aktualizacji egzemplarza.");
             }
         }
     }

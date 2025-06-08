@@ -5,7 +5,7 @@
 
 @rendermode InteractiveServer
 
-<Modal OnModalConfirmation="ConfirmDelete_Click"></Modal>
+<BinModal OnModalConfirmation="ConfirmDelete_Click"/>
 
 @if (IsLoading)
 {
@@ -118,13 +118,13 @@ else
         {
             var result = await _userRepository.DisableUserAsync(DisableUserID);
             
-            if (result == null)
+            if (result == false)
             {
-                await _JS.ToastrError("Nie udało się wyłączyć konta użytkownika.");
+                await _JS.ToastrError("Nie znaleziono użytkownika.","Nie udało się wyłączyć konta użytkownika.");
             }
             else
             {
-                await _JS.ToastrSuccess("Konto użytkownika zostało wyłączone.");
+                await _JS.ToastrSuccess("Konto zdezaktywowano pomyślnie.","Konto wyłączone.");
             }
 
             await LoadUsers();

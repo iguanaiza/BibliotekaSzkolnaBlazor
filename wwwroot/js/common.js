@@ -1,10 +1,19 @@
-﻿//modal potwierdzenia akcji
-function ShowConfirmationModal() {
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('bsConfirmationModal')).show();
+﻿//modal potwierdzenia usunięcia
+function ShowDeleteModal() {
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('deleteModal')).show();
 }
 
-function HideConfirmationModal() {
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('bsConfirmationModal')).hide();
+function HideDeleteModal() {
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('deleteModal')).hide();
+}
+
+//modal potwierdzenia przywrocenia
+function ShowRestoreModal() {
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('restoreModal')).show();
+}
+
+function HideRestoreModal() {
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('restoreModal')).hide();
 }
 
 //karuzela ksiazek

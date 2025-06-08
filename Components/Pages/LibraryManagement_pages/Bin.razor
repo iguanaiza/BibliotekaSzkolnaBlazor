@@ -1,0 +1,269 @@
+﻿@page "/bin"
+
+@inject IBookRepository _bookRepository
+@inject IJSRuntime _JS
+
+@rendermode InteractiveServer
+
+<Modal OnModalConfirmation="ConfirmDelete_Click"></Modal>
+
+@if (IsLoading)
+{
+    <div class="position-absolute w-75  h-75 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="/images/loading-book.gif" alt="loading" />
+        <p>Ładowanie...</p>
+    </div>
+}
+
+else
+{
+    <div class="card shadow border-0 m-4 ">
+        <div class="card-header bg-theme bg-gradient ml-0 py-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">Kosz</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row pb-3">
+            </div>
+
+            @if (FilteredBooks.Any())
+            {
+                int index = 1;
+
+                 <div class="mb-2">
+                    <label>Wierszy na stronę:</label>
+                    <select class="form-select form-select-sm w-auto d-inline-block ms-2" @onchange='e => SetPageSize(int.Parse(e.Value?.ToString() ?? "10"))'>
+                        <option value="5" selected="@((PageSize == 5).ToString())">5</option>
+                        <option value="10" selected="@((PageSize == 10).ToString())">10</option>
+                        <option value="50" selected="@((PageSize == 50).ToString())">50</option>
+                    </select>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover table-sm text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th></th>
+                                <th @onclick='() => SortBy(" Title")' style="cursor:pointer">Tytuł</th>
+                                <th @onclick='() => SortBy(" Author")' style="cursor:pointer">Autor</th>
+                                <th>Ilość</th>
+                                <th @onclick='() => SortBy(" Isbn")' style="cursor:pointer">ISBN</th>
+                                <th @onclick='() => SortBy(" Publisher")' style="cursor:pointer">Wydawca</th>
+                                <th @onclick='() => SortBy(" Year")' style="cursor:pointer">Rok wydania</th>
+                                <th @onclick='() => SortBy(" Category")' style="cursor:pointer">Kategoria</th>
+                                <th>Akcje</th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th><input class="form-control form-control-sm" @bind="TitleFilter" @oninput="e => ApplyFilteringAndSorting()" /></th>
+                                <th><input class="form-control form-control-sm" @bind="AuthorFilter" @oninput="e => ApplyFilteringAndSorting()" /></th>
+                                <th></th>
+                                <th><input class="form-control form-control-sm" @bind="IsbnFilter" @oninput="e => ApplyFilteringAndSorting()" /></th>
+                                <th><input class="form-control form-control-sm" @bind="PublisherFilter" @oninput="e => ApplyFilteringAndSorting()" /></th>
+                                <th><input class="form-control form-control-sm" @bind="YearFilter" @oninput="e => ApplyFilteringAndSorting()" /></th>
+                                <th><input class="form-control form-control-sm" @bind="CategoryFilter" @oninput="e => ApplyFilteringAndSorting()" /></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var book in PagedBooks)
+                            {
+                                <tr>
+                                    <td>@((FilteredBooks.IndexOf(book) + 1))</td>
+                                    <td>
+                                        <a href="/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-info-square"></i>
+                                        </a>
+                                    </td>
+                                    <td>@book.Title</td>
+                                    <td>@book.BookAuthor</td>
+                                    <td>@book.CopyCount</td>
+                                    <td>@book.Isbn</td>
+                                    <td>@book.BookPublisher</td>
+                                    <td>@book.Year</td>
+                                    <td>@book.BookCategory</td>
+                                    <td class="text-end">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist" class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                                <i class="bi bi-pencil-square"></i> Edytuj
+                                            </a>
+                                            <button class="btn btn-outline-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
+                                                <i class="bi bi-trash3"></i> Usuń
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <nav>
+                    <ul class="pagination">
+                        @for (int i = 1; i <= TotalPages; i++)
+                        {
+                            <li class="page-item @(CurrentPage == i ? "active" : "")">
+                                <button class="page-link" @onclick="() => GoToPage(i)">@i</button>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+                index++;
+            }
+            else
+            {
+                <p>Brak książek do wyświetlenia.</p>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private bool IsLoading { get; set; } = true;
+    private IEnumerable<BookGetDto> Books { get; set; } = new List<BookGetDto>();
+    private int DeleteBookID { get; set; } = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBooks();
+        ApplyFilteringAndSorting();
+        IsLoading = false;
+    }
+
+    private async Task LoadBooks()
+    {
+        Books = await _bookRepository.GetBooksAsync();
+    }
+
+    #region filtry i paginacja
+    private List<BookGetDto> FilteredBooks = new();
+    private string TitleFilter = "";
+    private string AuthorFilter = "";
+    private string IsbnFilter = "";
+    private string PublisherFilter = "";
+    private string YearFilter = "";
+    private string CategoryFilter = "";
+
+    private string CurrentSortColumn = "";
+    private bool SortAscending = true;
+
+    private int CurrentPage = 1;
+    private int PageSize = 10;
+    private int TotalPages => (int)Math.Ceiling(FilteredBooks.Count / (double)PageSize);
+
+    private IEnumerable<BookGetDto> PagedBooks => FilteredBooks
+       .Skip((CurrentPage - 1) * PageSize)
+       .Take(PageSize);
+
+    private void ApplyFilteringAndSorting(bool resetPage = true)
+    {
+        var filtered = Books
+            .Where(b =>
+                (string.IsNullOrWhiteSpace(TitleFilter) || b.Title?.Contains(TitleFilter, StringComparison.OrdinalIgnoreCase) == true) &&
+                (string.IsNullOrWhiteSpace(AuthorFilter) || b.BookAuthor?.Contains(AuthorFilter, StringComparison.OrdinalIgnoreCase) == true) &&
+                (string.IsNullOrWhiteSpace(IsbnFilter) || b.Isbn?.Contains(IsbnFilter, StringComparison.OrdinalIgnoreCase) == true) &&
+                (string.IsNullOrWhiteSpace(PublisherFilter) || b.BookPublisher?.Contains(PublisherFilter, StringComparison.OrdinalIgnoreCase) == true) &&
+                (string.IsNullOrWhiteSpace(YearFilter) || b.Year.ToString().Contains(YearFilter)) &&
+                (string.IsNullOrWhiteSpace(CategoryFilter) || b.BookCategory?.Contains(CategoryFilter, StringComparison.OrdinalIgnoreCase) == true)
+        );
+
+        if (!string.IsNullOrEmpty(CurrentSortColumn))
+        {
+            filtered = CurrentSortColumn switch
+            {
+                "Title" => SortAscending ? filtered.OrderBy(b => b.Title) : filtered.OrderByDescending(b => b.Title),
+                "Author" => SortAscending ? filtered.OrderBy(b => b.BookAuthor) : filtered.OrderByDescending(b => b.BookAuthor),
+                "Isbn" => SortAscending ? filtered.OrderBy(b => b.Isbn) : filtered.OrderByDescending(b => b.Isbn),
+                "Publisher" => SortAscending ? filtered.OrderBy(b => b.BookPublisher) : filtered.OrderByDescending(b => b.BookPublisher),
+                "Year" => SortAscending ? filtered.OrderBy(b => b.Year) : filtered.OrderByDescending(b => b.Year),
+                "Category" => SortAscending ? filtered.OrderBy(b => b.BookCategory) : filtered.OrderByDescending(b => b.BookCategory),
+                _ => filtered
+            };
+        }
+
+        FilteredBooks = filtered.ToList();
+
+        if (resetPage)
+            CurrentPage = 1;
+    }
+
+    private void SortBy(string columnName)
+    {
+        if (CurrentSortColumn == columnName)
+            SortAscending = !SortAscending;
+        else
+        {
+            CurrentSortColumn = columnName;
+            SortAscending = true;
+        }
+
+        ApplyFilteringAndSorting();
+    }
+
+    private void SetPageSize(int size)
+    {
+        PageSize = size;
+        CurrentPage = 1;
+    }
+
+    private void GoToPage(int page)
+    {
+        if (page < 1) page = 1;
+        if (page > TotalPages) page = TotalPages;
+
+        CurrentPage = page;
+    }
+
+    private void ResetFilters()
+    {
+        TitleFilter = "";
+        AuthorFilter = "";
+        IsbnFilter = "";
+        PublisherFilter = "";
+        YearFilter = "";
+        CategoryFilter = "";
+        ApplyFilteringAndSorting();
+    }
+
+    #endregion
+
+    #region Usunięcie
+    private void HandleDelete(int id)
+    {
+        DeleteBookID = id;
+        _JS.InvokeVoidAsync("ShowConfirmationModal");
+    }
+
+    private async Task ConfirmDelete_Click(bool isConfirmed)
+    {
+        IsLoading = true;
+        await _JS.InvokeVoidAsync("HideConfirmationModal");
+
+        if (isConfirmed && DeleteBookID != 0)
+        {
+            var result = await _bookRepository.DeleteBookAsync(DeleteBookID);
+
+            if (isConfirmed && DeleteBookID != 0)
+            {
+                await _JS.ToastrError("Nie znaleziono rekordu","Nie udało się usunąć książki.");
+            }
+            else
+            {
+                await _JS.ToastrSuccess("Książka została usunięta pomyślnie","Książka została usnięta.");
+            }
+
+            await LoadBooks();
+        }
+
+        DeleteBookID = 0;
+        IsLoading = false;
+    }
+    #endregion
+}

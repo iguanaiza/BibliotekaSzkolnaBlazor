@@ -5,7 +5,7 @@
 
 @rendermode InteractiveServer
 
-<Modal OnModalConfirmation="ConfirmDelete_Click"></Modal>
+<BinModal OnModalConfirmation="ConfirmDelete_Click" />
 
         @if (IsLoading)
         {
@@ -127,13 +127,13 @@
     private void HandleDelete(int id)
     {
         DeleteBookID = id;
-        _JS.InvokeVoidAsync("ShowConfirmationModal");
+        _JS.InvokeVoidAsync("ShowDeleteModal");
     }
 
     private async Task ConfirmDelete_Click(bool isConfirmed)
     {
         IsLoading = true;
-        await _JS.InvokeVoidAsync("HideConfirmationModal");
+        await _JS.InvokeVoidAsync("HideDeleteModal");
 
         if (isConfirmed && DeleteBookID !=0)
         {
@@ -141,15 +141,17 @@
             
             if (result == null)
             {
-                await _JS.ToastrError("Nie udało się usunąć książki.");
+                await _JS.ToastrWarning("Nie znaleziono książki", "Nie udało się usunąć książki.");
             }
+
             else
             {
-                await _JS.ToastrSuccess("Książka przeniesiona do kosza.");
+                await _JS.ToastrInfo("Możesz cofnąć akcję z widoku kosza.", "Książka przeniesiona do kosza.");
             }
 
             await LoadBooks();
         }
+
         DeleteBookID = 0;
         IsLoading = false;
     }

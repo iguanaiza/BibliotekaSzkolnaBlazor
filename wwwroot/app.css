@@ -8,6 +8,8 @@
     --secondary-75: rgba(154, 203, 208, 0.75);
     --secondary-50: rgba(154, 203, 208, 0.50);
     --secondary-25: rgba(154, 203, 208, 0.25);
+    --gray: #D3D3D3;
+    --gray-75: rgba(211,211,211, 0.75);
 }
 
 html, body {
@@ -49,7 +51,7 @@ a, .btn-link {
 
     .btn-outline-primary:hover {
         color: #fff;
-        background-color: var(--primary);
+        background-color: var(--primary-75);
         border-color: var(--primary);
     }
 
@@ -72,9 +74,33 @@ a, .btn-link {
 
     .btn-outline-secondary:hover {
         color: #fff;
-        background-color: var(--secondary);
+        background-color: var(--secondary-75);
         border-color: var(--secondary);
     }
+
+.btn-gray {
+    color: #808080;
+    background-color: var(--gray-75);
+    border-color: var(--gray);
+}
+
+    .btn-gray:hover {
+        color: #808080;
+        background-color: var(--gray);
+        border-color: var(--gray);
+    }
+
+.btn-outline-gray {
+    color: var(--gray);
+    border-color: var(--gray);
+}
+
+    .btn-outline-gray:hover {
+        color: #808080;
+        background-color: var(--gray-75);
+        border-color: var(--gray);
+    }
+    
     
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
