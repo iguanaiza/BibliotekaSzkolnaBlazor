@@ -1,0 +1,81 @@
+﻿@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+<div class="catalog-navbar navbar navbar-expand-md">
+    <div class="container-fluid">
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse text-nowrap justify-content-end" id="navbarCollapse">
+            <div class="d-flex flex-column align-items-end">
+                <ul class="navbar-nav mb-2 mb-md-0 d-flex flex-row">
+                    <AuthorizeView>
+                        <Authorized>
+                            <li class="nav-item">
+                                <a class="nav-link p-2 theme-font-color" href="Account/Manage">
+                                    Witaj, @context?.User?.Identity?.Name
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <form action="Account/Logout" method="post">
+                                    <AntiforgeryToken />
+                                    <input type="hidden" name="ReturnUrl" value="" />
+                                    <button type="submit" class="nav-link p-2 theme-font-color">
+                                        <span class="bi bi-arrow-bar-left-nav-menu"></span> Wyloguj
+                                    </button>
+                                </form>
+                            </li>
+                        </Authorized>
+                        <NotAuthorized>
+                            <li class="nav-item">
+                                <a class="nav-link p-2 theme-font-color" href="Account/Login">
+                                    <span class="bi bi-person-badge-nav-menu"></span> Zaloguj
+                                </a>
+                            </li>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </ul>
+
+                <ul class="navbar-nav d-flex flex-row">
+                    <!-- Zmień rozmiar czcionki -->
+                    <li class="nav-item mx-2">
+                        <div class="nav-link" @onclick="CycleFontSize">
+                            <i class="bi bi-type theme-font-color" title="Zmień rozmiar czcionki"></i>
+                        </div>
+                    </li>
+
+                    <!-- Zmień motyw kolorystyczny -->
+                    <li class="nav-item mx-2">
+                        <div class="nav-link" @onclick="CycleTheme">
+                            <i class="bi bi-palette-fill theme-font-color" title="Zmień motyw"></i>
+                        </div>
+                    </li>
+
+                    <!-- Włącz/wyłącz kontrast -->
+                    <li class="nav-item mx-2">
+                        <div class="nav-link" @onclick="ToggleContrast">
+                            <i class="bi bi-highlights theme-font-color" title="Wysoki kontrast"></i>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+     protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
+
+    private async Task CycleFontSize() => await JS.InvokeVoidAsync("cycleFontSize");
+    private async Task CycleTheme() => await JS.InvokeVoidAsync("cycleTheme");
+    private async Task ToggleContrast() => await JS.InvokeVoidAsync("toggleContrast");
+}
