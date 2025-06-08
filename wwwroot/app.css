@@ -1,4 +1,25 @@
 :root {
+    --gray: #D3D3D3;
+    --gray-75: rgba(211,211,211, 0.75);
+}
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.font-small {
+    --font-size: 14px !important;
+}
+
+.font-normal {
+    --font-size: 16px !important;
+}
+
+.font-large {
+    --font-size: 20px !important;
+}
+
+.theme-green {
     /* Domyslny motyw - zielony */
     --primary: #055055;
     --primary-75: rgba(5, 80, 85, 0.75);
@@ -8,15 +29,9 @@
     --secondary-75: rgba(154, 203, 208, 0.75);
     --secondary-50: rgba(154, 203, 208, 0.50);
     --secondary-25: rgba(154, 203, 208, 0.25);
-    --gray: #D3D3D3;
-    --gray-75: rgba(211,211,211, 0.75);
 }
 
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-body.theme-blue {
+.theme-blue {
     /* Motyw niebieski */
     --primary: #13457E;
     --primary-75: rgba(19, 69, 126, 0.75);
@@ -186,4 +201,21 @@ input[type=number] {
 
 .catalog-width {
     max-width: 1366px;
+}
+
+.details {
+    width: 100%;
+    margin-bottom: 1rem;
+    vertical-align: top;
+    background: transparent;
+}
+
+    .details > :not(caption) > * > * {
+        padding: 0.5rem 0.5rem;
+    }
+
+.details-image {
+    max-width: 32.75rem;
+    height: auto;
+    padding: 0.5rem 0.5rem;
 }

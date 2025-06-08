@@ -2,9 +2,9 @@
 @page "/bookslist/view/{BookId:int}/edit/{CopyId:int}"
 
 @inject ICopyRepository _copyRepository
-@inject IBookRepository _bookRepository
-@inject IJSRuntime _JS
-@inject NavigationManager _navigationManager
+@inject IBookRepository BookRepository
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
 
@@ -34,9 +34,9 @@ else
             <div class="row pb-3">
                 <div class="col-12 text-end">
                     <div class="col-12 text-start">
-                        <a @onclick="GoBack" class="btn btn-primary">
+                        <button @onclick="GoBack" class="btn btn-primary">
                             <i class="bi bi-arrow-bar-left"></i> Powrót
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -114,11 +114,11 @@ else
                         </div>
                        
                         <!--Przyciski-->
-                        <div class="row mb-3">
+                        <div class="row">
                             <div class="d-flex justify-content-between mt-3">
-                                <a @onclick="GoBack" class="btn btn-lg btn-gray">
+                                <button @onclick="GoBack" class="btn btn-lg btn-gray">
                                     <i class="bi bi-x-circle"></i> Anuluj
-                                </a>
+                                </button>
 
                                 <button class="btn btn-lg btn-primary" type="submit">
                                     <i class="bi bi-check-circle"></i>
@@ -157,12 +157,12 @@ else
     {
         IsLoading = true;
 
-        book = await _bookRepository.GetBookByIdAsync(BookId);
+        book = await BookRepository.GetBookByIdAsync(BookId);
         if (book is null)
         {
             _pendingError = true;
             _pendingErrorMessage = "Nie znaleziono książki.";
-            _navigationManager.NavigateTo("/bookslist");
+            NavigationManager.NavigateTo("/bookslist");
             return;
         }
 
@@ -173,7 +173,7 @@ else
             {
                 _pendingError = true;
                 _pendingErrorMessage = "Nie znaleziono egzemplarza.";
-                _navigationManager.NavigateTo($"/bookslist/view/{BookId}");
+                NavigationManager.NavigateTo($"/bookslist/view/{BookId}");
                 return;
             }
 
@@ -203,7 +203,7 @@ else
 
             if (_pendingError)
             {
-                await _JS.ToastrError("Nie udało się załadować", _pendingErrorMessage ?? "Wystąpił błąd.");
+                await JS.ToastrError("Nie udało się załadować", _pendingErrorMessage ?? "Wystąpił błąd.");
             }
         }
     }
@@ -215,13 +215,13 @@ else
             var created = await _copyRepository.CreateCopyAsync(copy);
             if (created is not null)
             {
-                await _JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Egzemplarz dodany pomyślnie.");
+                await JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Egzemplarz dodany pomyślnie.");
                 await Task.Delay(5000);
                 GoBack();
             }
             else
             {
-                await _JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Nie udało się dodać egzemplarza.");
+                await JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Nie udało się dodać egzemplarza.");
                 await Task.Delay(5000);
                 GoBack();
             }
@@ -231,17 +231,17 @@ else
             var updated = await _copyRepository.UpdateCopyAsync(CopyId.Value, copy);
             if (updated is not null)
             {
-                await _JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Zaktualizowano egzemplarz.");
+                await JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Zaktualizowano egzemplarz.");
             }
             else
             {
-                await _JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Wystąpił błąd przy aktualizacji egzemplarza.");
+                await JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Wystąpił błąd przy aktualizacji egzemplarza.");
             }
         }
     }
 
     private void GoBack()
     {
-        _navigationManager.NavigateTo(ReturnUrl ?? $"/bookslist/view/{BookId}");
+        NavigationManager.NavigateTo(ReturnUrl ?? $"/bookslist/view/{BookId}");
     }
 }

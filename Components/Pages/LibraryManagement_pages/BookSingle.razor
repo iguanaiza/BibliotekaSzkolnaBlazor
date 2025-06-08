@@ -1,9 +1,9 @@
 ﻿@page "/bookslist/view/{BookId:int}"
 
-@inject IBookRepository _bookRepository
-@inject IDictionaryRepository _dictionaryRepository
-@inject IJSRuntime _JS
-@inject NavigationManager _navigationManager
+@inject IBookRepository BookRepository
+@inject IDictionaryRepository DictionaryRepository
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
 
@@ -34,9 +34,9 @@ else
         <div class="card-body p-4">
             <div class="row pb-3">
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 m-auto">
-                    <a @onclick="GoBack" class="btn btn-primary">
+                    <button @onclick="GoBack" class="btn btn-primary">
                         <i class="bi bi-arrow-bar-left"></i> Powrót
-                    </a>
+                    </button>
 
                     <div class="d-flex flex-wrap gap-2">
                         <a  href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id"
@@ -64,13 +64,13 @@ else
                         }
                         else
                         {
-                            <img src=@book.ImageUrl alt="Okładka książki" style="max-height: 524px; width: 100%; object-fit: contain;">
+                            <img src=@book.ImageUrl alt="Okładka książki" class="details-image">
                         }
                     </div>
                     <!--Opis-->
                     <div class="col-md-8">
                         <div class="card-body">
-                            <table class="table table-striped align-middle">
+                            <table class="details align-middle">
                                 <tbody>
                                     <tr>
                                         <td colspan="2">
@@ -140,7 +140,7 @@ else
                                     </tr>
 
                                     <tr>
-                                        <th class="text-end"> Widoczność w katalogu </th>
+                                        <th class="text-end"> Widoczność w&nbsp;katalogu </th>
                                         <td> @(book.IsVisible ? "Tak" : "Nie")</td>
                                     </tr>
                                 </tbody>
@@ -164,8 +164,8 @@ else
                  <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
                 <div class="row pb-3">
                     <div class="col-12 text-end">
-                            <a href="/bookslist/view/@book.Id/create?returnUrl=/bookslist/view/@book.Id" class="btn btn-lg btn-primary" style="width:250px;">
-                                <i class="bi bi-journal-plus"></i> Dodaj nowy
+                            <a href="/bookslist/view/@book.Id/create?returnUrl=/bookslist/view/@book.Id" class="btn btn-lg btn-primary">
+                                <i class="bi bi-journal-plus"></i> Dodaj nowy egzemplarz
                             </a>
                     </div>
                 </div>
@@ -240,32 +240,32 @@ else
 
     private async Task LoadData()
     {
-        book = await _bookRepository.GetBookByIdAsync(BookId);
+        book = await BookRepository.GetBookByIdAsync(BookId);
     }
 
     private void HandleDelete(int id)
     {
         DeleteBookID = id;
-        _JS.InvokeVoidAsync("ShowConfirmationModal");
+        JS.InvokeVoidAsync("ShowConfirmationModal");
     }
 
     private async Task ConfirmDelete_Click(bool isConfirmed)
     {
         IsLoading = true;
-        await _JS.InvokeVoidAsync("HideConfirmationModal");
+        await JS.InvokeVoidAsync("HideConfirmationModal");
 
         if (isConfirmed && DeleteBookID != 0)
         {
-            var result = await _bookRepository.BinBookAsync(DeleteBookID);
+            var result = await BookRepository.BinBookAsync(DeleteBookID);
 
             if (result == null)
             {
-                await _JS.ToastrWarning("Nie znaleziono książki.", "Nie udało się usunąć książki.");
+                await JS.ToastrWarning("Nie znaleziono książki.", "Nie udało się usunąć książki.");
 
             }
             else
             {
-                await _JS.ToastrInfo("Możesz cofnąć akcję z widoku kosza.", "Książka przeniesiona do kosza.");
+                await JS.ToastrInfo("Możesz cofnąć akcję z widoku kosza.", "Książka przeniesiona do kosza.");
             }
 
             await LoadData();
@@ -288,8 +288,8 @@ else
     private void GoBack()
     {
         if (!string.IsNullOrEmpty(ReturnUrl))
-            _navigationManager.NavigateTo(ReturnUrl);
+            NavigationManager.NavigateTo(ReturnUrl);
         else
-            _navigationManager.NavigateTo("/bookslist");
+            NavigationManager.NavigateTo("/bookslist");
     }
 }

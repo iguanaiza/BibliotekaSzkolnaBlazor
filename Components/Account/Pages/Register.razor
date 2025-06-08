@@ -1,4 +1,4 @@
-﻿@page "/Account/Register"
+﻿@page "/userslist/create"
 
 @using System.ComponentModel.DataAnnotations
 @using System.Text
@@ -16,46 +16,122 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Register</PageTitle>
+<PageTitle>Dodaj użytkownika</PageTitle>
 
-<h1>Register</h1>
+<div class="card shadow border-0 m-4">
+    <div class="card-header bg-theme bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <h2 class="text-white py-2">
+                            Dodaj konto użytkownika
+                        </h2>
+                    </Authorized>
+                    <NotAuthorized>
+                        <h2 class="text-white py-2">
+                            Dodaj konto czytelnika
+                        </h2>
+                    </NotAuthorized>
+                </AuthorizeView>
 
-<div class="row">
-    <div class="col-md-4">
-        <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <DataAnnotationsValidator />
-            <h2>Dodaj nowego czytelnika</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
             </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-            </div>
+        </div>
+    </div>
 
-            <div class="form-floating mb-3">
-                <InputSelect @bind-Value="Input.Role" class="form-select">
-                    <option value="@Roles.USER" selected>@Roles.USER</option>
-                    <option value="@Roles.LIBRARIAN">@Roles.LIBRARIAN</option>
-                    <option value="@Roles.ADMIN">@Roles.ADMIN</option>
-                </InputSelect>
-                <label for="role">Select Role</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-12 text-end">
+                <div class="col-12 text-start">
+                    <a href="/userslist" class="btn btn-primary">
+                        <i class="bi bi-arrow-bar-left"></i> Powrót
+                    </a>
+                </div>
             </div>
+        </div>
 
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
+        <div class="form-custom card shadow mb-4 p-4 mx-auto">
+            <div class="mb-4 px-2">
+                <StatusMessage Message="@Message" />
+                <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+                    <DataAnnotationsValidator />
+
+                    <ValidationSummary class="text-danger" role="alert" />
+                    <div class="row mb-3">
+                        <label for="firstname" class="col-sm-2 col-form-label text-end">Imię</label>
+                        <div class="col-sm-10">
+                            <InputText @bind-Value="Input.FirstName" class="form-control p2" aria-required="true" placeholder="Imię" />
+                            <ValidationMessage For="() => Input.FirstName" class="text-danger" />
+                        </div>
+                    </div>
+
+                    <ValidationSummary class="text-danger" role="alert" />
+                    <div class="row mb-3">
+                        <label for="lastname" class="col-sm-2 col-form-label text-end">Nazwisko</label>
+                        <div class="col-sm-10">
+                            <InputText @bind-Value="Input.LastName" class="form-control p2" aria-required="true" placeholder="Nazwisko" />
+                            <ValidationMessage For="() => Input.LastName" class="text-danger" />
+                        </div>
+                    </div>
+
+                    <ValidationSummary class="text-danger" role="alert" />
+                    <div class="row mb-3">
+                        <label for="email" class="col-sm-2 col-form-label text-end">E-mail</label>
+                        <div class="col-sm-10">
+                            <InputText @bind-Value="Input.Email" class="form-control p2" autocomplete="username" aria-required="true" placeholder="imie@test.pl" />
+                            <ValidationMessage For="() => Input.Email" class="text-danger" />
+                        </div>
+                    </div>
+
+                    <ValidationSummary class="text-danger" role="alert" />
+                    <div class="row mb-3">
+                        <label for="password" class="col-sm-2 col-form-label text-end">Hasło</label>
+                        <div class="col-sm-10">
+                            <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="hasło" />
+                            <ValidationMessage For="() => Input.Password" class="text-danger" />
+                        </div>
+                    </div>
+
+                    <ValidationSummary class="text-danger" role="alert" />
+                    <div class="row mb-3">
+                        <label for="confirm-password" class="col-sm-2 col-form-label text-end">Potwierdź hasło</label>
+                        <div class="col-sm-10">
+                            <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="hasło" />
+                            <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+                        </div>
+                    </div>
+
+                    <AuthorizeView Roles="Admin" Context="authContext">
+                        <Authorized>
+                        <div class="row mb-3">
+                            <label for="role" class="col-sm-2 col-form-label text-end">Wybierz rolę</label>
+                            <div class="col-sm-10">
+                                <InputSelect @bind-Value="Input.Role" class="form-select">
+                                    <option value="@Roles.USER" selected>@Roles.USER</option>
+                                    <option value="@Roles.LIBRARIAN">@Roles.LIBRARIAN</option>
+                                    <option value="@Roles.ADMIN">@Roles.ADMIN</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        </Authorized>
+                        <NotAuthorized></NotAuthorized>
+                    </AuthorizeView>
+
+                    <!--Przyciski-->
+                    <div class="row">
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="/userslist" class="btn btn-lg btn-gray">
+                                <i class="bi bi-x-circle"></i> Anuluj
+                            </a>
+
+                            <button class="btn btn-lg btn-primary" type="submit">
+                                <i class="bi bi-check-circle"></i> Utwórz konto
+                            </button>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -66,7 +142,7 @@
     private InputModel Input { get; set; } = new();
 
     [SupplyParameterFromQuery]
-    private string? ReturnUrl { get; set; }
+    public string? ReturnUrl { get; set; }
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
@@ -148,19 +224,29 @@
     private sealed class InputModel
     {
         [Required]
+        [StringLength(100, ErrorMessage = "Imię musi mieć co najmniej 2 znaki.", MinimumLength = 2)]
+        public string FirstName { get; set; } = "";
+
+        [Required]
+        [StringLength(100, ErrorMessage = "Nazwisko musi mieć co najmniej 2 znaki.", MinimumLength = 2)]
+        public string LastName { get; set; } = "";
+
+        public string Class { get; set; } = "";
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; } = "";
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "Hasło musi mieć co najmniej 6 znaków.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Hasło")]
         public string Password { get; set; } = "";
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Potwierdź hasło")]
+        [Compare("Hasło", ErrorMessage = "Hasło i potwierdzenie nie pasują do siebie.")]
         public string ConfirmPassword { get; set; } = "";
 
         public string? Role { get; set; }

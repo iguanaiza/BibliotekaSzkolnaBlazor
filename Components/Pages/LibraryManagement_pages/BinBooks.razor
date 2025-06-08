@@ -1,7 +1,7 @@
 ﻿@page "/booksbin"
 
-@inject IBookRepository _bookRepository
-@inject IJSRuntime _JS
+@inject IBookRepository BookRepository
+@inject IJSRuntime JS
 
 @rendermode InteractiveServer
 
@@ -105,32 +105,32 @@ else
 
     private async Task LoadBooks()
     {
-        Books = await _bookRepository.GetDeletedBooksAsync();
+        Books = await BookRepository.GetDeletedBooksAsync();
     }
 
     #region usuwanie calkowite
     private void HandleDelete(int id)
     {
         DeleteBookID = id;
-        _JS.InvokeVoidAsync("ShowDeleteModal");
+        JS.InvokeVoidAsync("ShowDeleteModal");
     }
 
     private async Task ConfirmDelete_Click(bool isConfirmed)
     {
         IsLoading = true;
-        await _JS.InvokeVoidAsync("HideDeleteModal");
+        await JS.InvokeVoidAsync("HideDeleteModal");
 
         if (isConfirmed && DeleteBookID !=0)
         {
-            var result = await _bookRepository.DeleteBookAsync(DeleteBookID);
+            var result = await BookRepository.DeleteBookAsync(DeleteBookID);
 
             if (result == false)
             {
-                await _JS.ToastrWarning("Nie znaleziono rekordu lub książka posiada jakieś egzemplarze.", "Nie udało się usunąć książki.");
+                await JS.ToastrWarning("Nie znaleziono rekordu lub książka posiada jakieś egzemplarze.", "Nie udało się usunąć książki.");
             }
             else
             {
-                await _JS.ToastrInfo("Książka została usunięta pomyślnie.", "Książka usunięta.");
+                await JS.ToastrInfo("Książka została usunięta pomyślnie.", "Książka usunięta.");
             }
 
             await LoadBooks();
@@ -144,25 +144,25 @@ else
     private void HandleUndo(int id)
     {
         DeleteBookID = id;
-        _JS.InvokeVoidAsync("ShowRestoreModal");
+        JS.InvokeVoidAsync("ShowRestoreModal");
     }
 
     private async Task ConfirmRestore_Click(bool isConfirmed)
     {
         IsLoading = true;
-        await _JS.InvokeVoidAsync("HideRestoreModal");
+        await JS.InvokeVoidAsync("HideRestoreModal");
 
         if (isConfirmed && DeleteBookID !=0)
         {
-            var result = await _bookRepository.RestoreBookAsync(DeleteBookID);
+            var result = await BookRepository.RestoreBookAsync(DeleteBookID);
             if (result == null)
             {
-                await _JS.ToastrWarning("Nie znaleziono rekordu.","Nie udało się przywrócić książki.");
+                await JS.ToastrWarning("Nie znaleziono rekordu.","Nie udało się przywrócić książki.");
             }
 
             else
             {
-                await _JS.ToastrInfo("Książka została przywrócona pomyślnie.","Książka przywrócona.");
+                await JS.ToastrInfo("Książka została przywrócona pomyślnie.","Książka przywrócona.");
             }
             await LoadBooks();
         }

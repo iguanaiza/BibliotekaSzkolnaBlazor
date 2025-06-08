@@ -1,9 +1,9 @@
 ﻿@page "/catalog"
 @page "/search"
 
-@inject IBookRepository _bookRepository
-@inject IDictionaryRepository _dictionaryRepository
-@inject NavigationManager _navigationManager
+@inject IBookRepository BookRepository
+@inject IDictionaryRepository DictionaryRepository
+@inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
 
@@ -439,14 +439,14 @@
 
     private async Task LoadData()
     {
-        Books = await _bookRepository.GetBooksAsync();
-        Authors = (await _dictionaryRepository.GetBookAuthorsAsync()).ToList();
-        Publishers = (await _dictionaryRepository.GetBookPublishersAsync()).ToList();
-        Series = (await _dictionaryRepository.GetBookSeriesAsync()).ToList();
-        Types = (await _dictionaryRepository.GetBookTypesAsync()).ToList();
-        Categories = (await _dictionaryRepository.GetBookCategoriesAsync()).ToList();
-        Genres = (await _dictionaryRepository.GetBookGenresAsync()).ToList();
-        SpecialTags = (await _dictionaryRepository.GetBookSpecialTagsAsync()).ToList();
+        Books = await BookRepository.GetBooksAsync();
+        Authors = (await DictionaryRepository.GetBookAuthorsAsync()).ToList();
+        Publishers = (await DictionaryRepository.GetBookPublishersAsync()).ToList();
+        Series = (await DictionaryRepository.GetBookSeriesAsync()).ToList();
+        Types = (await DictionaryRepository.GetBookTypesAsync()).ToList();
+        Categories = (await DictionaryRepository.GetBookCategoriesAsync()).ToList();
+        Genres = (await DictionaryRepository.GetBookGenresAsync()).ToList();
+        SpecialTags = (await DictionaryRepository.GetBookSpecialTagsAsync()).ToList();
     }
 
     private string GetBadgeClass(string tag)

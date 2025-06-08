@@ -1,9 +1,9 @@
 ﻿@page "/"
 
-@inject IBookRepository _bookRepository
-@inject IDictionaryRepository _dictionaryRepository
-@inject IJSRuntime _JS
-@inject NavigationManager _navigationManager
+@inject IBookRepository BookRepository
+@inject IDictionaryRepository DictionaryRepository
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
 
@@ -71,18 +71,18 @@
     private async Task LoadData()
     {
         // Pobierz listę tagów specjalnych z bazy
-        var tags = await _dictionaryRepository.GetBookSpecialTagsAsync();
+        var tags = await DictionaryRepository.GetBookSpecialTagsAsync();
 
         // Dla każdego tagu pobierz książki i zapisz w słowniku
         foreach (var tag in tags)
         {
-            var books = await _bookRepository.GetBooksByTagAsync(tag.Title);
+            var books = await BookRepository.GetBooksByTagAsync(tag.Title);
             BooksByTag[tag.Title] = books;
         }
     }
 
     private async Task Scroll(string tag, int direction)
     {
-        await _JS.InvokeVoidAsync("scrollCarousel", $"carousel-{tag}", direction);
+        await JS.InvokeVoidAsync("scrollCarousel", $"carousel-{tag}", direction);
     }
 }

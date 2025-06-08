@@ -13,7 +13,6 @@ namespace BibliotekaSzkolnaBlazor.Data
         [Required]
         public string LastName { get; set; }
 
-        [Required]
         public string Class { get; set; }
 
         public ICollection<BookLoan> BookLoans { get; set; }
