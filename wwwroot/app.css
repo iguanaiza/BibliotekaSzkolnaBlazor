@@ -5,18 +5,27 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--background);
+    color: var(--font-primary);
+}
+
+.h2-custom {
+    font-size: var(--font-size-h2) !important;
 }
 
 .font-small {
-    --font-size: 14px !important;
+    --font-size: 12px !important;
+    --font-size-h2: 20px !important;
 }
 
 .font-normal {
     --font-size: 16px !important;
+    --font-size-h2: 24px !important;
 }
 
 .font-large {
     --font-size: 20px !important;
+    --font-size-h2: 28px !important;
 }
 
 .theme-green {
@@ -29,6 +38,10 @@ html, body {
     --secondary-75: rgba(154, 203, 208, 0.75);
     --secondary-50: rgba(154, 203, 208, 0.50);
     --secondary-25: rgba(154, 203, 208, 0.25);
+    --font-primary: #000000;
+    --font-secondary: #FFFFFF;
+    --background: #FFFFFF;
+    font-size: var(--font-size);
 }
 
 .theme-blue {
@@ -41,20 +54,38 @@ html, body {
     --secondary-75: rgba(132, 163, 211, 0.75);
     --secondary-50: rgba(132, 163, 211, 0.50);
     --secondary-25: rgba(132, 163, 211, 0.25);
+    --font-primary: #000000;
+    --font-secondary: #FFFFFF;
+    --background: #FFFFFF;
+    font-size: var(--font-size);
 }
 
-a, .btn-link {
-        color: #006bb7;
+.theme-contrast {
+    --primary: #FFFF00;
+    --primary-75: #FFFF00;
+    --primary-50: #000000;
+    --primary-25: #000000;
+    --secondary: #000000;
+    --secondary-75: #FFFF00;
+    --secondary-50: #000000;
+    --secondary-25: #000000;
+    --font-primary: #FFFF00;
+    --font-secondary: #000000;
+    --background: #000000;
+}
+
+.btn {
+    font-size: var(--font-size);
 }
 
 .btn-primary {
-    color: #fff;
+    color: var(--font-secondary);
     background-color: var(--primary-75);
     border-color: var(--primary);
 }
 
     .btn-primary:hover {
-        color: #fff;
+        color: var(--font-secondary);
         background-color: var(--primary);
         border-color: var(--primary);
     }
@@ -65,19 +96,19 @@ a, .btn-link {
 }
 
     .btn-outline-primary:hover {
-        color: #fff;
+        color: var(--font-secondary);
         background-color: var(--primary-75);
         border-color: var(--primary);
     }
 
 .btn-secondary {
-    color: #fff;
+    color: var(--font-secondary);
     background-color: var(--secondary-75);
     border-color: var(--secondary);
 }
 
     .btn-secondary:hover {
-        color: #fff;
+        color: var(--font-secondary);
         background-color: var(--secondary);
         border-color: var(--secondary);
     }
@@ -88,7 +119,7 @@ a, .btn-link {
 }
 
     .btn-outline-secondary:hover {
-        color: #fff;
+        color: var(--font-secondary);
         background-color: var(--secondary-75);
         border-color: var(--secondary);
     }
@@ -176,6 +207,7 @@ input[type=number] {
 
 .bg-theme {
     background-color: var(--primary);
+    color: var(--font-secondary);
 }
 
 .card {
@@ -197,6 +229,7 @@ input[type=number] {
 .catalog-footer {
     background-color: var(--primary);
     bottom: 0;
+    color: var(--font-secondary);
 }
 
 .catalog-width {
@@ -211,11 +244,22 @@ input[type=number] {
 }
 
     .details > :not(caption) > * > * {
-        padding: 0.5rem 0.5rem;
+        padding: 0.5rem;
     }
 
 .details-image {
-    max-width: 32.75rem;
-    height: auto;
-    padding: 0.5rem 0.5rem;
+    max-width: 324px;
+    width: 100%; 
+    height: auto; 
+    padding: 0.5rem;
+    object-fit: contain;
+    display: block;
+}
+
+.theme-font-color {
+    color: var(--font-secondary);
+}
+
+.theme-font-col-pri {
+    color: var(--font-primary);
 }

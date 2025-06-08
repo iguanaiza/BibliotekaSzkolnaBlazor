@@ -1,11 +1,12 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <div class="catalog-navbar navbar navbar-expand-md">
     <div class="container-fluid">
-            <a class="d-flex align-items-center" href="/" style="max-width: 320px">
-                    <img src="/images/school-logo.png" class="img-thumbnail" style="max-width:64px"/>
-            <span class="text-light text-wrap text-center"> Biblioteka Szkoły Podstawowej \n nr&nbsp;123 \n w&nbsp;Testach</span>
-            </a>
+        <a class="d-flex align-items-center theme-font-color" href="/" style="max-width: 320px; text-decoration:none">
+            <img src="/images/school-logo.png" class="img-thumbnail p-2" style="max-width:64px"/>
+            <span class="text-wrap text-center p-2"> Biblioteka Szkoły <br> Podstawowej nr&nbsp;123 <br> w&nbsp;Testach</span>
+        </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-label="Toggle navigation">
@@ -18,7 +19,7 @@
                     <AuthorizeView>
                         <Authorized>
                             <li class="nav-item">
-                                <a class="nav-link p-2 text-light " href="Account/Manage">
+                                <a class="nav-link p-2 theme-font-color" href="Account/Manage">
                                     Witaj, @context?.User?.Identity?.Name
                                 </a>
                             </li>
@@ -26,16 +27,16 @@
                                 <form action="Account/Logout" method="post">
                                     <AntiforgeryToken />
                                     <input type="hidden" name="ReturnUrl" value="" />
-                                    <button type="submit" class="nav-link btn btn-primary text-light">
-                                        <span class="bi bi-arrow-bar-left-nav-menu text-light"></span> Wyloguj
+                                    <button type="submit" class="nav-link p-2 theme-font-color">
+                                        <span class="bi bi-arrow-bar-left-nav-menu"></span> Wyloguj
                                     </button>
                                 </form>
                             </li>
                         </Authorized>
                         <NotAuthorized>
                             <li class="nav-item">
-                                <a class="nav-link btn btn-primary text-light" href="Account/Login">
-                                    <span class="bi bi-person-badge-nav-menu text-light"></span> Zaloguj
+                                <a class="nav-link p-2 theme-font-color" href="Account/Login">
+                                    <span class="bi bi-person-badge-nav-menu"></span> Zaloguj
                                 </a>
                             </li>
                         </NotAuthorized>
@@ -43,34 +44,37 @@
                 </ul>
 
                 <ul class="navbar-nav d-flex flex-row">
-                    <li class="nav-item mx-2 text-light">
-                        <div class="nav-link">
-                            <i class="bi bi-type text-light"></i>
+                    <!-- Zmień rozmiar czcionki -->
+                    <li class="nav-item mx-2">
+                        <div class="nav-link" @onclick="CycleFontSize">
+                            <i class="bi bi-type theme-font-color" title="Zmień rozmiar czcionki"></i>
                         </div>
                     </li>
-                    <li class="nav-item mx-2 text-light">
-                        <div class="nav-link">
-                            <i class="bi bi-highlights text-light"></i>
-                        </div>
 
+                    <!-- Zmień motyw kolorystyczny -->
+                    <li class="nav-item mx-2">
+                        <div class="nav-link" @onclick="CycleTheme">
+                            <i class="bi bi-palette-fill theme-font-color" title="Zmień motyw"></i>
+                        </div>
                     </li>
-                    <li class="nav-item mx-2 text-light">
-                        <div class="nav-link">
-                            <i class="bi bi-palette-fill text-light"></i>
+
+                    <!-- Włącz/wyłącz kontrast -->
+                    <li class="nav-item mx-2">
+                        <div class="nav-link" @onclick="ToggleContrast">
+                            <i class="bi bi-highlights theme-font-color" title="Wysoki kontrast"></i>
                         </div>
                     </li>
                     <AuthorizeView>
                         <Authorized>
-                            <li class="nav-item mx-2 text-light">
-                                <a class="nav-link text-light" href="/cart">
-                                    <span class="bi bi-cart3 text-light"></span> Koszyk
+                            <li class="nav-item mx-2">
+                                <a class="nav-link theme-font-color" href="#">
+                                    <span class="bi bi-cart3"></span> Koszyk
                                 </a>
                             </li>
-                            <li class="nav-item mx-2 text-light">
-                                <a class="nav-link text-light" href="/order/list">
-                                    <span class="bi bi-card-list text-light"></span> Półka
+                            <li class="nav-item mx-2">
+                                <a class="nav-link theme-font-color" href="#">
+                                    <span class="bi bi-card-list"></span> Półka
                                 </a>
-
                             </li>
                         </Authorized>
                     </AuthorizeView>
@@ -81,5 +85,15 @@
 </div>
 
 @code {
+     protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
 
+    private async Task CycleFontSize() => await JS.InvokeVoidAsync("cycleFontSize");
+    private async Task CycleTheme() => await JS.InvokeVoidAsync("cycleTheme");
+    private async Task ToggleContrast() => await JS.InvokeVoidAsync("toggleContrast");
 }

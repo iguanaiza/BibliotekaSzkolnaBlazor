@@ -24,23 +24,23 @@
         <div class="container-fluid">
             <div class="card shadow mb-4 p-4">
                 <div class="mb-4 px-2">
-                    <h2 class="fw-bold">@tag</h2>
+                        <h2 class="fw-bold theme-font-col-pri">@tag</h2>
                 </div>
 
                 <div class="carousel-outer px-2" id="carousel-@tag">
-                    <button class="carousel-btn left" @onclick="() => Scroll(tag, -1)">&#10094;</button>
+                        <button class="carousel-btn left" @onclick="() => Scroll(tag, -1)">&#10094;</button>
 
                     <div class="scroll-container pb-3">
                         @foreach (var book in BooksByTag[tag])
                         {
                             <a href="/view/@book.Id?returnUrl=/" class="book-card text-decoration-none text-dark">
                                 <img src="@book.ImageUrl" alt="@book.Title" class="book-cover" />
-                                <div class="book-title">@book.Title</div>
+                                    <div class="book-title theme-font-col-pri">@book.Title</div>
                             </a>
                         }
                     </div>
 
-                    <button class="carousel-btn right" @onclick="() => Scroll(tag, 1)">&#10095;</button>
+                        <button class="carousel-btn right" @onclick="() => Scroll(tag, 1)">&#10095;</button>
                 </div>
             </div>
             </div>
