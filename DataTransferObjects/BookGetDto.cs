@@ -13,6 +13,8 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         public bool IsDeleted { get; set; }
         public bool IsVisible { get; set; }
         public string? ImageUrl { get; set; }
+        public string? Subject { get; set; }
+        public string? Class { get; set; }
         public int BookAuthorId { get; set; }
         public string BookAuthor { get; set; } = null!;
 
