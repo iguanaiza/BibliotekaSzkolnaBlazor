@@ -15,6 +15,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
             _context = context;
         }
 
+        #region GETs
         public async Task<IEnumerable<BookGetDto>> GetBooksAsync()
         {
             return await _context.Books
@@ -25,8 +26,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 .Include(b => b.BookType)
                 .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
-                .Include(b => b.BookCopies)
-                    .ThenInclude(c => c.BookLoans)
+                .Include(b => b.BookCopies).ThenInclude(c => c.BookLoans)
                 .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
                 .Select(b => new BookGetDto
                 {
@@ -57,51 +57,6 @@ namespace BibliotekaSzkolnaBlazor.Repository
                         c.BookLoans == null || c.BookLoans.All(l => l.ReturnDate != null))
                 })
                 .ToListAsync();
-        }
-
-        public async Task<IEnumerable<BookGetDto>> GetDeletedBooksAsync()
-        {
-            return await _context.Books
-                .Where(b => b.IsDeleted)
-                .Include(b => b.BookAuthor)
-                .Include(b => b.BookPublisher)
-                .Include(b => b.BookSeries)
-                .Include(b => b.BookType)
-                .Include(b => b.BookCategory)
-                .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
-                .Include(b => b.BookCopies)
-                    .ThenInclude(c => c.BookLoans)
-                .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
-                .Select(b => new BookGetDto
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Year = b.Year,
-                    Description = b.Description,
-                    Isbn = b.Isbn,
-                    PageCount = b.PageCount,
-                    IsDeleted = b.IsDeleted,
-                    IsVisible = b.IsVisible,
-                    ImageUrl = b.ImageUrl,
-                    BookAuthorId = b.BookAuthor.Id,
-                    BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
-                    BookPublisherId = b.BookPublisher.Id,
-                    BookPublisher = b.BookPublisher.Name,
-                    BookSeriesId = b.BookSeries != null ? b.BookSeries.Id : (int?)null,
-                    BookSeries = b.BookSeries != null ? b.BookSeries.Title : null,
-                    BookCategoryId = b.BookCategory.Id,
-                    BookCategory = b.BookCategory.Name,
-                    BookTypeId = b.BookType.Id,
-                    BookType = b.BookType.Title,
-                    BookGenreIds = b.BookBookGenres.Select(bg => bg.BookGenre.Id).ToList(),
-                    BookGenres = b.BookBookGenres.Select(bg => bg.BookGenre.Title).ToList(),
-                    BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
-                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
-                    AvailableCopyCount = b.BookCopies.Count(c =>
-                        c.BookLoans == null || c.BookLoans.All(l => l.ReturnDate != null))
-                })
-                .ToListAsync();
-
         }
 
         public async Task<BookGetDto?> GetBookByIdAsync(int id)
@@ -149,6 +104,137 @@ namespace BibliotekaSzkolnaBlazor.Repository
             };
         }
 
+        public async Task<IEnumerable<BookGetDto>> GetDeletedBooksAsync()
+        {
+            return await _context.Books
+                .Where(b => b.IsDeleted)
+                .Include(b => b.BookAuthor)
+                .Include(b => b.BookPublisher)
+                .Include(b => b.BookSeries)
+                .Include(b => b.BookType)
+                .Include(b => b.BookCategory)
+                .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
+                .Include(b => b.BookCopies).ThenInclude(c => c.BookLoans)
+                .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
+                .Select(b => new BookGetDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    Year = b.Year,
+                    Description = b.Description,
+                    Isbn = b.Isbn,
+                    PageCount = b.PageCount,
+                    IsDeleted = b.IsDeleted,
+                    IsVisible = b.IsVisible,
+                    ImageUrl = b.ImageUrl,
+                    BookAuthorId = b.BookAuthor.Id,
+                    BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
+                    BookPublisherId = b.BookPublisher.Id,
+                    BookPublisher = b.BookPublisher.Name,
+                    BookSeriesId = b.BookSeries != null ? b.BookSeries.Id : (int?)null,
+                    BookSeries = b.BookSeries != null ? b.BookSeries.Title : null,
+                    BookCategoryId = b.BookCategory.Id,
+                    BookCategory = b.BookCategory.Name,
+                    BookTypeId = b.BookType.Id,
+                    BookType = b.BookType.Title,
+                    BookGenreIds = b.BookBookGenres.Select(bg => bg.BookGenre.Id).ToList(),
+                    BookGenres = b.BookBookGenres.Select(bg => bg.BookGenre.Title).ToList(),
+                    BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
+                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
+                    AvailableCopyCount = b.BookCopies.Count(c =>
+                        c.BookLoans == null || c.BookLoans.All(l => l.ReturnDate != null))
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<BookGetDto>> GetLekturyAsync()
+        {
+            const int CategoryId = 1;
+
+            return await _context.Books
+                .Include(b => b.BookAuthor)
+                .Include(b => b.BookPublisher)
+                .Include(b => b.BookCategory).Where(b => b.BookCategoryId == CategoryId)
+                .Include(b => b.BookSeries)
+                .Include(b => b.BookType)
+                .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
+                .Include(b => b.BookCopies).ThenInclude(c => c.BookLoans)
+                .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
+                .Select(b => new BookGetDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    Year = b.Year,
+                    Description = b.Description,
+                    Isbn = b.Isbn,
+                    PageCount = b.PageCount,
+                    IsDeleted = b.IsDeleted,
+                    IsVisible = b.IsVisible,
+                    ImageUrl = b.ImageUrl,
+                    BookAuthorId = b.BookAuthor.Id,
+                    BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
+                    BookPublisherId = b.BookPublisher.Id,
+                    BookPublisher = b.BookPublisher.Name,
+                    BookSeriesId = b.BookSeries != null ? b.BookSeries.Id : (int?)null,
+                    BookSeries = b.BookSeries != null ? b.BookSeries.Title : null,
+                    BookCategoryId = b.BookCategory.Id,
+                    BookCategory = b.BookCategory.Name,
+                    BookTypeId = b.BookType.Id,
+                    BookType = b.BookType.Title,
+                    BookGenreIds = b.BookBookGenres.Select(bg => bg.BookGenre.Id).ToList(),
+                    BookGenres = b.BookBookGenres.Select(bg => bg.BookGenre.Title).ToList(),
+                    BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
+                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
+                    AvailableCopyCount = b.BookCopies.Count(c =>
+                        c.BookLoans == null || c.BookLoans.All(l => l.ReturnDate != null))
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<BookGetDto>> GetPodrecznikiAsync()
+        {
+            const int CategoryId = 2;
+
+            return await _context.Books
+                .Include(b => b.BookAuthor)
+                .Include(b => b.BookPublisher)
+                .Include(b => b.BookCategory).Where(b => b.BookCategoryId == CategoryId)
+                .Include(b => b.BookSeries)
+                .Include(b => b.BookType)
+                .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
+                .Include(b => b.BookCopies).ThenInclude(c => c.BookLoans)
+                .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
+                .Select(b => new BookGetDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    Year = b.Year,
+                    Description = b.Description,
+                    Isbn = b.Isbn,
+                    PageCount = b.PageCount,
+                    IsDeleted = b.IsDeleted,
+                    IsVisible = b.IsVisible,
+                    ImageUrl = b.ImageUrl,
+                    BookAuthorId = b.BookAuthor.Id,
+                    BookAuthor = b.BookAuthor.Surname + ", " + b.BookAuthor.Name,
+                    BookPublisherId = b.BookPublisher.Id,
+                    BookPublisher = b.BookPublisher.Name,
+                    BookSeriesId = b.BookSeries != null ? b.BookSeries.Id : (int?)null,
+                    BookSeries = b.BookSeries != null ? b.BookSeries.Title : null,
+                    BookCategoryId = b.BookCategory.Id,
+                    BookCategory = b.BookCategory.Name,
+                    BookTypeId = b.BookType.Id,
+                    BookType = b.BookType.Title,
+                    BookGenreIds = b.BookBookGenres.Select(bg => bg.BookGenre.Id).ToList(),
+                    BookGenres = b.BookBookGenres.Select(bg => bg.BookGenre.Title).ToList(),
+                    BookSpecialTags = b.BookBookSpecialTags.Select(bb => bb.BookSpecialTag.Title).ToList(),
+                    CopyCount = b.BookCopies != null ? b.BookCopies.Count : 0,
+                    AvailableCopyCount = b.BookCopies.Count(c =>
+                        c.BookLoans == null || c.BookLoans.All(l => l.ReturnDate != null))
+                })
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<BookGetDto>> GetBooksByTagAsync(string tagName)
         {
             return await _context.Books
@@ -170,7 +256,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 })
                 .ToListAsync();
         }
-
+        #endregion
         public async Task<BookGetDto> CreateBookAsync(BookUpsertDto dto)
         {
             var book = new Book
@@ -284,21 +370,12 @@ namespace BibliotekaSzkolnaBlazor.Repository
 
         public async Task<BookGetDto?> RestoreBookAsync(int id)
         {
-            Console.WriteLine($"[RESTORE] Book {id}");
-
             var book = await _context.Books.FindAsync(id);
 
-            if (book == null)
-            {
-                Console.WriteLine("[RESTORE] Book not found");
-                return null;
-            }
+            if (book == null) return null;
 
             book.IsDeleted = false;
             book.IsVisible = true;
-
-            Console.WriteLine($"[RESTORE] IsDeleted={book.IsDeleted}");
-
 
             await _context.SaveChangesAsync();
 

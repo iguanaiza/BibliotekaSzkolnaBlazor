@@ -24,6 +24,8 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
         public bool IsVisible { get; set; } = true;//do widoku w katalogu
 
         public string? ImageUrl { get; set; } //okładka książki - URL do folderu
+        public string? Subject { get; set; } //przedmiot (dla podrecznikow)
+        public string? Class { get; set; } //klasa (dla lektur)
 
         #region Odwołania do innych
         public int BookAuthorId { get; set; }

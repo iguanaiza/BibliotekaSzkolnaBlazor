@@ -27,7 +27,6 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
 
         public int BookTypeId { get; set; }
         public string BookType { get; set; } = null!;
-
         public List<int> BookGenreIds { get; set; } = new();
         public List<string> BookGenres { get; set; } = new();
         public List<string>? BookSpecialTags { get; set; }
