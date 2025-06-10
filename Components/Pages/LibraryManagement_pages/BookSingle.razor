@@ -41,9 +41,9 @@ else
 
                     <div class="d-flex flex-wrap gap-2">
                         <a  href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id"
-                            class="btn btn-outline-primary"
-                            title="Edytuj">
-                                <i class="bi bi-pencil-square"></i> Edytuj
+                        class="btn btn-outline-primary"
+                        title="Edytuj">
+                            <i class="bi bi-pencil-square"></i> Edytuj
                         </a>
 
                         <button class="btn btn-outline-danger" @onclick="() => HandleDelete(book.Id)" title="Usuń">
@@ -103,6 +103,16 @@ else
                                     <tr>
                                         <th class="text-end"> Wydawca </th>
                                         <td> @book.BookPublisher </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th class="text-end"> Klasa </th>
+                                        <td> @book.Class </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th class="text-end"> Przedmiot </th>
+                                        <td> @book.Subject </td>
                                     </tr>
 
                                     <tr>

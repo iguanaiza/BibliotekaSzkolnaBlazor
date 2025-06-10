@@ -88,7 +88,7 @@ else
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label text-end">Przedmiot</label>
                                 <div class="col-sm-10">
-                                    <InputSelect @bind-Value="SelectedSubject" class="form-select">
+                                    <InputSelect @bind-Value="@book.Subject" class="form-select">
                                         <option value="">-- Wybierz przedmiot --</option>
                                         @foreach (var subject in Subjects)
                                         {
@@ -101,7 +101,7 @@ else
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label text-end">Klasa</label>
                                 <div class="col-sm-10">
-                                    <InputSelect @bind-Value="SelectedClass" class="form-select">
+                                    <InputSelect @bind-Value="@book.Class" class="form-select">
                                         <option value="">-- Wybierz klasę --</option>
                                         @foreach (var cls in Classes)
                                         {
@@ -117,7 +117,7 @@ else
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label text-end">Klasa</label>
                                 <div class="col-sm-10">
-                                    <InputSelect @bind-Value="SelectedClass" class="form-select">
+                                    <InputSelect @bind-Value="@book.Class" class="form-select">
                                         <option value="">-- Wybierz klasę --</option>
                                         @foreach (var cls in Classes)
                                         {
@@ -431,6 +431,8 @@ else
                     PageCount = bookDto.PageCount,
                     IsVisible = bookDto.IsVisible,
                     ImageUrl = bookDto.ImageUrl,
+                    Class = bookDto.Class,
+                    Subject = bookDto.Subject,
                     BookAuthorId = author.Id,
                     BookPublisherId = publisher.Id,
                     BookSeriesId = series.Id,

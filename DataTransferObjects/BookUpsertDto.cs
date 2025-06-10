@@ -28,6 +28,10 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
 
         public string? ImageUrl { get; set; }
 
+        public string? Subject { get; set; }
+
+        public string? Class { get; set; }
+
         [Required(ErrorMessage = "Wybierz autora książki.")]
         public int BookAuthorId { get; set; }
 

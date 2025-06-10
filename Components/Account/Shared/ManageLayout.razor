@@ -1,11 +1,12 @@
 ﻿@inherits LayoutComponentBase
 @layout BibliotekaSzkolnaBlazor.Components.Layout.MainLayout
 
-<h1>Manage your account</h1>
+<CatalogNavbar/>
 
+<div class="w-100">
+    <div class="mx-auto px-3 catalog-width">
+        <h1> Zarządzanie kontem</h1>
 <div>
-    <h2>Change your account settings</h2>
-    <hr />
     <div class="row">
         <div class="col-lg-3">
             <ManageNavMenu />
@@ -14,4 +15,6 @@
             @Body
         </div>
     </div>
+</div>
+</div>
 </div>

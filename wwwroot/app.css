@@ -219,6 +219,7 @@ input[type=number] {
     background-color: var(--primary);
     position: sticky;
     top: 0;
+    width: 100%;
     z-index: 1;
 }
 
@@ -228,12 +229,17 @@ input[type=number] {
 
 .catalog-footer {
     background-color: var(--primary);
+    width: 100%;
+    position: relative;
     bottom: 0;
-    color: var(--font-secondary);
 }
 
 .catalog-width {
-    max-width: 1366px;
+    max-width: 1400px;
+}
+
+.manage-width {
+    max-width: 1700px;
 }
 
 .details {
@@ -263,3 +269,4 @@ input[type=number] {
 .theme-font-col-pri {
     color: var(--font-primary);
 }
+

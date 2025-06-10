@@ -1,4 +1,4 @@
-﻿@page "/lektury"
+﻿@page "/podreczniki"
 
 @inject IBookRepository BookRepository
 @inject IJSRuntime JS
@@ -7,7 +7,7 @@
 
 <CatalogNavbar />
 
-<div class="w-100 mb-4">
+<div class="w-100">
     <div class="mx-auto px-3 catalog-width">
         <!--Menu główne i searchbar-->
         <CatalogSearchBar />
@@ -47,6 +47,7 @@
                                         <th>#</th>
                                         <th></th>
                                         <th>Klasa</th>
+                                        <th>Przedmiot</th>
                                         <th>Tytuł</th>
                                         <th>Autor</th>
                                         <th>Wydawca</th>
@@ -66,6 +67,7 @@
                                                 </a>
                                             </td>
                                             <td>@book.Class</td>
+                                            <td>@book.Subject</td>
                                             <td>@book.Title</td>
                                             <td>@book.BookAuthor</td>
                                             <td>@book.BookPublisher</td>
@@ -98,6 +100,6 @@
 
     private async Task LoadBooks()
     {
-        Books = await BookRepository.GetLekturyAsync();
+        Books = await BookRepository.GetPodrecznikiAsync();
     }
 }

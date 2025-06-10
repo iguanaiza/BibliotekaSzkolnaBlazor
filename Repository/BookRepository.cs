@@ -3,6 +3,7 @@ using BibliotekaSzkolnaBlazor.Data.Models;
 using BibliotekaSzkolnaBlazor.DataTransferObjects;
 using BibliotekaSzkolnaBlazor.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BibliotekaSzkolnaBlazor.Repository
 {
@@ -226,6 +227,8 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 PageCount = dto.PageCount,
                 IsVisible = dto.IsVisible,
                 ImageUrl = dto.ImageUrl,
+                Subject = dto.Subject,
+                Class = dto.Class,
                 BookAuthorId = dto.BookAuthorId,
                 BookPublisherId = dto.BookPublisherId,
                 BookSeriesId = dto.BookSeriesId,
@@ -262,6 +265,8 @@ namespace BibliotekaSzkolnaBlazor.Repository
             book.PageCount = dto.PageCount;
             book.IsVisible = dto.IsVisible;
             book.ImageUrl = dto.ImageUrl;
+            book.Subject = dto.Subject;
+            book.Class = dto.Class;
             book.BookAuthorId = dto.BookAuthorId;
             book.BookPublisherId = dto.BookPublisherId;
             book.BookSeriesId = dto.BookSeriesId;

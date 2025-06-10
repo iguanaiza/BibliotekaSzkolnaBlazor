@@ -10,6 +10,7 @@ main {
 
 .sidebar {
     background-color: var(--primary);
+    border-right: solid 3px var(--secondary);
 }
 
 .top-row {
@@ -52,7 +53,7 @@ main {
     }
 
     .sidebar {
-        width: 250px;
+        width: 200px;
         height: 100vh;
         position: sticky;
         top: 0;
