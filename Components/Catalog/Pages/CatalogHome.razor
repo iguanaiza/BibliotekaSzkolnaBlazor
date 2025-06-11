@@ -7,52 +7,43 @@
 @rendermode InteractiveServer
 
 <PageTitle>Strona główna</PageTitle>
-        @foreach (var tag in BooksByTag.Keys)
-        {
-        <div class="container-fluid">
-            <div class="card shadow mb-4 p-4">
-                <div class="mb-4 px-2">
-                        <h2 class="fw-bold theme-font-col-pri">@tag</h2>
-                </div>
 
-                <div class="carousel-outer px-2" id="carousel-@tag">
-                        <button class="carousel-btn left" @onclick="() => Scroll(tag, -1)">&#10094;</button>
+@foreach (var tag in BooksByTag.Keys)
+{
+    <div class="card shadow mb-4 p-4">
+        <div class="mb-4 px-2">
+            <h2 class="fw-bold theme-font-col-pri">@tag</h2>
+        </div>
 
-                    <div class="scroll-container pb-3">
-                        @foreach (var book in BooksByTag[tag])
-                        {
-                            <a href="/view/@book.Id?returnUrl=/" class="book-card text-decoration-none text-dark">
-                                <img src="@book.ImageUrl" alt="@book.Title" class="book-cover" />
-                                    <div class="book-title theme-font-col-pri">@book.Title</div>
-                            </a>
-                        }
-                    </div>
+        <div class="carousel-outer px-2" id="carousel-@tag">
+            <button class="carousel-btn left" @onclick="() => Scroll(tag, -1)">&#10094;</button>
 
-                        <button class="carousel-btn right" @onclick="() => Scroll(tag, 1)">&#10095;</button>
-                </div>
+            <div class="scroll-container">
+                @foreach (var book in BooksByTag[tag])
+                {
+                    <a href="/view/@book.Id?returnUrl=/" class="book-card text-decoration-none text-dark">
+                        <div class="book-cover-container">
+                            <img src="@book.ImageUrl" alt="@book.Title" class="book-cover"/>
+                        </div>
+                        <div class="book-title theme-font-col-pri">@book.Title</div>
+                    </a>
+                }
             </div>
-            </div>
-        }
+
+            <button class="carousel-btn right" @onclick="() => Scroll(tag, 1)">&#10095;</button>
+        </div>
+    </div>
+}
 
 @code {
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public string? ReturnUrl { get; set; }
-    private string? _directoryPath { get; set; }
-
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public string? term { get; set; }
-
     private Dictionary<string, IEnumerable<BookGetDto>> BooksByTag = new();
-
 
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
     }
 
-     protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
@@ -62,10 +53,8 @@
 
     private async Task LoadData()
     {
-        // Pobierz listę tagów specjalnych z bazy
         var tags = await DictionaryRepository.GetBookSpecialTagsAsync();
 
-        // Dla każdego tagu pobierz książki i zapisz w słowniku
         foreach (var tag in tags)
         {
             var books = await BookRepository.GetBooksByTagAsync(tag.Title);

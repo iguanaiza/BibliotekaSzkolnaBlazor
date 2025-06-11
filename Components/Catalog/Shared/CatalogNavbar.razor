@@ -20,7 +20,7 @@
                     <AuthorizeView>
                         <Authorized>
                             <li class="nav-item">
-                                <a class="nav-link p-2 theme-font-color" href="Account/Manage">
+                                <a class="nav-link p-2 theme-font-color btn btn-nav" href="Account/Manage">
                                     Witaj, @context?.User?.Identity?.Name
                                 </a>
                             </li>
@@ -28,7 +28,7 @@
                                 <form action="Account/Logout" method="post">
                                     <AntiforgeryToken />
                                     <input type="hidden" name="ReturnUrl" value="" />
-                                    <button type="submit" class="nav-link p-2 theme-font-color">
+                                    <button type="submit" class="nav-link p-2 theme-font-color btn btn-nav">
                                         <span class="bi bi-arrow-bar-left-nav-menu"></span> Wyloguj
                                     </button>
                                 </form>
@@ -36,7 +36,7 @@
                         </Authorized>
                         <NotAuthorized>
                             <li class="nav-item">
-                                <a class="nav-link p-2 theme-font-color" href="Account/Login">
+                                <a class="nav-link p-2 theme-font-color btn btn-nav" href="Account/Login">
                                     <span class="bi bi-person-badge-nav-menu"></span> Zaloguj
                                 </a>
                             </li>
@@ -47,33 +47,33 @@
                 <ul class="navbar-nav d-flex flex-row">
                     <!-- Zmień rozmiar czcionki -->
                     <li class="nav-item mx-2">
-                        <div class="nav-link" @onclick="CycleFontSize">
+                        <a class="nav-link btn btn-nav" @onclick="CycleFontSize">
                             <i class="bi bi-type theme-font-color" title="Zmień rozmiar czcionki"></i>
-                        </div>
+                        </a>
                     </li>
 
                     <!-- Zmień motyw kolorystyczny -->
                     <li class="nav-item mx-2">
-                        <div class="nav-link" @onclick="CycleTheme">
+                        <a class="nav-link btn btn-nav" @onclick="CycleTheme">
                             <i class="bi bi-palette-fill theme-font-color" title="Zmień motyw"></i>
-                        </div>
+                        </a>
                     </li>
 
                     <!-- Włącz/wyłącz kontrast -->
                     <li class="nav-item mx-2">
-                        <div class="nav-link" @onclick="ToggleContrast">
+                        <a class="nav-link btn btn-nav" @onclick="ToggleContrast">
                             <i class="bi bi-highlights theme-font-color" title="Wysoki kontrast"></i>
-                        </div>
+                        </a>
                     </li>
                     <AuthorizeView>
                         <Authorized>
                             <li class="nav-item mx-2">
-                                <a class="nav-link theme-font-color" href="/koszyk">
+                                <a class="nav-link theme-font-color btn btn-nav" href="/koszyk">
                                     <span class="bi bi-cart3"></span> Koszyk
                                 </a>
                             </li>
                             <li class="nav-item mx-2">
-                                <a class="nav-link theme-font-color" href="/ulubione">
+                                <a class="nav-link theme-font-color btn btn-nav" href="/ulubione">
                                     <span class="bi bi-card-list"></span> Półka
                                 </a>
                             </li>

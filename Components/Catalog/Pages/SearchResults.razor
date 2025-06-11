@@ -335,7 +335,7 @@
                                     <div class="d-flex flex-wrap gap-2">
                                         <AuthorizeView>
                                             <Authorized>
-                                                <button @onclick="() => ToggleFavorite(book)" class="btn btn-sm @(book.IsFavorite ? "btn-outline-primary" : "btn-outline-primary")">
+                                                <button @onclick="() => ToggleFavorite(book)" class="btn btn-sm @(book.IsFavorite ? "btn-outline-primary" : "btn-primary")">
                                                     @(book.IsFavorite ? "Usuń z półki" : "Dodaj na półkę")
                                                 </button>
                                             </Authorized>

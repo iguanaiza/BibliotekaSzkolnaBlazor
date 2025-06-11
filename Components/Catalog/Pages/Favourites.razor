@@ -1,59 +1,89 @@
 ﻿@page "/ulubione"
 @layout CatalogLayout
-@inject ICopyRepository CopyRepository
 @inject IBookRepository BookRepository
+@inject IFavoriteBookRepository FavoriteBookRepository
 @inject IDictionaryRepository DictionaryRepository
 @inject NavigationManager NavigationManager
-@inject IBookReservationCartRepository BookReservationCartRepository
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthStateProvider
 @rendermode InteractiveServer
 
-<PageTitle>Koszyk zamówień</PageTitle>
+<PageTitle>Ulubione książki</PageTitle>
 
-            @foreach (var book in Books)
-            {
-                <div class="card mb-3 shadow-sm">
-                    <div class="row g-0">
-                        <div class="col-md-4 d-flex justify-content-center align-items-center">
-                            <div class="book-cover-container">
-                                @if (string.IsNullOrEmpty(book.BookImageUrl))
-                                {
-                                    <p class="text-muted text-center m-0">Brak okładki.</p>
-                                }
-                                else
-                                {
-                                    <img src="@book.BookImageUrl" alt="Okładka książki @book.BookTitle" class="img-fluid p-2" />
-                                }
-                            </div>
-                        </div>
+<div class="card shadow border-0">
+    <div class="card-header bg-theme bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="h2-custom">Ulubione książki</h2>
+            </div>
+        </div>
+    </div>
 
-                        <div class="col-md-8 d-flex flex-column justify-content-between p-3">
-                            <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 mb-2">
-                                <div class="d-flex flex-wrap gap-2">
-                                    <a href="/catalog/view/@book.Id?returnUrl=/koszyk" class="btn btn-primary" role="button">
-                                        <i class="bi bi-info-square"></i>
-                                    </a>
+    @if (!IsAuthenticated)
+    {
+        <div class="alert alert-warning">
+            Musisz być zalogowany, aby zobaczyć ulubione książki.
+        </div>
+    }
+    else if (!FavoriteBooks.Any())
+    {
+        <div class="alert alert-info">
+            Nie masz jeszcze żadnych ulubionych książek.
+        </div>
+    }
+    else
+    {
+        <div class="container mt-3 pb-3">
+            <div class="row g-3">
+                @foreach (var book in FavoriteBooks)
+                {
+                    <div class="col-12 col-md-6">
+                        <div class="card h-100 shadow-sm">
+                            <div class="row g-0">
+                                <div class="col-4 d-flex justify-content-center align-items-center">
+                                    <div class="book-cover-container">
+                                        @if (string.IsNullOrEmpty(book.ImageUrl))
+                                        {
+                                            <p class="text-muted text-center m-0">Brak okładki.</p>
+                                        }
+                                        else
+                                        {
+                                            <img src="@book.ImageUrl" alt="Okładka książki @book.Title" class="img-fluid p-2" />
+                                        }
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="card-body p-0">
-                                <h5 class="card-title">@book.BookTitle</h5>
-                                <p class="card-text"><small class="text-body-secondary">@book.AuthorName</small></p>
-                            </div>
+                                <div class="col-8 d-flex flex-column justify-content-between p-3">
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                        <a href="/catalog/view/@book.Id?returnUrl=/ulubione" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-info-square"></i> Szczegóły
+                                        </a>
 
-                            <div class="d-flex justify-content-end align-items-center mt-2">
-                                <button class="btn btn-danger btn-sm" @onclick="() => RemoveFromCart(book.Id)">
-                                    <i class="bi bi-trash"></i> Usuń z ulubionych
-                                </button>
+                                        <button class="btn btn-secondary btn-sm" @onclick="() => RemoveFromFavorites(book.Id)">
+                                            <i class="bi bi-trash"></i> Usuń z ulubionych
+                                        </button>
+                                    </div>
+
+                                    <div class="card-body p-0">
+                                        <h5 class="card-title">@book.Title</h5>
+                                        <p class="card-text truncate-3-lines mb-0">@book.Description</p>
+                                        <p class="card-text"><small class="text-body-secondary">@book.BookAuthor</small></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
+        </div>
+    }
+</div>
+
 
 @code {
-    private IEnumerable<CopyGetDto> Books { get; set; } = new List<CopyGetDto>();
+    private bool IsAuthenticated { get; set; }
+    private string UserId { get; set; }
+    private List<BookGetDto> FavoriteBooks { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -68,52 +98,33 @@
         }
     }
 
-
     private async Task LoadData()
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (!user.Identity?.IsAuthenticated ?? true)
+        IsAuthenticated = user.Identity?.IsAuthenticated ?? false;
+
+        if (!IsAuthenticated)
         {
-            // Możesz przekierować na logowanie albo pokazać pusty koszyk
             NavigationManager.NavigateTo("/login");
             return;
         }
 
-        string userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var cartItems = await BookReservationCartRepository.GetUserCartAsync(userId);
+        UserId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        Books = cartItems.Select(rc => new CopyGetDto
-        {
-            Id = rc.BookCopy.Id,
-            Signature = rc.BookCopy.Signature,
-            InventoryNum = rc.BookCopy.InventoryNum,
-                BookId = rc.BookCopy.BookId,
-                BookTitle = rc.BookCopy.Book.Title,
-                BookImageUrl = rc.BookCopy.Book.ImageUrl,
-                AuthorName = rc.BookCopy.Book.BookAuthor != null
-                     ? rc.BookCopy.Book.BookAuthor.Surname + ", " + rc.BookCopy.Book.BookAuthor.Name
-                     : "Brak autora"
-        }).ToList();
-    } 
-    
-    private async Task RemoveFromCart(int bookCopyId)
+        var allBooks = await BookRepository.GetBooksAsync();
+        var favorites = await FavoriteBookRepository.GetUserFavoritesAsync(UserId);
+        var favoriteIds = favorites.Select(f => f.BookId).ToHashSet();
+
+        FavoriteBooks = allBooks
+            .Where(b => favoriteIds.Contains(b.Id))
+            .ToList();
+    }
+
+    private async Task RemoveFromFavorites(int bookId)
     {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (!user.Identity?.IsAuthenticated ?? true)
-        {
-            NavigationManager.NavigateTo("/login");
-            return;
-        }
-
-        string userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        await BookReservationCartRepository.RemoveFromCartAsync(bookCopyId, userId);
-
-        // Odśwież listę po usunięciu
+        await FavoriteBookRepository.RemoveFavoriteAsync(UserId, bookId);
         await LoadData();
     }
 }

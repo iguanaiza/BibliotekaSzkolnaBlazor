@@ -11,9 +11,17 @@
 
 <PageTitle>Koszyk zamówień</PageTitle>
 
-    <div class="row gx-3">
-        <!-- Podsumowanie: jedna kolumna, na mobile nad listą, na desktopie obok -->
-        <div class="col-12 col-lg-6 order-1 order-lg-1 mb-3 mb-lg-0">
+<div class="card shadow border-0">
+    <div class="card-header bg-theme bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="h2-custom">Koszyk zamówień</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-3 p-3">
+        <div class="col-12 col-lg-6 order-1 order-lg-2 mb-1 mb-lg-0">
             <div class="card p-3 shadow-sm">
                 <h5 class="mb-3">Podsumowanie</h5>
                 <p>Razem do wypożyczenia: @Books.Count()</p>
@@ -21,11 +29,10 @@
             </div>
         </div>
 
-        <!-- Lista książek: druga kolumna, podsumowanie obok na desktopie -->
-        <div class="col-12 col-lg-6 order-2 order-lg-2">
+        <div class="col-12 col-lg-6 order-2 order-lg-1">
             @foreach (var book in Books)
             {
-                <div class="card mb-3 shadow-sm">
+                <div class="card mb-1 shadow-sm">
                     <div class="row g-0">
                         <div class="col-md-4 d-flex justify-content-center align-items-center">
                             <div class="book-cover-container">
@@ -43,21 +50,20 @@
                         <div class="col-md-8 d-flex flex-column justify-content-between p-3">
                             <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 mb-2">
                                 <div class="d-flex flex-wrap gap-2">
-                                <a href="/catalog/view/@book.Id?returnUrl=/koszyk" class="btn btn-primary" role="button">
-                                        <i class="bi bi-info-square"></i>
+                                    <a href="/catalog/view/@book.Id?returnUrl=/ulubione" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-info-square"></i> Szczegóły
                                     </a>
+
+                                    <button class="btn btn-outline-danger btn-sm" @onclick="() => RemoveFromCart(book.Id)">
+                                        <i class="bi bi-trash"></i> Usuń z koszyka
+                                    </button>
                                 </div>
                             </div>
 
                             <div class="card-body p-0">
                                 <h5 class="card-title">@book.BookTitle</h5>
                                 <p class="card-text"><small class="text-body-secondary">@book.AuthorName</small></p>
-                            </div>
-
-                            <div class="d-flex justify-content-end align-items-center mt-2">
-                                <button class="btn btn-danger btn-sm" @onclick="() => RemoveFromCart(book.Id)">
-                                    <i class="bi bi-trash"></i> Usuń z koszyka
-                                </button>
+                                <p class="card-text truncate-3-lines mb-0">Egzemplarz: @book.Signature</p>
                             </div>
                         </div>
                     </div>
@@ -65,6 +71,7 @@
             }
         </div>
     </div>
+</div>
 
 @code {
     private IEnumerable<CopyGetDto> Books { get; set; } = new List<CopyGetDto>();
