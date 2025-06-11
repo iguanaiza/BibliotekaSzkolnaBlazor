@@ -52,6 +52,12 @@ namespace BibliotekaSzkolnaBlazor.Repository
             return await _context.FavoriteBooks
                 .AnyAsync(fb => fb.UserId == userId && fb.BookId == bookId);
         }
-    }
 
+        public async Task<int> GetFavoriteCountForBookAsync(int bookId)
+        {
+            return await _context.FavoriteBooks
+                .Where(f => f.BookId == bookId)
+                .CountAsync();
+        }
+    }
 }

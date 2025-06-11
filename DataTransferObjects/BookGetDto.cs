@@ -35,5 +35,6 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         public List<CopyGetDto>? BookCopies { get; set; }
         public int CopyCount;
         public int AvailableCopyCount;
+        public bool IsFavorite { get; set; }
     }
 }

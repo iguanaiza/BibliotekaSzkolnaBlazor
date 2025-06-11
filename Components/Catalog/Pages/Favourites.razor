@@ -1,4 +1,4 @@
-﻿@page "/koszyk"
+﻿@page "/ulubione"
 @layout CatalogLayout
 @inject ICopyRepository CopyRepository
 @inject IBookRepository BookRepository
@@ -11,18 +11,6 @@
 
 <PageTitle>Koszyk zamówień</PageTitle>
 
-    <div class="row gx-3">
-        <!-- Podsumowanie: jedna kolumna, na mobile nad listą, na desktopie obok -->
-        <div class="col-12 col-lg-6 order-1 order-lg-1 mb-3 mb-lg-0">
-            <div class="card p-3 shadow-sm">
-                <h5 class="mb-3">Podsumowanie</h5>
-                <p>Razem do wypożyczenia: @Books.Count()</p>
-                <button class="btn btn-primary w-100">Wypożycz</button>
-            </div>
-        </div>
-
-        <!-- Lista książek: druga kolumna, podsumowanie obok na desktopie -->
-        <div class="col-12 col-lg-6 order-2 order-lg-2">
             @foreach (var book in Books)
             {
                 <div class="card mb-3 shadow-sm">
@@ -43,7 +31,7 @@
                         <div class="col-md-8 d-flex flex-column justify-content-between p-3">
                             <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 mb-2">
                                 <div class="d-flex flex-wrap gap-2">
-                                <a href="/catalog/view/@book.Id?returnUrl=/koszyk" class="btn btn-primary" role="button">
+                                    <a href="/catalog/view/@book.Id?returnUrl=/koszyk" class="btn btn-primary" role="button">
                                         <i class="bi bi-info-square"></i>
                                     </a>
                                 </div>
@@ -56,15 +44,13 @@
 
                             <div class="d-flex justify-content-end align-items-center mt-2">
                                 <button class="btn btn-danger btn-sm" @onclick="() => RemoveFromCart(book.Id)">
-                                    <i class="bi bi-trash"></i> Usuń z koszyka
+                                    <i class="bi bi-trash"></i> Usuń z ulubionych
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             }
-        </div>
-    </div>
 
 @code {
     private IEnumerable<CopyGetDto> Books { get; set; } = new List<CopyGetDto>();

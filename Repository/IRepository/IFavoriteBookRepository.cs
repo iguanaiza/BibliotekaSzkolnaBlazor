@@ -8,5 +8,6 @@ namespace BibliotekaSzkolnaBlazor.Repository.IRepository
         Task AddFavoriteAsync(string userId, int bookId);
         Task RemoveFavoriteAsync(string userId, int bookId);
         Task<bool> IsFavoriteAsync(string userId, int bookId);
+        Task<int> GetFavoriteCountForBookAsync(int bookId);
     }
 }

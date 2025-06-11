@@ -7,7 +7,7 @@ namespace BibliotekaSzkolnaBlazor.Repository.IRepository
         Task AddToCartAsync(string userId, int bookCopyId);
         Task<bool> IsInCartAsync(string userId, int bookCopyId);
         Task<List<BookReservationCart>> GetUserCartAsync(string userId);
-        Task RemoveFromCartAsync(int cartItemId);
+        Task RemoveFromCartAsync(int bookCopyId, string userId);
         Task ClearCartAsync(string userId);
         Task FinalizeCartAsync(string userId);
     }

@@ -7,6 +7,7 @@
 @inject IBookReservationCartRepository BookReservationCartRepository
 @inject IDictionaryRepository DictionaryRepository
 @inject IJSRuntime JS
+@inject IFavoriteBookRepository FavoriteBookRepository
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
@@ -39,19 +40,29 @@ else
                         <i class="bi bi-arrow-bar-left"></i> Powrót
                     </button>
 
-                    <AuthorizeView>
-                        <Authorized>
-                            <a class="btn btn-outline-primary" role="button">
-                                <i class="bi bi-bookmark-star"></i> Dodaj na półkę
-                            </a>
-                        </Authorized>
-                    </AuthorizeView>
+                    <div class="d-flex flex-column align-items-end">
+                        <p class="small">Na półce u: <strong>@FavoriteCount</strong> osób</p>
+                        <AuthorizeView>
+                            <Authorized>
+                                @if (IsFavorite)
+                                {
+                                    <button class="btn btn-outline-primary" @onclick="RemoveFromFavorites">
+                                        <i class="bi bi-bookmark-dash"></i> Usuń z półki
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-primary" @onclick="AddToFavorites">
+                                        <i class="bi bi-bookmark-star"></i> Dodaj na półkę
+                                    </button>
+                                }
+                            </Authorized>
 
-                    <AuthorizeView>
-                        <NotAuthorized>
-                            <span class="text-muted fst-italic">Zaloguj się, aby dodać na półkę</span>
-                        </NotAuthorized>
-                    </AuthorizeView>
+                            <NotAuthorized>
+                                <span class="text-muted fst-italic">Zaloguj się, aby dodać na półkę</span>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                     </div>
                 </div>
             </div>
 
@@ -213,9 +224,7 @@ else
                                                         </button>
                                                     }
                                                 </Authorized>
-                                            </AuthorizeView>
 
-                                            <AuthorizeView>
                                                 <NotAuthorized>
                                                     <span class="text-muted fst-italic">Zaloguj się, aby wypożyczyć</span>
                                                 </NotAuthorized>
@@ -244,6 +253,10 @@ else
     private string? _directoryPath { get; set; }
 
     private bool IsLoading = true;
+    private int FavoriteCount;
+    private bool IsFavorite;
+    private string UserId;
+    private bool IsAuthenticated;
 
     protected override async Task OnInitializedAsync()
     {
@@ -261,6 +274,19 @@ else
     private async Task LoadData()
     {
         book = await BookRepository.GetBookByIdAsync(BookId);
+
+        FavoriteCount = await FavoriteBookRepository.GetFavoriteCountForBookAsync(BookId);
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        IsAuthenticated = user.Identity?.IsAuthenticated ?? false;
+
+        if (IsAuthenticated)
+        {
+            UserId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            IsFavorite = await FavoriteBookRepository.IsFavoriteAsync(UserId, BookId);
+        }
     }
 
     private string GetBadgeClass(string tag)
@@ -307,5 +333,19 @@ else
         {
             await JS.ToastrWarning($"Błąd dodawania do koszyka: {ex.Message}", "Nie udało się dodać do koszyka.");
         }
+    }
+
+    private async Task AddToFavorites()
+    {
+        await FavoriteBookRepository.AddFavoriteAsync(UserId, BookId);
+        IsFavorite = true;
+        FavoriteCount++;
+    }
+
+    private async Task RemoveFromFavorites()
+    {
+        await FavoriteBookRepository.RemoveFavoriteAsync(UserId, BookId);
+        IsFavorite = false;
+        FavoriteCount--;
     }
 }

@@ -36,13 +36,11 @@ else
 
         @if (Books.Any())
         {
-
-            int index = 1;
-
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover table-sm text-nowrap">
                     <thead>
                         <tr>
+                            <th>Akcje</th>
                             <th>#</th>
                             <th></th>
                             <th>Tytuł</th>
@@ -53,23 +51,30 @@ else
                             <th>Wydawca</th>
                             <th>Rok wydania</th>
                             <th>Katalog</th>
-                            <th>Kategoria</th>
-                            <th>Akcje</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var book in Books)
+                        @{
+                            int index = (CurrentPage - 1) * PageSize + 1;
+                        }
+                        @foreach (var book in FilteredBooks)
                         {
                             <tr>
-
+                                <td class="text-center d-flex justify-content-between gap-2">
+                                        <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist" class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <button class="btn btn-outline-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                </td>
                                 <td>@index</td>
-
                                 <td>
                                     <a href="/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-info-square"></i>
                                     </a>
                                 </td>
-                                <td>@book.Title</td>
+                                <td class="text-truncate">@book.Title</td>
                                 <td>@book.BookAuthor</td>
                                 <td>
                                     @if (book.BookSpecialTags != null && book.BookSpecialTags.Any())
@@ -82,25 +87,22 @@ else
                                 </td>
                                 <td>@book.CopyCount</td>
                                 <td>@book.Isbn</td>
-                                <td>@book.BookPublisher</td>
+                                <td class="text-truncate">@book.BookPublisher</td>
                                 <td>@book.Year</td>
                                 <td>@(book.IsVisible ? "Tak" : "Nie")</td>
-                                <td>@book.BookCategory</td>
-                                <td class="text-end">
-                                    <div class="d-flex justify-content-end gap-2">
-                                        <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist" class="btn btn-outline-primary btn-sm" title="Edytuj">
-                                            <i class="bi bi-pencil-square"></i> Edytuj
-                                        </a>
-                                        <button class="btn btn-outline-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
-                                            <i class="bi bi-trash3"></i> Usuń
-                                        </button>
-                                    </div>
-                                </td>
                             </tr>
                             index++;
                         }
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+                    <button class="btn btn-primary" @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Poprzednia</button>
+
+                    <span>Strona @CurrentPage z @((TotalCount + PageSize - 1) / PageSize)</span>
+
+                    <button class="btn btn-primary" @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage * PageSize >= TotalCount)">Następna</button>
+                </div>
+
             </div>
         }
 
@@ -111,6 +113,10 @@ else
     private bool IsLoading { get; set; } = true;
     private IEnumerable<BookGetDto> Books { get; set; } = new List<BookGetDto>();
     private int DeleteBookID { get; set; } = 0;
+    private int CurrentPage = 1;
+    private int PageSize = 15;
+    private int TotalCount = 0;
+    private List<BookGetDto> FilteredBooks = new List<BookGetDto>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -129,6 +135,26 @@ else
     private async Task LoadBooks()
     {
         Books = await BookRepository.GetBooksAsync();
+        TotalCount = Books.Count();
+        LoadFilteredBooks();
+    }
+
+    private void LoadFilteredBooks()
+    {
+    FilteredBooks = Books
+        .Skip((CurrentPage - 1) * PageSize)
+        .Take(PageSize)
+        .ToList();
+    }
+
+    private async Task ChangePage(int page)
+    {
+        if (page < 1 || page > (int)Math.Ceiling(TotalCount / (double)PageSize))
+            return;
+
+        CurrentPage = page;
+        LoadFilteredBooks();
+        await InvokeAsync(StateHasChanged);
     }
 
     private void HandleDelete(int id)

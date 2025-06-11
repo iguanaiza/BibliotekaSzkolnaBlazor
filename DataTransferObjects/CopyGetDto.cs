@@ -8,7 +8,9 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
         public string Signature { get; set; } = null!; 
         public int InventoryNum { get; set; }
         public bool Available { get; set; }
-        public string Book { get; set; } = null!;
+        public string BookTitle { get; set; } = null!;
+        public string? BookImageUrl { get; set; }
+        public string? AuthorName { get; set; }
         public int BookId { get; set; }
     }
 }

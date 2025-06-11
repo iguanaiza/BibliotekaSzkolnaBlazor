@@ -4,6 +4,8 @@
 @inject IBookRepository BookRepository
 @inject IDictionaryRepository DictionaryRepository
 @inject NavigationManager NavigationManager
+@inject IFavoriteBookRepository FavoriteBookRepository
+@inject AuthenticationStateProvider AuthStateProvider
 @inject IJSRuntime JS
 @rendermode InteractiveServer
 
@@ -313,7 +315,7 @@
                                     }
                                     else
                                     {
-                                        <img src="@book.ImageUrl" alt="Okładka książki @book.Title" class="img-fluid">
+                                    <img src="@book.ImageUrl" alt="Okładka książki @book.Title" class="img-fluid p-2">
                                     }
                                 </div>
                             </div>
@@ -333,9 +335,9 @@
                                     <div class="d-flex flex-wrap gap-2">
                                         <AuthorizeView>
                                             <Authorized>
-                                                <a class="btn btn-outline-primary" role="button">
-                                                    <i class="bi bi-bookmark-star"></i> Dodaj na półkę
-                                                </a>
+                                                <button @onclick="() => ToggleFavorite(book)" class="btn btn-sm @(book.IsFavorite ? "btn-outline-primary" : "btn-outline-primary")">
+                                                    @(book.IsFavorite ? "Usuń z półki" : "Dodaj na półkę")
+                                                </button>
                                             </Authorized>
                                         </AuthorizeView>
                                     </div>
@@ -360,6 +362,12 @@
             </div>
         </div>
 
+<div class="d-flex justify-content-center align-items-center gap-3">
+    <button @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Poprzednia</button>
+    <span>Strona @CurrentPage z @((TotalCount + PageSize - 1) / PageSize)</span>
+    <button @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage * PageSize >= TotalCount)">Następna</button>
+</div>
+
 @code {
     #region parametry
     [Parameter]
@@ -375,6 +383,12 @@
     #region dane wejściowe
     private IEnumerable<BookGetDto> Books { get; set; } = new List<BookGetDto>();
     private string SearchTerm = "";
+
+    private string UserId;
+    private bool IsAuthenticated;
+    private int CurrentPage = 1;
+    private int PageSize = 10;  //na stronę
+    private int TotalCount = 0;
 
     private List<BookGetDto> FilteredBooks = new();
     private List<BookAuthor> Authors = new();
@@ -395,10 +409,27 @@
     private HashSet<string> SelectedTagTitles = new();
     #endregion
 
+    private async Task ToggleFavorite(BookGetDto book)
+    {
+        if (!IsAuthenticated || string.IsNullOrEmpty(UserId))
+            return;
+
+        if (book.IsFavorite)
+        {
+            await FavoriteBookRepository.RemoveFavoriteAsync(UserId, book.Id);
+            book.IsFavorite = false;
+        }
+        else
+        {
+            await FavoriteBookRepository.AddFavoriteAsync(UserId, book.Id);
+            book.IsFavorite = true;
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
-        FilteredBooks = Books.ToList();
+        await LoadBooks();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -432,6 +463,24 @@
         Categories = (await DictionaryRepository.GetBookCategoriesAsync()).ToList();
         Genres = (await DictionaryRepository.GetBookGenresAsync()).ToList();
         SpecialTags = (await DictionaryRepository.GetBookSpecialTagsAsync()).ToList();
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        IsAuthenticated = user.Identity?.IsAuthenticated ?? false;
+
+        if (IsAuthenticated)
+        {
+            UserId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            var userFavorites = await FavoriteBookRepository.GetUserFavoritesAsync(UserId);
+            var favoriteBookIds = userFavorites.Select(f => f.BookId).ToHashSet();
+
+            foreach (var book in Books)
+            {
+                book.IsFavorite = favoriteBookIds.Contains(book.Id);
+            }
+        }
     }
 
     private string GetBadgeClass(string tag)
@@ -506,7 +555,21 @@
             ).ToList();
         }
 
-        FilteredBooks = books;
+        TotalCount = books.Count;
+
+        FilteredBooks = books
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
+            .ToList();
     }
     #endregion
+
+    private async Task ChangePage(int page)
+    {
+        if (page < 1 || page > (int)Math.Ceiling(TotalCount / (double)PageSize))
+            return;
+
+        CurrentPage = page;
+        await LoadBooks();
+    }
 }

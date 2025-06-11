@@ -18,15 +18,18 @@ namespace BibliotekaSzkolnaBlazor.Repository
         public async Task<IEnumerable<CopyGetDto>> GetCopiesAsync()
         {
             return await _context.BookCopies
-                .Include(c => c.Book)
+                .Include(c => c.Book).ThenInclude(b => b.BookAuthor)
                 .Include(c => c.BookLoans)
                 .Select(c => new CopyGetDto
                 {
                     Id = c.Id,
                     Signature = c.Signature,
                     InventoryNum = c.InventoryNum,
-                    Book = c.Book.Title,
-                    Available = c.Available
+                    Available = c.Available,
+                    BookTitle = c.Book.Title,
+                    BookImageUrl = c.Book.ImageUrl,
+                    AuthorName = c.Book.BookAuthor.Surname + ", " + c.Book.BookAuthor.Name,
+                    BookId = c.BookId
                 })
                 .ToListAsync();
         }
@@ -34,7 +37,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
         public async Task<CopyGetDto?> GetCopyByIdAsync(int id)
         {
             return await _context.BookCopies
-            .Include(c => c.Book)
+            .Include(c => c.Book).ThenInclude(b => b.BookAuthor)
             .Where(c => c.Id == id)
             .Select(c => new CopyGetDto
             {
@@ -42,7 +45,9 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 Signature = c.Signature,
                 InventoryNum = c.InventoryNum,
                 Available = c.Available,
-                Book = c.Book.Title,
+                BookTitle = c.Book.Title,
+                BookImageUrl = c.Book.ImageUrl,
+                AuthorName = c.Book.BookAuthor.Surname + ", " + c.Book.BookAuthor.Name,
                 BookId = c.BookId
             })
             .FirstOrDefaultAsync();
@@ -69,7 +74,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 Id = copy.Id,
                 Signature = copy.Signature,
                 InventoryNum = copy.InventoryNum,
-                Book = copy.Book.Title,
+                BookTitle = copy.Book.Title,
                 BookId = copy.BookId,
                 Available = copy.Available
             };
@@ -96,7 +101,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 Id = copy.Id,
                 Signature = copy.Signature,
                 InventoryNum = copy.InventoryNum,
-                Book = copy.Book.Title,
+                BookTitle = copy.Book.Title
             };
         }
 

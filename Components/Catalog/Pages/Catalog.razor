@@ -3,359 +3,367 @@
 @layout CatalogLayout
 @inject IBookRepository BookRepository
 @inject IDictionaryRepository DictionaryRepository
+@inject IFavoriteBookRepository FavoriteBookRepository
+@inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
 @rendermode InteractiveServer
 
 <PageTitle>Katalog</PageTitle>
 
-        <!--Filtry i wyniki-->
-        <div class="row gx-3">
+<!--Filtry i wyniki-->
+<div class="row gx-3">
 
-            <!--Filtry-->
-                <!--Przycisk do widoku mobilnego-->
-                <button class="btn btn-outline-secondary d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#filtersOffcanvas" aria-controls="filtersOffcanvas">
-                    <i class="bi bi-funnel"></i> Filtry
-                </button>
+    <!--Filtry-->
+    <!--Przycisk do widoku mobilnego-->
+    <button class="btn btn-outline-secondary d-lg-none mb-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#filtersOffcanvas" aria-controls="filtersOffcanvas">
+        <i class="bi bi-funnel"></i> Filtry
+    </button>
 
-                <!--Widok na dużym ekranie-->
-                <div class="col-12 col-lg-3 d-none d-lg-block">
-                    <div class="card p-3 shadow-sm">
-                        <h5 class="mb-3">Filtry</h5>
+    <!--Widok na dużym ekranie-->
+    <div class="col-12 col-lg-3 d-none d-lg-block">
+        <div class="card p-3 shadow-sm">
+            <h5 class="mb-3">Filtry</h5>
 
-                        <!-- Autorzy -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Autor</label>
-                            <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                @foreach (var author in Authors)
-                                {
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="author_@author.Id"
-                                               value="@author.Id"
-                                               @onchange="() => ToggleAuthor(author.Id)">
-                                        <label class="form-check-label" for="author_@author.Id">
-                                            @author.Surname, @author.Name
-                                        </label>
-                                    </div>
-                                }
-                            </div>
+            <!-- Autorzy -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Autor</label>
+                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                    @foreach (var author in Authors)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="author_@author.Id"
+                                   value="@author.Id"
+                                   @onchange="() => ToggleAuthor(author.Id)">
+                            <label class="form-check-label" for="author_@author.Id">
+                                @author.Surname, @author.Name
+                            </label>
                         </div>
+                    }
+                </div>
+            </div>
 
-                        <!-- Wydawcy -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Wydawca</label>
-                            <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                @foreach (var publisher in Publishers)
-                                {
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="publisher_@publisher.Id"
-                                               value="@publisher.Id"
-                                               @onchange="() => TogglePublisher(publisher.Id)">
-                                        <label class="form-check-label" for="publisher_@publisher.Id">
-                                            @publisher.Name
-                                        </label>
-                                    </div>
-                                }
-                            </div>
+            <!-- Wydawcy -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Wydawca</label>
+                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                    @foreach (var publisher in Publishers)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="publisher_@publisher.Id"
+                                   value="@publisher.Id"
+                                   @onchange="() => TogglePublisher(publisher.Id)">
+                            <label class="form-check-label" for="publisher_@publisher.Id">
+                                @publisher.Name
+                            </label>
                         </div>
+                    }
+                </div>
+            </div>
 
-                        <!-- Serie -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Seria</label>
-                            <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                @foreach (var series in Series)
-                                {
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="series_@series.Id"
-                                               value="@series.Id"
-                                               @onchange="() => ToggleSeries(series.Id)">
-                                        <label class="form-check-label" for="series_@series.Id">
-                                            @series.Title
-                                        </label>
-                                    </div>
-                                }
-                            </div>
+            <!-- Serie -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Seria</label>
+                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                    @foreach (var series in Series)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="series_@series.Id"
+                                   value="@series.Id"
+                                   @onchange="() => ToggleSeries(series.Id)">
+                            <label class="form-check-label" for="series_@series.Id">
+                                @series.Title
+                            </label>
                         </div>
+                    }
+                </div>
+            </div>
 
-                        <!-- Gatunki -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Gatunek</label>
-                            <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                @foreach (var genre in Genres)
-                                {
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="genre_@genre.Id"
-                                               value="@genre.Id"
-                                               @onchange="() => ToggleGenre(genre.Id)">
-                                        <label class="form-check-label" for="genre_@genre.Id">
-                                            @genre.Title
-                                        </label>
-                                    </div>
-                                }
-                            </div>
+            <!-- Gatunki -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Gatunek</label>
+                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                    @foreach (var genre in Genres)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="genre_@genre.Id"
+                                   value="@genre.Id"
+                                   @onchange="() => ToggleGenre(genre.Id)">
+                            <label class="form-check-label" for="genre_@genre.Id">
+                                @genre.Title
+                            </label>
                         </div>
+                    }
+                </div>
+            </div>
 
-                        <!-- Kategorie -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Kategoria</label>
-                            <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                @foreach (var category in Categories)
-                                {
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="category_@category.Id"
-                                               value="@category.Id"
-                                               @onchange="() => ToggleCategory(category.Id)">
-                                        <label class="form-check-label" for="category_@category.Id">
-                                            @category.Name
-                                        </label>
-                                    </div>
-                                }
-                            </div>
+            <!-- Kategorie -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Kategoria</label>
+                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                    @foreach (var category in Categories)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="category_@category.Id"
+                                   value="@category.Id"
+                                   @onchange="() => ToggleCategory(category.Id)">
+                            <label class="form-check-label" for="category_@category.Id">
+                                @category.Name
+                            </label>
                         </div>
+                    }
+                </div>
+            </div>
 
-                        <!-- Typy -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Typ</label>
-                            <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                @foreach (var type in Types)
-                                {
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="type_@type.Id"
-                                               value="@type.Id"
-                                               @onchange="() => ToggleType(type.Id)">
-                                        <label class="form-check-label" for="type_@type.Id">
-                                            @type.Title
-                                        </label>
-                                    </div>
-                                }
-                            </div>
+            <!-- Typy -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Typ</label>
+                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                    @foreach (var type in Types)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="type_@type.Id"
+                                   value="@type.Id"
+                                   @onchange="() => ToggleType(type.Id)">
+                            <label class="form-check-label" for="type_@type.Id">
+                                @type.Title
+                            </label>
                         </div>
+                    }
+                </div>
+            </div>
 
-                        <!-- Tagi -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tagi</label>
-                            <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                @foreach (var tag in SpecialTags)
-                                {
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="tag_@tag.Title"
-                                               value="@tag.Title"
-                                               @onchange="() => ToggleTag(tag.Title)">
-                                        <label class="form-check-label" for="tag_@tag.Title">
-                                            @tag.Title
-                                        </label>
-                                    </div>
-                                }
-                            </div>
+            <!-- Tagi -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tagi</label>
+                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                    @foreach (var tag in SpecialTags)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="tag_@tag.Title"
+                                   value="@tag.Title"
+                                   @onchange="() => ToggleTag(tag.Title)">
+                            <label class="form-check-label" for="tag_@tag.Title">
+                                @tag.Title
+                            </label>
                         </div>
+                    }
+                </div>
+            </div>
 
-                        <!-- Przycisk zastosuj -->
-                        <button class="btn btn-primary w-100" @onclick="ApplyFilters">Zastosuj filtry</button>
+            <!-- Przycisk zastosuj -->
+            <button class="btn btn-primary w-100" @onclick="ApplyFilters">Zastosuj filtry</button>
+        </div>
+    </div>
+
+    <!--Widok na mobile-->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="filtersOffcanvas" aria-labelledby="filtersOffcanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="filtersOffcanvasLabel">Filtry</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Zamknij"></button>
+        </div>
+
+        <div class="offcanvas-body">
+            <div class="border rounded p-3 shadow-sm">
+
+                <!-- Autorzy -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Autor</label>
+                    <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var author in Authors)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="author_@author.Id"
+                                       value="@author.Id"
+                                       @onchange="() => ToggleAuthor(author.Id)">
+                                <label class="form-check-label" for="author_@author.Id">
+                                    @author.Surname, @author.Name
+                                </label>
+                            </div>
+                        }
                     </div>
                 </div>
 
-                <!--Widok na mobile-->
-                <div class="offcanvas offcanvas-start" tabindex="-1" id="filtersOffcanvas" aria-labelledby="filtersOffcanvasLabel">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="filtersOffcanvasLabel">Filtry</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Zamknij"></button>
-                    </div>
-
-                    <div class="offcanvas-body">
-                        <div class="border rounded p-3 shadow-sm">
-
-                            <!-- Autorzy -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Autor</label>
-                                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                    @foreach (var author in Authors)
-                                    {
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="author_@author.Id"
-                                                   value="@author.Id"
-                                                   @onchange="() => ToggleAuthor(author.Id)">
-                                            <label class="form-check-label" for="author_@author.Id">
-                                                @author.Surname, @author.Name
-                                            </label>
-                                        </div>
-                                    }
-                                </div>
+                <!-- Wydawcy -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Wydawca</label>
+                    <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var publisher in Publishers)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="publisher_@publisher.Id"
+                                       value="@publisher.Id"
+                                       @onchange="() => TogglePublisher(publisher.Id)">
+                                <label class="form-check-label" for="publisher_@publisher.Id">
+                                    @publisher.Name
+                                </label>
                             </div>
-
-                            <!-- Wydawcy -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Wydawca</label>
-                                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                    @foreach (var publisher in Publishers)
-                                    {
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="publisher_@publisher.Id"
-                                                   value="@publisher.Id"
-                                                   @onchange="() => TogglePublisher(publisher.Id)">
-                                            <label class="form-check-label" for="publisher_@publisher.Id">
-                                                @publisher.Name
-                                            </label>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Serie -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Seria</label>
-                                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                    @foreach (var series in Series)
-                                    {
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="series_@series.Id"
-                                                   value="@series.Id"
-                                                   @onchange="() => ToggleSeries(series.Id)">
-                                            <label class="form-check-label" for="series_@series.Id">
-                                                @series.Title
-                                            </label>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Gatunki -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Gatunek</label>
-                                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                    @foreach (var genre in Genres)
-                                    {
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="genre_@genre.Id"
-                                                   value="@genre.Id"
-                                                   @onchange="() => ToggleGenre(genre.Id)">
-                                            <label class="form-check-label" for="genre_@genre.Id">
-                                                @genre.Title
-                                            </label>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Kategorie -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Kategoria</label>
-                                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                    @foreach (var category in Categories)
-                                    {
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="category_@category.Id"
-                                                   value="@category.Id"
-                                                   @onchange="() => ToggleCategory(category.Id)">
-                                            <label class="form-check-label" for="category_@category.Id">
-                                                @category.Name
-                                            </label>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Typy -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Typ</label>
-                                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                    @foreach (var type in Types)
-                                    {
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="type_@type.Id"
-                                                   value="@type.Id"
-                                                   @onchange="() => ToggleType(type.Id)">
-                                            <label class="form-check-label" for="type_@type.Id">
-                                                @type.Title
-                                            </label>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Tagi -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Tagi</label>
-                                <div class="form-check" style="max-height: 200px; overflow-y: auto;">
-                                    @foreach (var tag in SpecialTags)
-                                    {
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="tag_@tag.Title"
-                                                   value="@tag.Title"
-                                                   @onchange="() => ToggleTag(tag.Title)">
-                                            <label class="form-check-label" for="tag_@tag.Title">
-                                                @tag.Title
-                                            </label>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Przycisk zastosuj -->
-                            <button class="btn btn-primary w-100" @onclick="ApplyFilters">Zastosuj filtry</button>
-                        </div>
+                        }
                     </div>
                 </div>
 
-            <!--Wyniki-->
-            <div class="col-12 col-lg-8 col-xl-9">
-            @foreach (var book in (FilteredBooks?.Any() == true ? FilteredBooks : Books))
-                {
-                    <div class="card mb-3 shadow-sm">
-                        <div class="row g-0">
-                            <div class="col-md-4 d-flex justify-content-center align-items-center">
-                                <div class="book-cover-container">
-                                    @if (book.ImageUrl == null)
-                                    {
-                                        <p class="text-muted text-center m-0">Brak okładki.</p>
-                                    }
-                                    else
-                                    {
-                                        <img src="@book.ImageUrl" alt="Okładka książki @book.Title" class="img-fluid">
-                                    }
-                                </div>
+                <!-- Serie -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Seria</label>
+                    <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var series in Series)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="series_@series.Id"
+                                       value="@series.Id"
+                                       @onchange="() => ToggleSeries(series.Id)">
+                                <label class="form-check-label" for="series_@series.Id">
+                                    @series.Title
+                                </label>
                             </div>
-
-                            <div class="col-md-8 d-flex flex-column justify-content-between p-3">
-                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                                    <div>
-                                        @if (book.BookSpecialTags != null && book.BookSpecialTags.Any())
-                                        {
-                                            foreach (var tag in book.BookSpecialTags)
-                                            {
-                                                <span class="@GetBadgeClass(tag) me-1" role="note">@tag</span>
-                                            }
-                                        }
-                                    </div>
-
-                                    <div class="d-flex flex-wrap gap-2">
-                                        <AuthorizeView>
-                                            <Authorized>
-                                                <a class="btn btn-outline-primary" role="button">
-                                                    <i class="bi bi-bookmark-star"></i> Dodaj na półkę
-                                                </a>
-                                            </Authorized>
-                                        </AuthorizeView>
-                                    </div>
-                                </div>
-
-                                <div class="card-body p-0">
-                                    <h5 class="card-title">@book.Title</h5>
-                                    <p class="card-text truncate-3-lines mb-0">@book.Description</p>
-                                    <p class="card-text"><small class="text-body-secondary">@book.BookAuthor</small></p>
-                                </div>
-
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <p class="card-text mb-0">Dostępnych: <b>@book.AvailableCopyCount</b></p>
-                                    <a href="/catalog/view/@book.Id?returnUrl=/catalog" class="btn btn-primary" role="button">
-                                        <i class="bi bi-info-square"></i> Szczegóły
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        }
                     </div>
-                }
+                </div>
+
+                <!-- Gatunki -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Gatunek</label>
+                    <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var genre in Genres)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="genre_@genre.Id"
+                                       value="@genre.Id"
+                                       @onchange="() => ToggleGenre(genre.Id)">
+                                <label class="form-check-label" for="genre_@genre.Id">
+                                    @genre.Title
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Kategorie -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Kategoria</label>
+                    <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var category in Categories)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="category_@category.Id"
+                                       value="@category.Id"
+                                       @onchange="() => ToggleCategory(category.Id)">
+                                <label class="form-check-label" for="category_@category.Id">
+                                    @category.Name
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Typy -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Typ</label>
+                    <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var type in Types)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="type_@type.Id"
+                                       value="@type.Id"
+                                       @onchange="() => ToggleType(type.Id)">
+                                <label class="form-check-label" for="type_@type.Id">
+                                    @type.Title
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Tagi -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tagi</label>
+                    <div class="form-check" style="max-height: 200px; overflow-y: auto;">
+                        @foreach (var tag in SpecialTags)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="tag_@tag.Title"
+                                       value="@tag.Title"
+                                       @onchange="() => ToggleTag(tag.Title)">
+                                <label class="form-check-label" for="tag_@tag.Title">
+                                    @tag.Title
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Przycisk zastosuj -->
+                <button class="btn btn-primary w-100" @onclick="ApplyFilters">Zastosuj filtry</button>
             </div>
         </div>
+    </div>
+
+    <!--Wyniki-->
+    <div class="col-12 col-lg-8 col-xl-9">
+        @foreach (var book in (FilteredBooks?.Any() == true ? FilteredBooks : Books))
+        {
+            <div class="card mb-3 shadow-sm">
+                <div class="row g-0">
+                    <div class="col-md-4 d-flex justify-content-center align-items-center">
+                        <div class="book-cover-container">
+                            @if (book.ImageUrl == null)
+                            {
+                                <p class="text-muted text-center m-0">Brak okładki.</p>
+                            }
+                            else
+                            {
+                                <img src="@book.ImageUrl" alt="Okładka książki @book.Title" class="img-fluid p-2">
+                            }
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 d-flex flex-column justify-content-between p-3">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                            <div>
+                                @if (book.BookSpecialTags != null && book.BookSpecialTags.Any())
+                                {
+                                    foreach (var tag in book.BookSpecialTags)
+                                    {
+                                        <span class="@GetBadgeClass(tag) me-1" role="note">@tag</span>
+                                    }
+                                }
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                <AuthorizeView>
+                                    <Authorized>
+                                        <button @onclick="() => ToggleFavorite(book)" class="btn btn-sm @(book.IsFavorite ? "btn-outline-primary" : "btn-outline-primary")">
+                                            @(book.IsFavorite ? "Usuń z półki" : "Dodaj na półkę")
+                                        </button>
+                                    </Authorized>
+                                </AuthorizeView>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <h5 class="card-title">@book.Title</h5>
+                            <p class="card-text truncate-3-lines mb-0">@book.Description</p>
+                            <p class="card-text"><small class="text-body-secondary">@book.BookAuthor</small></p>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <p class="card-text mb-0">Dostępnych: <b>@book.AvailableCopyCount</b></p>
+                            <a href="/catalog/view/@book.Id?returnUrl=/catalog" class="btn btn-primary" role="button">
+                                <i class="bi bi-info-square"></i> Szczegóły
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="d-flex justify-content-center align-items-center gap-3">
+    <button @onclick="() => ChangePage(CurrentPage - 1)" disabled="@(CurrentPage == 1)">Poprzednia</button>
+    <span>Strona @CurrentPage z @((TotalCount + PageSize - 1) / PageSize)</span>
+    <button @onclick="() => ChangePage(CurrentPage + 1)" disabled="@(CurrentPage * PageSize >= TotalCount)">Następna</button>
+</div>
 
 @code {
     #region parametry
@@ -367,6 +375,12 @@
 
     #region dane wejściowe
     private IEnumerable<BookGetDto> Books { get; set; } = new List<BookGetDto>();
+
+    private string UserId;
+    private bool IsAuthenticated;
+    private int CurrentPage = 1;
+    private int PageSize = 10;  //na stronę
+    private int TotalCount = 0;
 
     private List<BookGetDto> FilteredBooks = new();
     private List<BookAuthor> Authors = new();
@@ -390,7 +404,7 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
-        FilteredBooks = Books.ToList();
+        await LoadBooks();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -398,6 +412,23 @@
         if (firstRender)
         {
             await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
+
+    private async Task ToggleFavorite(BookGetDto book)
+    {
+        if (!IsAuthenticated || string.IsNullOrEmpty(UserId))
+            return;
+
+        if (book.IsFavorite)
+        {
+            await FavoriteBookRepository.RemoveFavoriteAsync(UserId, book.Id);
+            book.IsFavorite = false;
+        }
+        else
+        {
+            await FavoriteBookRepository.AddFavoriteAsync(UserId, book.Id);
+            book.IsFavorite = true;
         }
     }
 
@@ -411,6 +442,24 @@
         Categories = (await DictionaryRepository.GetBookCategoriesAsync()).ToList();
         Genres = (await DictionaryRepository.GetBookGenresAsync()).ToList();
         SpecialTags = (await DictionaryRepository.GetBookSpecialTagsAsync()).ToList();
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        IsAuthenticated = user.Identity?.IsAuthenticated ?? false;
+
+        if (IsAuthenticated)
+        {
+            UserId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            var userFavorites = await FavoriteBookRepository.GetUserFavoritesAsync(UserId);
+            var favoriteBookIds = userFavorites.Select(f => f.BookId).ToHashSet();
+
+            foreach (var book in Books)
+            {
+                book.IsFavorite = favoriteBookIds.Contains(book.Id);
+            }
+        }
     }
 
     private string GetBadgeClass(string tag)
@@ -474,7 +523,21 @@
             books = books.Where(b => b.BookSpecialTags != null &&
                                      b.BookSpecialTags.Any(tag => SelectedTagTitles.Contains(tag))).ToList();
 
-        FilteredBooks = books;
+        TotalCount = books.Count;
+
+        FilteredBooks = books
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
+            .ToList();
     }
     #endregion
+
+    private async Task ChangePage(int page)
+    {
+        if (page < 1 || page > (int)Math.Ceiling(TotalCount / (double)PageSize))
+            return;
+
+        CurrentPage = page;
+        await LoadBooks();
+    }
 }

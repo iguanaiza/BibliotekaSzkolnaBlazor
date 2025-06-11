@@ -21,8 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Pages\Catalog\" />
-    <Folder Include="Components\Pages\Management\" />
     <Folder Include="Components\Shared\" />
     <Folder Include="Migrations\" />
     <Folder Include="ViewModels\" />
@@ -34,9 +32,6 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
     <Content Update="Components\Catalog\Pages\BookView.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
-    <Content Update="Components\Pages\Management\BookCopyUpsert.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
