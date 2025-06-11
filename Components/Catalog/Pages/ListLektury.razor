@@ -1,16 +1,8 @@
-﻿@page "/podreczniki"
-
+﻿@page "/lektury"
+@layout CatalogLayout
 @inject IBookRepository BookRepository
 @inject IJSRuntime JS
-
 @rendermode InteractiveServer
-
-<CatalogNavbar />
-
-<div class="w-100">
-    <div class="mx-auto px-3 catalog-width">
-        <!--Menu główne i searchbar-->
-        <CatalogSearchBar />
 
         @if (IsLoading)
         {
@@ -47,7 +39,6 @@
                                         <th>#</th>
                                         <th></th>
                                         <th>Klasa</th>
-                                        <th>Przedmiot</th>
                                         <th>Tytuł</th>
                                         <th>Autor</th>
                                         <th>Wydawca</th>
@@ -67,7 +58,6 @@
                                                 </a>
                                             </td>
                                             <td>@book.Class</td>
-                                            <td>@book.Subject</td>
                                             <td>@book.Title</td>
                                             <td>@book.BookAuthor</td>
                                             <td>@book.BookPublisher</td>
@@ -83,10 +73,6 @@
                 </div>
             </div>
         }
-    </div>
-</div>
-
-<CatalogFooter />
 
 @code {
     private bool IsLoading { get; set; } = true;
@@ -98,8 +84,16 @@
         IsLoading = false;
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
+
     private async Task LoadBooks()
     {
-        Books = await BookRepository.GetPodrecznikiAsync();
+        Books = await BookRepository.GetLekturyAsync();
     }
 }

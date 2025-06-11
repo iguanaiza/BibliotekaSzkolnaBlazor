@@ -1,20 +1,13 @@
 ﻿@page "/catalog"
 @page "/search"
-
+@layout CatalogLayout
 @inject IBookRepository BookRepository
 @inject IDictionaryRepository DictionaryRepository
 @inject NavigationManager NavigationManager
-
+@inject IJSRuntime JS
 @rendermode InteractiveServer
 
 <PageTitle>Katalog</PageTitle>
-
-<CatalogNavbar />
-
-<div class="w-100">
-    <div class="mx-auto px-3 catalog-width">
-        <!--Menu główne i searchbar-->
-        <CatalogSearchBar />
 
         <!--Filtry i wyniki-->
         <div class="row gx-3">
@@ -378,10 +371,6 @@
                 }
             </div>
         </div>
-    </div>
-</div>
-
-<CatalogFooter />
 
 @code {
     #region parametry
@@ -422,6 +411,14 @@
     {
         await LoadData();
         FilteredBooks = Books.ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
     }
 
     protected override async Task OnParametersSetAsync()

@@ -2,22 +2,14 @@
 @page "/search/{BookId:int}/view"
 @page "/catalog/view/{BookId:int}"
 @page "/lektury/view/{BookId:int}"
-
+@layout CatalogLayout
 @inject IBookRepository BookRepository
 @inject IDictionaryRepository DictionaryRepository
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
-
 @rendermode InteractiveServer
 
 <PageTitle>Podgląd</PageTitle>
-
-<CatalogNavbar />
-
-<div class="w-100">
-    <div class="mx-auto px-3 catalog-width">
-        <!--Menu główne i searchbar-->
-        <CatalogSearchBar />
 
         @if (IsLoading)
         {
@@ -232,10 +224,6 @@
                 </div>
             </div>
         }
-    </div>
-</div>
-
-<CatalogFooter />
 
 @code {
     [Parameter]
@@ -255,6 +243,13 @@
         IsLoading = false;
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
     private async Task LoadData()
     {
         book = await BookRepository.GetBookByIdAsync(BookId);

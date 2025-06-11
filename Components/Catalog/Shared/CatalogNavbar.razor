@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager NavigationManager
 @inject IJSRuntime JS
+@rendermode InteractiveServer
 
 <div class="catalog-navbar navbar navbar-expand-md">
     <div class="container-fluid">
@@ -85,14 +86,6 @@
 </div>
 
 @code {
-     protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("applyUserPreferences");
-        }
-    }
-
     private async Task CycleFontSize() => await JS.InvokeVoidAsync("cycleFontSize");
     private async Task CycleTheme() => await JS.InvokeVoidAsync("cycleTheme");
     private async Task ToggleContrast() => await JS.InvokeVoidAsync("toggleContrast");

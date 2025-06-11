@@ -21,19 +21,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Pages\Catalog\" />
+    <Folder Include="Components\Pages\Management\" />
+    <Folder Include="Components\Shared\" />
     <Folder Include="Migrations\" />
     <Folder Include="ViewModels\" />
     <Folder Include="wwwroot\images\books\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Components\Pages\LibraryCatalog_pages\ListLektury.razor">
+    <Content Update="Components\Catalog\Pages\ListLektury.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="Components\Pages\LibraryCatalog_pages\BookView.razor">
+    <Content Update="Components\Catalog\Pages\BookView.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="Components\Pages\LibraryManagement_pages\BookCopyUpsert.razor">
+    <Content Update="Components\Pages\Management\BookCopyUpsert.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>

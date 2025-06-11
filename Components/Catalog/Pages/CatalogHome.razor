@@ -1,23 +1,12 @@
 ﻿@page "/"
-
+@layout CatalogLayout
 @inject IBookRepository BookRepository
 @inject IDictionaryRepository DictionaryRepository
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
-
 @rendermode InteractiveServer
 
 <PageTitle>Strona główna</PageTitle>
-
-<CatalogNavbar/>
-
-<div class="w-100 mb-4">
-    <div class="mx-auto px-3 catalog-width">
-        <!--Menu główne i searchbar-->
-        <CatalogSearchBar />
-
-        <!--Body-->
-        
         @foreach (var tag in BooksByTag.Keys)
         {
         <div class="container-fluid">
@@ -44,10 +33,6 @@
             </div>
             </div>
         }
-    </div>
-</div>
-
-<CatalogFooter/>
 
 @code {
     [Parameter]
@@ -65,6 +50,14 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
+    }
+
+     protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
     }
 
     private async Task LoadData()

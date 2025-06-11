@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject IJSRuntime JS
 
 <div class="page">
     <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
@@ -20,13 +19,3 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
-
-@code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("applyUserPreferences");
-        }
-    }
-}

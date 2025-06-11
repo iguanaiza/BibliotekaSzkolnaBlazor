@@ -1,0 +1,180 @@
+﻿@page "/booksbin"
+@layout ManagementLayout
+@inject IBookRepository BookRepository
+@inject IJSRuntime JS
+
+@rendermode InteractiveServer
+
+<DeleteModal OnModalConfirmation="ConfirmDelete_Click"/>
+<RestoreModal OnModalConfirmation="ConfirmRestore_Click"/>
+
+@if (IsLoading)
+{
+    <div class="position-absolute w-75  h-75 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="/images/loading-book.gif" alt="loading" />
+        <p>Ładowanie...</p>
+    </div>
+}
+
+else
+{
+    <div class="card-header bg-theme bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="py-2">Kosz</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="row pb-3">
+        </div>
+
+        @if (Books.Any())
+        {
+
+            int index = 1;
+
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover table-sm text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th></th>
+                            <th>Tytuł</th>
+                            <th>Autor</th>
+                            <th>Ilość</th>
+                            <th>ISBN</th>
+                            <th>Wydawca</th>
+                            <th>Rok wydania</th>
+                            <th>Kategoria</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var book in Books)
+                        {
+                            <tr>
+
+                                <td>@index</td>
+
+                                <td>
+                                    <a href="/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-info-square"></i>
+                                    </a>
+                                </td>
+                                <td>@book.Title</td>
+                                <td>@book.BookAuthor</td>
+                                <td>@book.CopyCount</td>
+                                <td>@book.Isbn</td>
+                                <td>@book.BookPublisher</td>
+                                <td>@book.Year</td>
+                                <td>@book.BookCategory</td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button class="btn btn-outline-primary btn-sm" @onclick="() => HandleUndo(book.Id)" title="Przywróć">
+                                            <i class="bi bi-pencil-square"></i> Przywróć
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
+                                            <i class="bi bi-trash3"></i> Usuń na zawsze
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+}
+
+@code {
+    private bool IsLoading { get; set; } = true;
+    private IEnumerable<BookGetDto> Books { get; set; } = new List<BookGetDto>();
+    private int DeleteBookID { get; set; } = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBooks();
+        IsLoading = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
+
+    private async Task LoadBooks()
+    {
+        Books = await BookRepository.GetDeletedBooksAsync();
+    }
+
+    #region usuwanie calkowite
+    private void HandleDelete(int id)
+    {
+        DeleteBookID = id;
+        JS.InvokeVoidAsync("ShowDeleteModal");
+    }
+
+    private async Task ConfirmDelete_Click(bool isConfirmed)
+    {
+        IsLoading = true;
+        await JS.InvokeVoidAsync("HideDeleteModal");
+
+        if (isConfirmed && DeleteBookID !=0)
+        {
+            var result = await BookRepository.DeleteBookAsync(DeleteBookID);
+
+            if (result == false)
+            {
+                await JS.ToastrWarning("Nie znaleziono rekordu lub książka posiada jakieś egzemplarze.", "Nie udało się usunąć książki.");
+            }
+            else
+            {
+                await JS.ToastrInfo("Książka została usunięta pomyślnie.", "Książka usunięta.");
+            }
+
+            await LoadBooks();
+        }
+        DeleteBookID = 0;
+        IsLoading = false;
+    }
+    #endregion
+
+    #region przywrocenie
+    private void HandleUndo(int id)
+    {
+        DeleteBookID = id;
+        JS.InvokeVoidAsync("ShowRestoreModal");
+    }
+
+    private async Task ConfirmRestore_Click(bool isConfirmed)
+    {
+        IsLoading = true;
+        await JS.InvokeVoidAsync("HideRestoreModal");
+
+        if (isConfirmed && DeleteBookID !=0)
+        {
+            var result = await BookRepository.RestoreBookAsync(DeleteBookID);
+            if (result == null)
+            {
+                await JS.ToastrWarning("Nie znaleziono rekordu.","Nie udało się przywrócić książki.");
+            }
+
+            else
+            {
+                await JS.ToastrInfo("Książka została przywrócona pomyślnie.","Książka przywrócona.");
+            }
+            await LoadBooks();
+        }
+        DeleteBookID = 0;
+        IsLoading = false;
+    }
+    #endregion
+}

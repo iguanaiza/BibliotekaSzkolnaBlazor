@@ -1,0 +1,13 @@
+﻿@inherits LayoutComponentBase
+@layout MainLayout
+
+<CatalogNavbar/>
+
+<div class="w-100 mb-4">
+    <div class="mx-auto px-3 catalog-width">
+        <CatalogSearchBar/>
+        @Body
+    </div>
+</div>
+
+<CatalogFooter />

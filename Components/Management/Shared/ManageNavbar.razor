@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager NavigationManager
 @inject IJSRuntime JS
+@rendermode InteractiveServer
 
 <div class="catalog-navbar navbar navbar-expand-md">
     <div class="container-fluid">
@@ -39,42 +40,28 @@
                     </AuthorizeView>
                 </ul>
 
-                <ul class="navbar-nav d-flex flex-row">
+                <div class="d-flex flex-row">
                     <!-- Zmień rozmiar czcionki -->
-                    <li class="nav-item mx-2">
-                        <div class="nav-link" @onclick="CycleFontSize">
-                            <i class="bi bi-type theme-font-color" title="Zmień rozmiar czcionki"></i>
-                        </div>
-                    </li>
+                    <button class="btn nav-link mx-2 p-0" @onclick="CycleFontSize" title="Zmień rozmiar czcionki">
+                        <i class="bi bi-type theme-font-color"></i>
+                    </button>
 
                     <!-- Zmień motyw kolorystyczny -->
-                    <li class="nav-item mx-2">
-                        <div class="nav-link" @onclick="CycleTheme">
-                            <i class="bi bi-palette-fill theme-font-color" title="Zmień motyw"></i>
-                        </div>
-                    </li>
+                    <button class="btn nav-link mx-2 p-0" @onclick="CycleTheme" title="Zmień motyw">
+                        <i class="bi bi-palette-fill theme-font-color"></i>
+                    </button>
 
                     <!-- Włącz/wyłącz kontrast -->
-                    <li class="nav-item mx-2">
-                        <div class="nav-link" @onclick="ToggleContrast">
-                            <i class="bi bi-highlights theme-font-color" title="Wysoki kontrast"></i>
-                        </div>
-                    </li>
-                </ul>
+                    <button class="btn nav-link mx-2 p-0" @onclick="ToggleContrast" title="Wysoki kontrast">
+                        <i class="bi bi-highlights theme-font-color"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 @code {
-     protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("applyUserPreferences");
-        }
-    }
-
     private async Task CycleFontSize() => await JS.InvokeVoidAsync("cycleFontSize");
     private async Task CycleTheme() => await JS.InvokeVoidAsync("cycleTheme");
     private async Task ToggleContrast() => await JS.InvokeVoidAsync("toggleContrast");
