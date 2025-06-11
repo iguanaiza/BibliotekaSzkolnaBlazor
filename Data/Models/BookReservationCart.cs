@@ -11,5 +11,7 @@
         public BookCopy BookCopy { get; set; }
 
         public DateTime AddedAt { get; set; } = DateTime.UtcNow;
+
+        public bool IsFinalized { get; set; } = false; 
     }
 }

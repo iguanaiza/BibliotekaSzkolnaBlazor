@@ -1,0 +1,72 @@
+﻿@page "/cart"
+@layout CatalogLayout
+@inject ICopyRepository CopyRepository
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<PageTitle>Koszyk zamówień</PageTitle>
+
+                @foreach (var book in Books)
+                {
+                    <div class="card mb-3 shadow-sm">
+                        <div class="row g-0">
+                            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                                <div class="book-cover-container">
+                                    
+                                        <img src="~/images/books/002eb32e-efb7-49a4-8ec2-d70f668572c2..jpg" alt="Okładka książki" class="img-fluid">
+                                </div>
+                            </div>
+
+                            <div class="col-md-8 d-flex flex-column justify-content-between p-3">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <a href="/catalog/view/@book.Id?returnUrl=/cart" class="btn btn-primary" role="button">
+                                            <i class="bi bi-info-square"></i> Szczegóły
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="card-body p-0">
+                                    <h5 class="card-title">Tytuł</h5>
+                                    <p class="card-text truncate-3-lines mb-0">Opis</p>
+                                    <p class="card-text"><small class="text-body-secondary">Autor</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+@code {
+    #region parametry
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+    private string? _directoryPath { get; set; }
+
+    #endregion
+
+    #region dane wejściowe
+    private IEnumerable<CopyGetDto> Books { get; set; } = new List<CopyGetDto>();
+    #endregion
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
+
+
+    private async Task LoadData()
+    {
+        Books = await CopyRepository.GetCopiesAsync();
+    }
+}

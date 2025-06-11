@@ -1,4 +1,4 @@
-﻿@page "/search"
+﻿@page "/catalog"
 
 @layout CatalogLayout
 @inject IBookRepository BookRepository
@@ -11,9 +11,6 @@
 
         <!--Filtry i wyniki-->
         <div class="row gx-3">
-            <div class="col-12">
-                    <p>Wyniki dla frazy: "@SearchTerm"</p>
-            </div>
 
             <!--Filtry-->
                 <!--Przycisk do widoku mobilnego-->
@@ -301,7 +298,7 @@
 
             <!--Wyniki-->
             <div class="col-12 col-lg-8 col-xl-9">
-                @foreach (var book in (FilteredBooks?.Any() == true ? FilteredBooks : Books))
+            @foreach (var book in (FilteredBooks?.Any() == true ? FilteredBooks : Books))
                 {
                     <div class="card mb-3 shadow-sm">
                         <div class="row g-0">
@@ -349,9 +346,9 @@
 
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <p class="card-text mb-0">Dostępnych: <b>@book.AvailableCopyCount</b></p>
-                                     <a href="/search/@book.Id/view?returnUrl=/search?term=@term" class="btn btn-primary" role="button">
-                                         <i class="bi bi-info-square"></i> Szczegóły
-                                     </a>
+                                    <a href="/catalog/view/@book.Id?returnUrl=/catalog" class="btn btn-primary" role="button">
+                                        <i class="bi bi-info-square"></i> Szczegóły
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -366,15 +363,10 @@
     [SupplyParameterFromQuery]
     public string? ReturnUrl { get; set; }
     private string? _directoryPath { get; set; }
-
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public string? term { get; set; }
     #endregion
 
     #region dane wejściowe
     private IEnumerable<BookGetDto> Books { get; set; } = new List<BookGetDto>();
-    private string SearchTerm = "";
 
     private List<BookGetDto> FilteredBooks = new();
     private List<BookAuthor> Authors = new();
@@ -407,19 +399,6 @@
         {
             await JS.InvokeVoidAsync("applyUserPreferences");
         }
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (!string.IsNullOrWhiteSpace(term))
-        {
-            SearchTerm = term;
-        }
-        else
-        {
-            SearchTerm = "";
-        }
-        await LoadBooks();
     }
 
     private async Task LoadData()
@@ -463,7 +442,7 @@
     }
     #endregion
 
-    #region wyszukiwanie i filtry
+    #region filtry
     private async Task ApplyFilters()
     {
         await LoadBooks();
@@ -494,17 +473,6 @@
         if (SelectedTagTitles.Any())
             books = books.Where(b => b.BookSpecialTags != null &&
                                      b.BookSpecialTags.Any(tag => SelectedTagTitles.Contains(tag))).ToList();
-
-        if (!string.IsNullOrWhiteSpace(SearchTerm))
-        {
-            var lowered = SearchTerm.ToLower();
-
-            books = books.Where(b =>
-                (b.Title?.ToLower().Contains(lowered) ?? false) ||
-                (b.BookAuthor?.ToLower().Contains(lowered) ?? false) ||
-                (b.Isbn?.ToLower().Contains(lowered) ?? false)
-            ).ToList();
-        }
 
         FilteredBooks = books;
     }

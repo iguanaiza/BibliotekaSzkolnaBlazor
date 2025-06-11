@@ -3,7 +3,6 @@ using BibliotekaSzkolnaBlazor.Data.Models;
 using BibliotekaSzkolnaBlazor.DataTransferObjects;
 using BibliotekaSzkolnaBlazor.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace BibliotekaSzkolnaBlazor.Repository
 {
