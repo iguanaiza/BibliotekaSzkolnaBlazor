@@ -23,6 +23,9 @@ namespace BibliotekaSzkolnaBlazor
             builder.Services.AddScoped<ICopyRepository, CopyRepository>();
             builder.Services.AddScoped<IDictionaryRepository, DictionaryRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IBookLoanRepository, BookLoanRepository>();
+            builder.Services.AddScoped<IBookReservationCartRepository, BookReservationCartRepository>();
+            builder.Services.AddScoped<IFavoriteBookRepository, FavoriteBookRepository>();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
