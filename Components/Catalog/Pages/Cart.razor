@@ -7,6 +7,7 @@
 @inject IBookReservationCartRepository BookReservationCartRepository
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthStateProvider
+@inject LoanService LoanService
 @rendermode InteractiveServer
 
 <PageTitle>Koszyk zamówień</PageTitle>
@@ -25,7 +26,7 @@
             <div class="card p-3 shadow-sm">
                 <h5 class="mb-3">Podsumowanie</h5>
                 <p>Razem do wypożyczenia: @Books.Count()</p>
-                <button class="btn btn-primary w-100">Wypożycz</button>
+                <button class="btn btn-primary w-100" @onclick="OnBorrowClicked">Wypożycz</button>
             </div>
         </div>
 
@@ -76,6 +77,9 @@
 @code {
     private IEnumerable<CopyGetDto> Books { get; set; } = new List<CopyGetDto>();
 
+    private bool isProcessing = false;
+    private string? errorMessage;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
@@ -97,7 +101,6 @@
 
         if (!user.Identity?.IsAuthenticated ?? true)
         {
-            // Możesz przekierować na logowanie albo pokazać pusty koszyk
             NavigationManager.NavigateTo("/login");
             return;
         }
@@ -134,7 +137,39 @@
 
         await BookReservationCartRepository.RemoveFromCartAsync(bookCopyId, userId);
 
-        // Odśwież listę po usunięciu
         await LoadData();
+    }
+
+    private async Task OnBorrowClicked()
+    {
+        errorMessage = null;
+        isProcessing = true;
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity?.IsAuthenticated ?? true)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        string userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        try
+        {
+            await LoanService.FinalizeCartAsync(userId);
+            await LoadData();
+
+            await JS.InvokeVoidAsync("alert", "Wypożyczenie zakończone sukcesem!");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isProcessing = false;
+        }
     }
 }

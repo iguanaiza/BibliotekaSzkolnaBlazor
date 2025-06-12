@@ -1,6 +1,6 @@
 ﻿@page "/userslist"
 @layout ManagementLayout
-@inject IUserRepository _userRepository
+@inject IUserRepository UserRepository
 @inject IJSRuntime JS
 
 @rendermode InteractiveServer
@@ -106,7 +106,7 @@ else
 
     private async Task LoadUsers()
     {
-        Users = await _userRepository.GetUsersAsync();
+        Users = await UserRepository.GetUsersAsync();
     }
 
     private void HandleDelete(string id)
@@ -122,7 +122,7 @@ else
 
         if (isConfirmed && DisableUserID != null)
         {
-            var result = await _userRepository.DisableUserAsync(DisableUserID);
+            var result = await UserRepository.DisableUserAsync(DisableUserID);
             
             if (result == false)
             {

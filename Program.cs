@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using BibliotekaSzkolnaBlazor.Services;
 
 namespace BibliotekaSzkolnaBlazor
 {
@@ -26,6 +27,8 @@ namespace BibliotekaSzkolnaBlazor
             builder.Services.AddScoped<IBookLoanRepository, BookLoanRepository>();
             builder.Services.AddScoped<IBookReservationCartRepository, BookReservationCartRepository>();
             builder.Services.AddScoped<IFavoriteBookRepository, FavoriteBookRepository>();
+            builder.Services.AddScoped<LoanService>();
+
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

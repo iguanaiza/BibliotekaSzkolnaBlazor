@@ -1,59 +1,128 @@
 ﻿@page "/Account/Manage/BookingsCurrent"
 
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity
-@using BibliotekaSzkolnaBlazor.Data
-
-@inject UserManager<ApplicationUser> UserManager
-@inject SignInManager<ApplicationUser> SignInManager
-@inject IdentityUserAccessor UserAccessor
-@inject IdentityRedirectManager RedirectManager
-@inject ILogger<ChangePassword> Logger
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IBookLoanRepository BookLoanRepository
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <PageTitle>Bieżące wypożyczenia</PageTitle>
 
 <StatusMessage />
 <h3>Bieżące wypożyczenia</h3>
 
-<div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover table-sm text-nowrap">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th></th>
-                <th>Tytuł</th>
-                <th>Autor</th>
-                <th>Data wypożyczenia</th>
-                <th>Do zwrotu</th>
-                <th>Prolongata</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-
-                <td>1.</td>
-
-                <td>
-                    <a href="/lektury/view/1" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-info-square"></i>
-                    </a>
-                </td>
-                <td>Harry Potter i Kamień Filozoficzny</td>
-                <td>Rowling, Joanne K.</td>
-                <td>2025-06-12</td>
-                <td>2025-06-30</td>
-                <td><button>Przedłuż</button></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+@if (isLoading)
+{
+    <p>Ładowanie...</p>
+}
+else if (loans == null || loans.Count == 0)
+{
+    <p>Brak bieżących wypożyczeń.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover table-sm text-nowrap">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th></th>
+                    <th>Tytuł</th>
+                    <th>Autor</th>
+                    <th>Data wypożyczenia</th>
+                    <th>Do zwrotu</th>
+                    <th>Prolongata</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var (loan, index) in loans.Select((value, i) => (value, i)))
+                {
+                    <tr>
+                        <td>@(index + 1)</td>
+                        <td>
+                            <a href="/lektury/view/@loan.BookCopyId" class="btn btn-outline-primary btn-sm" title="Szczegóły książki">
+                                <i class="bi bi-info-square"></i>
+                            </a>
+                        </td>
+                        <td>@loan.Title</td>
+                        <td>@(string.IsNullOrEmpty(loan.AuthorFullName) ? "Brak autora" : loan.AuthorFullName)</td>
+                        <td>@loan.BorrowDate.ToString("yyyy-MM-dd")</td>
+                        <td>@loan.DueDate?.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary"
+                                    @onclick="() => ProlongLoan(loan.LoanId)"
+                                    disabled="@loan.WasProlonged">
+                                Przedłuż
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 @code {
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+    private List<LoanDto>? loans;
+
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
-        _ = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity?.IsAuthenticated ?? true)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        await LoadLoans(userId);
+    }
+
+    private async Task LoadLoans(string userId)
+    {
+        isLoading = true;
+        try
+        {
+            loans = await BookLoanRepository.GetActiveLoansAsync(userId);
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ProlongLoan(int loanId)
+    {
+        try
+        {
+            await BookLoanRepository.ProlongLoanAsync(loanId);
+            await JS.InvokeVoidAsync("alert", "Wypożyczenie zostało przedłużone o 30 dni.");
+
+            // Odśwież listę po przedłużeniu
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var userId = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                await LoadLoans(userId);
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Błąd: {ex.Message}");
+        }
+        catch (Exception)
+        {
+            await JS.InvokeVoidAsync("alert", "Wystąpił nieoczekiwany błąd podczas próby przedłużenia wypożyczenia.");
+        }
     }
 }
