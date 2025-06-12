@@ -8,6 +8,9 @@ namespace BibliotekaSzkolnaBlazor.Data
     public class ApplicationUser : IdentityUser
     {
         [Required]
+        public int LibraryId { get; set; } //karta biblioteczna, 5 cyfr np 12345
+
+        [Required]
         public string FirstName { get; set; }
 
         [Required]

@@ -13,11 +13,14 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
         public BookCopy BookCopy { get; set; }
 
         public DateTime BorrowDate { get; set; } = DateTime.UtcNow;
-        public DateTime? DueDate { get; set; }
+        public DateTime? DueDate { get; set; } // ustawiane automatycznie
         public DateTime? ReturnDate { get; set; }
 
         [Precision(4, 2)]
         public decimal PenaltyAmount { get; set; }
+
+        public bool WasProlonged { get; set; } = false;
+
         public bool IsReturned => ReturnDate != null;
     }
 }
