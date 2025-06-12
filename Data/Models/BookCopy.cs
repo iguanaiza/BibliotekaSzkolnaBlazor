@@ -25,71 +25,12 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
 }
 
 /* Przyjęty schemat sygnatury:
- * Rodzaj (LP – literatura piękna, P - podręczniki),
+ * Rodzaj (LP – literatura piękna, PR - podręczniki),
  * Kategoria główna (np. FAN fantastyka, GEO geografia)
  * Inicjały autora (nazwisko, imie),
- * Tytuł (pierwsze litery słów tytułowych lub pierwsze 3 litery tytułu)
- * Kolejność w serii lub numerze tomu (opcjonalnie)
+ * Tytuł (pierwsze litery słów tytułowych lub pierwsze 2 litery tytułu)
+ * Kolejność w serii lub numerze tomu (opcjonalnie), dla PR klasa
  * Numer kopii
  *
  * Przykład: LP.FAN.RJ.HP.1-001
-
-LP.DZI.GA.KIC.1-001
-LP.DZI.GA.KIC.1-002
-LP.DZI.GA.KIC.1-003
-
-LP.DZI.GA.KIC.2-001
-LP.DZI.GA.KIC.2-002
-
-LP.DZI.GA.KIC.3-001
-LP.DZI.GA.KIC.3-002
-LP.DZI.GA.KIC.3-003
-LP.DZI.GA.KIC.3-004
-
-LP.FAN.GK.NIE.1-001
-LP.FAN.GK.NIE.1-002
-LP.FAN.GK.NIE.1-003
-
-LP.FAN.GK.NIE.2-001
-LP.FAN.GK.NIE.2-002
-
-
-LP.FAN.GK.NIE.3-001
-LP.FAN.GK.NIE.3-002
-
-LP.FAN.RR.PER.1-001
-LP.FAN.RR.PER.1-002
-LP.FAN.RR.PER.1-003
-
-LP.FAN.RR.PER.2-001
-LP.FAN.RR.PER.2-002
-LP.FAN.RR.PER.2-003
-
-LP.FAN.RR.PER.3-001
-
-LP.FAN.RR.PER.4-001
-LP.FAN.RR.PER.4-002
-LP.FAN.RR.PER.4-003
-
-LP.FAN.RR.PER.5-001
-LP.FAN.RR.PER.5-002
-
-LP.FAN.RR.PER.6-001
-
-LP.FAN.LGU.ZIE.1-001
-LP.FAN.LGU.ZIE.1-002
-LP.FAN.LGU.ZIE.1-003
-LP.FAN.LGU.ZIE.1-004
-
-LP.FAN.LGU.ZIE.2-001
-LP.FAN.LGU.ZIE.2-002
-
-LP.FAN.LGU.ZIE.3-001
-LP.FAN.LGU.ZIE.3-002
-
-LP.FAN.LGU.ZIE.4-001
-
-LP.FAN.LGU.ZIE.5-001
-
-LP.FAN.LGU.ZIE.6-001
  */

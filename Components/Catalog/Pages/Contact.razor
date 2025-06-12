@@ -1,0 +1,62 @@
+﻿@page "/kontakt"
+@layout CatalogLayout
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+@rendermode InteractiveServer
+
+<PageTitle>Kontakt</PageTitle>
+
+<div class="card shadow border-0">
+    <div class="card-header bg-theme bg-gradient py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="h2-custom">Kontakt</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-3 p-4">
+        <div class="col-md-4">
+            <h3 class="h5">Dane kontaktowe</h3>
+            <p><strong>Biblioteka Szkoły Podstawowej nr 123 w Testach</strong></p>
+            <p>
+                ul. Fikcyjna 45<br />
+                00-123 Testy<br />
+                Polska
+            </p>
+            <p>
+                <strong>Telefon:</strong> +48 123 456 789<br />
+                <strong>E-mail:</strong> biblioteka@sp123testy.edu.pl
+            </p>
+        </div>
+
+        <div class="col-md-4">
+            <h3 class="h5">Dni i godziny otwarcia</h3>
+            <p>
+                <strong>Poniedziałek:</strong> 07:30 – 12:30<br />
+                <strong>Wtorek:</strong> 08:00 – 13:30<br />
+                <strong>Środa:</strong> 08:00 – 13:30<br />
+                <strong>Czwartek:</strong> 08:00 – 13:30<br />
+                <strong>Piątek:</strong> 09:00 – 14:00
+            </p>
+            <h2 class="h6">Zapraszamy!</h2>
+        </div>
+
+        <div class="col-md-4 text-center">
+            <img src="/images/biblioteka.jpg" alt="Zdjęcie biblioteki szkolnej" class="img-fluid rounded shadow-sm" />
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
+}
