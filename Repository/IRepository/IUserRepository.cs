@@ -8,6 +8,7 @@ namespace BibliotekaSzkolnaBlazor.Repository.IRepository
         public Task<IEnumerable<UserGetDto>> GetUsersAsync();
 
         public Task<UserGetDto?> GetUserByIdAsync(string userId);
+        public Task<UserGetDto?> GetUserByLibraryIdAsync(int libraryId);
 
         // Tworzenie użytkownika przez admina (z hasłem)
         Task<IdentityResult> CreateUserAsync(UserUpsertDto dto, string password);

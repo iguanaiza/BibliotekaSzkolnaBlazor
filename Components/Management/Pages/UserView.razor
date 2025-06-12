@@ -1,13 +1,11 @@
-﻿@page "/userslist/view/{UserId:string}"
+﻿@page "/userslist/view/{LibraryId:int}"
 @layout ManagementLayout
-@inject IBookRepository BookRepository
-@inject IDictionaryRepository DictionaryRepository
+@inject IUserRepository UserRepository
+@inject IBookLoanRepository BookLoanRepository
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
-
-<BinModal OnModalConfirmation="ConfirmDelete_Click" />
 
 <PageTitle>Podgląd</PageTitle>
 
@@ -24,7 +22,7 @@ else
     <div class="card-header bg-theme bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="py-2">@book.Title </h2>
+                <h2 class="py-2">@userDto?.FirstName</h2>
             </div>
         </div>
     </div>
@@ -37,119 +35,38 @@ else
                 </button>
 
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id"
-                       class="btn btn-outline-primary"
-                       title="Edytuj">
-                        <i class="bi bi-pencil-square"></i> Edytuj
-                    </a>
 
-                    <button class="btn btn-outline-danger" @onclick="() => HandleDelete(book.Id)" title="Usuń">
-                        <i class="bi bi-trash3"></i> Usuń
-                    </button>
                 </div>
             </div>
         </div>
 
 
-        <!--Informacje o książce-->
+        <!--Informacje o użytkowniku-->
         <div class="card mb-3">
             <div class="row g-0">
-                <!--Okładka-->
-                <div class="col-md-4 d-flex justify-content-center align-items-center">
-                    @if (book.ImageUrl == null)
-                    {
-                        <p class="text-muted">Brak okładki.</p>
-                    }
-                    else
-                    {
-                        <img src=@book.ImageUrl alt="Okładka książki" class="details-image">
-                    }
-                </div>
-                <!--Opis-->
                 <div class="col-md-8">
                     <div class="card-body">
                         <table class="details align-middle">
                             <tbody>
                                 <tr>
-                                    <td colspan="2">
-                                        @if (book.BookSpecialTags != null && book.BookSpecialTags.Any())
-                                        {
-                                            foreach (var tag in book.BookSpecialTags)
-                                            {
-                                                <label class="@GetBadgeClass(tag) me-1">@tag</label>
-                                            }
-                                        }
-                                    </td>
+                                    <th class="text-end"> Numer karty</th>
+                                    <td>@userDto?.LibraryId</td>
                                 </tr>
-
                                 <tr>
-                                    <th class="text-end"> Tytuł</th>
-                                    <td> @book.Title </td>
+                                    <th class="text-end"> Imię </th>
+                                    <td>@userDto?.FirstName</td>
                                 </tr>
-
                                 <tr>
-                                    <th class="text-end"> Autor </th>
-                                    <td> @book.BookAuthor </td>
+                                    <th class="text-end"> Nazwisko </th>
+                                    <td>@userDto?.LastName</td>
                                 </tr>
-
                                 <tr>
-                                    <th class="text-end"> Rok wydania </th>
-                                    <td> @book.Year </td>
+                                    <th class="text-end"> E-mail </th>
+                                    <td>@userDto?.Email</td>
                                 </tr>
-
-                                <tr>
-                                    <th class="text-end"> Wydawca </th>
-                                    <td> @book.BookPublisher </td>
-                                </tr>
-
                                 <tr>
                                     <th class="text-end"> Klasa </th>
-                                    <td> @book.Class </td>
-                                </tr>
-
-                                <tr>
-                                    <th class="text-end"> Przedmiot </th>
-                                    <td> @book.Subject </td>
-                                </tr>
-
-                                <tr>
-                                    <th class="text-end"> Numer ISBN </th>
-                                    <td> @book.Isbn </td>
-                                </tr>
-
-                                <tr>
-                                    <th class="text-end"> Liczba stron </th>
-                                    <td> @book.PageCount </td>
-                                </tr>
-
-                                <tr>
-                                    <th class="text-end"> Opis książki </th>
-                                    <td> @book.Description </td>
-                                </tr>
-
-                                <tr>
-                                    <th class="text-end"> Seria </th>
-                                    <td> @book.BookSeries </td>
-                                </tr>
-
-                                <tr>
-                                    <th class="text-end"> Typ </th>
-                                    <td> @book.BookType </td>
-                                </tr>
-
-                                <tr>
-                                    <th class="text-end"> Kategoria </th>
-                                    <td> @book.BookCategory </td>
-                                </tr>
-
-                                <tr>
-                                    <th class="text-end"> Gatunki </th>
-                                    <td> @string.Join(", ", book.BookGenres) </td>
-                                </tr>
-
-                                <tr>
-                                    <th class="text-end"> Widoczność w&nbsp;katalogu </th>
-                                    <td> @(book.IsVisible ? "Tak" : "Nie")</td>
+                                    <td>@userDto?.Class</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -163,60 +80,43 @@ else
         <div class="card-header bg-theme bg-gradient ml-0 py-3">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h2 class="py-2">Lista egzemplarzy (@book.CopyCount)</h2>
+                    <h2 class="py-2">Historia wypożyczeń</h2>
                 </div>
             </div>
         </div>
 
         <div class="card-body p-4">
-            <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
-                <div class="row pb-3">
-                    <div class="col-12 text-end">
-                        <a href="/bookslist/view/@book.Id/create?returnUrl=/bookslist/view/@book.Id" class="btn btn-lg btn-primary">
-                            <i class="bi bi-journal-plus"></i> Dodaj nowy egzemplarz
-                        </a>
-                    </div>
-                </div>
-            </AuthorizeView>
-
-            @if (book.BookCopies.Any())
+            @if (Loans.Any())
             {
                 int index = 1;
 
                 <div class="table-responsive-xxl">
-                    <table class="table table-striped table-bordered table-sm align-middle table-hover">
+                    <table class="table table-striped table-bordered table-hover table-sm text-nowrap">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Książka</th>
-                                <th scope="col">Sygnatura</th>
-                                <th scope="col">Numer inwentarzowy</th>
-                                <th scope="col">Dostępna</th>
-                                <th scope="col">Akcje</th>
+                                <th>#</th>
+                                <th></th>
+                                <th>Tytuł</th>
+                                <th>Autor</th>
+                                <th>Data wypożyczenia</th>
+                                <th>Data zwrotu</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var copy in book.BookCopies)
+                            @foreach (var item in Loans.Select((loan, index) => new { loan, index }))
                             {
                                 <tr>
-                                    <td>@index</td>
-                                    <td>@book.Title</td>
-                                    <td>@copy.Signature</td>
-                                    <td>@copy.InventoryNum</td>
-                                    <td>@(copy.Available ? "Tak" : "Nie")</td>
+                                    <td>@(item.index + 1).</td>
                                     <td>
-
-                                        <div class="d-flex justify-content-start gap-2">
-                                            <a href="/bookslist/view/@book.Id/edit/@copy.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
-                                                <i class="bi bi-pencil-square"></i> Edytuj
-                                            </a>
-                                            <button class="btn btn-outline-danger btn-sm" title="Usuń">
-                                                <i class="bi bi-trash3"></i> Usuń
-                                            </button>
-                                        </div>
+                                        <a href="/lektury/view/@item.loan.LoanId" class="btn btn-outline-primary btn-sm" title="Szczegóły książki">
+                                            <i class="bi bi-info-square"></i>
+                                        </a>
                                     </td>
+                                    <td>@item.loan.Title</td>
+                                    <td>@item.loan.AuthorFullName</td>
+                                    <td>@item.loan.BorrowDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@(item.loan.ReturnDate?.ToString("yyyy-MM-dd") ?? "-")</td>
                                 </tr>
-                                index++;
                             }
                         </tbody>
                     </table>
@@ -228,14 +128,15 @@ else
 
 @code {
     [Parameter]
-    public int BookId { get; set; }
-    private BookGetDto book { get; set; }
-    private int DeleteBookID { get; set; } = 0;
+    public int LibraryId { get; set; }
+
+    private string userId = "";
+    private UserGetDto? userDto;
+    private List<LoanDto> Loans { get; set; } = new();
 
     [Parameter]
     [SupplyParameterFromQuery]
     public string? ReturnUrl { get; set; }
-    private string? _directoryPath { get; set; }
 
     private bool IsLoading = true;
 
@@ -255,49 +156,30 @@ else
 
     private async Task LoadData()
     {
-        book = await BookRepository.GetBookByIdAsync(BookId);
-    }
-
-    private void HandleDelete(int id)
-    {
-        DeleteBookID = id;
-        JS.InvokeVoidAsync("ShowConfirmationModal");
-    }
-
-    private async Task ConfirmDelete_Click(bool isConfirmed)
-    {
-        IsLoading = true;
-        await JS.InvokeVoidAsync("HideConfirmationModal");
-
-        if (isConfirmed && DeleteBookID != 0)
+        var user = await UserRepository.GetUserByLibraryIdAsync(LibraryId);
+        if (user == null)
         {
-            var result = await BookRepository.BinBookAsync(DeleteBookID);
-
-            if (result == null)
-            {
-                await JS.ToastrWarning("Nie znaleziono książki.", "Nie udało się usunąć książki.");
-
-            }
-            else
-            {
-                await JS.ToastrInfo("Możesz cofnąć akcję z widoku kosza.", "Książka przeniesiona do kosza.");
-            }
-
-            await LoadData();
+            NavigationManager.NavigateTo("/userslist");
+            return;
         }
-        DeleteBookID = 0;
-        IsLoading = false;
-    }
 
-    private string GetBadgeClass(string tag)
-    {
-        return tag switch
-        {
-            "Polecane" => "badge bg-success",
-            "Nowości" => "badge bg-warning text-dark",
-            "Popularne" => "badge bg-info text-dark",
-            _ => "badge bg-secondary"
-        };
+        userId = user.Id;
+        userDto = user;
+
+        Loans = user.BookLoans?
+             .Select(l => new LoanDto
+                 {
+                     LoanId = l.Id,
+                     Title = l.BookCopy?.Book?.Title ?? "Brak tytułu",
+                     AuthorFullName = l.BookCopy?.Book?.BookAuthor != null
+                         ? $"{l.BookCopy.Book.BookAuthor.Name} {l.BookCopy.Book.BookAuthor.Surname}"
+                         : "Brak autora",
+                     BorrowDate = l.BorrowDate,
+                     ReturnDate = l.ReturnDate,
+                     PenaltyAmount = l.PenaltyAmount
+                 })
+             .ToList()
+         ?? new List<LoanDto>();
     }
 
     private void GoBack()
@@ -305,6 +187,16 @@ else
         if (!string.IsNullOrEmpty(ReturnUrl))
             NavigationManager.NavigateTo(ReturnUrl);
         else
-            NavigationManager.NavigateTo("/bookslist");
+            NavigationManager.NavigateTo("/userslist");
+    }
+
+    public class LoanDto
+    {
+        public int LoanId { get; set; }
+        public string Title { get; set; } = "";
+        public string AuthorFullName { get; set; } = "";
+        public DateTime BorrowDate { get; set; }
+        public DateTime? ReturnDate { get; set; }
+        public decimal PenaltyAmount { get; set; }
     }
 }

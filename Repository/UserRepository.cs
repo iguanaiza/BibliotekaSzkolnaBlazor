@@ -30,6 +30,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
             {
                 Id = user.Id,
                 Email = user.Email,
+                LibraryId = user.LibraryId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Class = user.Class,
@@ -54,6 +55,35 @@ namespace BibliotekaSzkolnaBlazor.Repository
             return new UserGetDto
             {
                 Id = user.Id,
+                LibraryId = user.LibraryId,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Class = user.Class,
+                BookLoans = user.BookLoans.ToList(),
+                FavoriteBooks = user.FavoriteBooks.ToList()
+            };
+        }
+
+        public async Task<UserGetDto?> GetUserByLibraryIdAsync(int libraryId)
+        {
+            var user = await _context.Users
+                .Include(u => u.BookLoans)
+                    .ThenInclude(l => l.BookCopy)
+                        .ThenInclude(c => c.Book)
+                            .ThenInclude(b => b.BookAuthor)
+                .Include(u => u.FavoriteBooks)
+                    .ThenInclude(fb => fb.Book)
+                        .ThenInclude(b => b.BookAuthor)
+                .FirstOrDefaultAsync(u => u.LibraryId == libraryId);
+
+            if (user == null)
+                return null;
+
+            return new UserGetDto
+            {
+                Id = user.Id,
+                LibraryId = user.LibraryId,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
