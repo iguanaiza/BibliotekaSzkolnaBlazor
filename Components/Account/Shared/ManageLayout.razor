@@ -1,20 +1,29 @@
 ﻿@inherits LayoutComponentBase
-@layout BibliotekaSzkolnaBlazor.Components.Layout.MainLayout
+@layout BibliotekaSzkolnaBlazor.Components.Layout.CatalogLayout
 
-<CatalogNavbar/>
-
-<div class="w-100">
-    <div class="mx-auto px-3 catalog-width">
-        <h1> Zarządzanie kontem</h1>
-<div>
-    <div class="row">
-        <div class="col-lg-3">
-            <ManageNavMenu />
-        </div>
-        <div class="col-lg-9">
-            @Body
+<div class="card shadow border-0">
+    <div class="card-header bg-theme bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="h2-custom">Zarządzanie kontem</h2>
+             </div>
         </div>
     </div>
-</div>
-</div>
-</div>
+
+    <div class="card-body p-4">
+        <div class="row pb-3">
+        </div>
+
+        <div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <ManageNavMenu />
+                </div>
+
+                <div class="col-lg-9">
+                    @Body
+                </div>
+            </div>
+        </div>
+    </div>
+</div
