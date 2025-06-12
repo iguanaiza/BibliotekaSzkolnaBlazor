@@ -1,0 +1,77 @@
+﻿@page "/pomoc"
+@layout CatalogLayout
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+@rendermode InteractiveServer
+
+<PageTitle>Pomoc</PageTitle>
+
+<div class="card shadow border-0 mb-4">
+    <div class="card-header bg-theme bg-gradient py-3">
+        <h2 class="h2-custom text-center">Pomoc i instrukcja korzystania z systemu</h2>
+    </div>
+
+    <div class="card-body px-4">
+        <section class="mb-4">
+            <h3 class="h5">1. Logowanie do systemu</h3>
+            <p>
+                Aby zalogować się do systemu bibliotecznego, należy posiadać konto założone przez bibliotekarza.
+                Dane logowania (login i hasło) przekazywane są uczniowi/osobie uprawnionej podczas pierwszego kontaktu z biblioteką.
+            </p>
+        </section>
+
+        <section class="mb-4">
+            <h3 class="h5">2. Przeglądanie katalogu</h3>
+            <p>
+                W zakładce <strong>Katalog</strong> można przeglądać dostępne książki.
+                Możliwe jest filtrowanie według autora, wydawnictwa, gatunku, kategorii i innych kryteriów.
+                Klikając na przycisk <i class="bi bi-info-square"></i> można zobaczyć szczegóły danej książki.
+            </p>
+        </section>
+
+        <section class="mb-4">
+            <h3 class="h5">3. Rezerwacja książek</h3>
+            <p>
+                Aby zarezerwować książkę, należy być zalogowanym. Na stronie szczegółów książki widoczny będzie przycisk
+                <strong>"Zarezerwuj"</strong>, jeśli przynajmniej jeden egzemplarz jest dostępny do rezerwacji.
+                Po dokonaniu rezerwacji, książka będzie przygotowana do odbioru w bibliotece.
+            </p>
+        </section>
+
+        <section class="mb-4">
+            <h3 class="h5">4. Wypożyczenia i zwroty</h3>
+            <p>
+                Lista aktualnych wypożyczeń widoczna jest po zalogowaniu w zakładce <strong>"Moje konto &gt; Wypożyczenia"</strong>.
+                Widoczne są tam daty wypożyczenia, planowanego zwrotu i ewentualne kary za przetrzymanie książki.
+                Zwrot książki odbywa się fizycznie w bibliotece.
+            </p>
+        </section>
+
+        <section class="mb-4">
+            <h3 class="h5">5. Zmiana hasła</h3>
+            <p>
+                Hasło można zmienić w zakładce <strong>"Moje konto &gt; Ustawienia"</strong>.
+                W razie problemów z logowaniem należy zgłosić się do bibliotekarza.
+            </p>
+        </section>
+
+        <section>
+            <h3 class="h5">6. Potrzebujesz pomocy?</h3>
+            <p>
+                Jeśli napotkasz problemy techniczne lub nie wiesz jak skorzystać z systemu, zgłoś się do biblioteki szkolnej
+                lub wyślij wiadomość na adres: <strong>biblioteka@sp123testy.edu.pl</strong>.
+            </p>
+        </section>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
+}

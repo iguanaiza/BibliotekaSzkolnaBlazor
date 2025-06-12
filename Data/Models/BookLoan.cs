@@ -13,7 +13,7 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
         public BookCopy BookCopy { get; set; }
 
         public DateTime BorrowDate { get; set; } = DateTime.UtcNow;
-        public DateTime? DueDate { get; set; } // ustawiane automatycznie
+        public DateTime? DueDate { get; set; }
         public DateTime? ReturnDate { get; set; }
 
         [Precision(4, 2)]

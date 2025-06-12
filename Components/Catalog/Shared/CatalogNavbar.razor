@@ -20,7 +20,7 @@
                     <AuthorizeView>
                         <Authorized>
                             <li class="nav-item">
-                                <a class="nav-link p-2 theme-font-color btn btn-nav" href="Account/Manage">
+                                <a class="nav-link p-2 theme-font-color btn btn-nav" href="/konto/zarzadzanie">
                                     Witaj, @context?.User?.Identity?.Name
                                 </a>
                             </li>
@@ -36,7 +36,7 @@
                         </Authorized>
                         <NotAuthorized>
                             <li class="nav-item">
-                                <a class="nav-link p-2 theme-font-color btn btn-nav" href="Account/Login">
+                                <a class="nav-link p-2 theme-font-color btn btn-nav" href="/konto/zaloguj">
                                     <span class="bi bi-person-badge-nav-menu"></span> Zaloguj
                                 </a>
                             </li>

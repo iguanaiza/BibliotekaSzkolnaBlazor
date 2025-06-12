@@ -43,18 +43,10 @@ else
                     <div class="d-flex flex-column align-items-end">
                         <AuthorizeView>
                             <Authorized>
-                                @if (IsFavorite)
-                                {
-                                    <button class="btn btn-outline-primary" @onclick="RemoveFromFavorites">
-                                        <i class="bi bi-bookmark-dash"></i> Usuń z półki
-                                    </button>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-primary" @onclick="AddToFavorites">
-                                        <i class="bi bi-bookmark-star"></i> Dodaj na półkę
-                                    </button>
-                                }
+                                <button @onclick="() => ToggleFavorite(book)" class="btn btn-sm @(book.IsFavorite ? "btn-outline-primary" : "btn-primary")">
+                                    <i class="bi @(book.IsFavorite ? "bi-bookmark-dash" : "bi-bookmark-star")"></i>
+                                    @(book.IsFavorite ? " Usuń z półki" : " Dodaj na półkę")
+                                </button>
                             </Authorized>
 
                             <NotAuthorized>
@@ -321,7 +313,7 @@ else
         if (!string.IsNullOrEmpty(ReturnUrl))
             NavigationManager.NavigateTo(ReturnUrl);
         else
-            NavigationManager.NavigateTo("/catalog");
+            NavigationManager.NavigateTo("/katalog");
     }
 
     private async Task AddToCartAsync(int bookCopyId)
@@ -331,7 +323,6 @@ else
 
         if (!user.Identity.IsAuthenticated)
         {
-            // Przekieruj do logowania lub pokaż komunikat
             NavigationManager.NavigateTo("/login");
             return;
         }
@@ -351,17 +342,22 @@ else
         }
     }
 
-    private async Task AddToFavorites()
+    private async Task ToggleFavorite(BookGetDto book)
     {
-        await FavoriteBookRepository.AddFavoriteAsync(UserId, BookId);
-        IsFavorite = true;
-        FavoriteCount++;
-    }
+        if (!IsAuthenticated || string.IsNullOrEmpty(UserId))
+            return;
 
-    private async Task RemoveFromFavorites()
-    {
-        await FavoriteBookRepository.RemoveFavoriteAsync(UserId, BookId);
-        IsFavorite = false;
-        FavoriteCount--;
+        if (book.IsFavorite)
+        {
+            await FavoriteBookRepository.RemoveFavoriteAsync(UserId, book.Id);
+            book.IsFavorite = false;
+            FavoriteCount--;
+        }
+        else
+        {
+            await FavoriteBookRepository.AddFavoriteAsync(UserId, book.Id);
+            book.IsFavorite = true;
+            FavoriteCount++;
+        }
     }
 }

@@ -336,7 +336,8 @@
                                         <AuthorizeView>
                                             <Authorized>
                                                 <button @onclick="() => ToggleFavorite(book)" class="btn btn-sm @(book.IsFavorite ? "btn-outline-primary" : "btn-primary")">
-                                                    @(book.IsFavorite ? "Usuń z półki" : "Dodaj na półkę")
+                                                    <i class="bi @(book.IsFavorite ? "bi-bookmark-dash" : "bi-bookmark-star")"></i>
+                                                    @(book.IsFavorite ? " Usuń z półki" : " Dodaj na półkę")
                                                 </button>
                                             </Authorized>
                                         </AuthorizeView>

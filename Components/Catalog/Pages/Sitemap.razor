@@ -1,0 +1,53 @@
+﻿@page "/mapa-strony"
+@layout CatalogLayout
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+@rendermode InteractiveServer
+
+<PageTitle>Mapa strony</PageTitle>
+
+<div class="card shadow border-0">
+    <div class="card-header bg-theme bg-gradient py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="h2-custom">Mapa strony</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-3 p-4">
+        <ul>
+            <li><a href="/">Strona główna</a></li>
+            <li><a href="/katalog">Katalog książek</a></li>
+            <li><a href="/lektury">Lista lektur</a></li>
+            <li><a href="/podreczniki">Lista podręczników</a></li>
+            <AuthorizeView>
+                <li>
+                    <a href="/konto">Moje konto</a>
+                    <ul>
+                        <li><a href="/konto/zarzadzanie">Konto czytelnika</a></li>
+                        <li><a href="/konto/zarzadzanie/wypozyczenia-biezace">Bieżące wypożyczenia</a></li>
+                        <li><a href="/konto/zarzadzanie/wypozyczenia-historia">Historia wypożyczeń</a></li>
+                        <li><a href="/konto/zarzadzanie/zmien-haslo">Zmień hasło</a></li>
+                    </ul>
+                </li>
+                <li><a href="/koszyk">Koszyk</a></li>
+                <li><a href="/ulubione">Półka</a></li>
+            </AuthorizeView>
+            <li><a href="/kontakt">Kontakt</a></li>
+            <li><a href="/pomoc">Pomoc</a></li>
+            <li><a href="/mapa-strony" aria-current="page">Mapa strony</a></li>
+        </ul>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
+        }
+    }
+}
