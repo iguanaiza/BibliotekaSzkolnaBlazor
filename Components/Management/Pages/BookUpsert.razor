@@ -474,10 +474,14 @@ else
             if (update != null)
             {
                 await JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Książka zaktualizowana pomyślnie");
+                await Task.Delay(5000);
+                GoBack();
             }
             else
             {
                 await JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Nie udało się zaktualizować książki");
+                await Task.Delay(5000);
+                GoBack();
             }
         }
 

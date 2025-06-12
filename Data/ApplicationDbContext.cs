@@ -29,6 +29,7 @@ namespace BibliotekaSzkolnaBlazor.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             //polaczenie ksiazka-gatunek (wiele-do-wielu)
             modelBuilder.Entity<BookBookGenre>()
                 .HasKey(bb => new { bb.BookId, bb.BookGenreId });

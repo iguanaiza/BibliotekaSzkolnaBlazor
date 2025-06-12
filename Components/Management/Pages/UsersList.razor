@@ -68,7 +68,7 @@ else
                                 <td>@user.TotalPenaltyAmount</td>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-2">
-                                        <a href="/userslist/edit/@user.Id?returnUrl=/userslist" class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                        <a href="/userslist/edit/@user.LibraryId?returnUrl=/userslist" class="btn btn-outline-primary btn-sm" title="Edytuj">
                                             <i class="bi bi-pencil-square"></i> Edytuj
                                         </a>
                                         <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(user.Id)" title="Dezaktywuj">
