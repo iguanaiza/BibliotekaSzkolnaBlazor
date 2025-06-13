@@ -1,4 +1,4 @@
-﻿@page "/userslist/view/{LibraryId:int}"
+﻿@page "/system/czytelnicy/view/{LibraryId:int}"
 @layout ManagementLayout
 @inject IUserRepository UserRepository
 @inject IBookLoanRepository BookLoanRepository
@@ -159,7 +159,7 @@ else
         var user = await UserRepository.GetUserByLibraryIdAsync(LibraryId);
         if (user == null)
         {
-            NavigationManager.NavigateTo("/userslist");
+            NavigationManager.NavigateTo("/system/czytelnicy");
             return;
         }
 
@@ -187,7 +187,7 @@ else
         if (!string.IsNullOrEmpty(ReturnUrl))
             NavigationManager.NavigateTo(ReturnUrl);
         else
-            NavigationManager.NavigateTo("/userslist");
+            NavigationManager.NavigateTo("/system/czytelnicy");
     }
 
     public class LoanDto

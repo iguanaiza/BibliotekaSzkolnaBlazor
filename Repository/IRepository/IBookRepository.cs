@@ -10,6 +10,7 @@ namespace BibliotekaSzkolnaBlazor.Repository.IRepository
         public Task<IEnumerable<BookGetDto>> GetDeletedBooksAsync();
         public Task<IEnumerable<BookGetDto>> GetLekturyAsync();
         public Task<IEnumerable<BookGetDto>> GetPodrecznikiAsync();
+        public Task<IEnumerable<BookGetDto>> GetPozostaleAsync();
         public Task<IEnumerable<BookGetDto>> GetBooksByTagAsync(string tagName);
         public Task<BookGetDto> CreateBookAsync(BookUpsertDto dto);
         public Task<BookGetDto?> UpdateBookAsync(int id, BookUpsertDto dto);

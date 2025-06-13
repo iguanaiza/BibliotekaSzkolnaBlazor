@@ -1,4 +1,9 @@
-﻿@page "/bookslist/view/{BookId:int}"
+﻿@page "/system/zasoby/view/{BookId:int}"
+@page "/system/lektury/view/{BookId:int}"
+@page "/system/podreczniki/view/{BookId:int}"
+@page "/system/literatura/view/{BookId:int}"
+@page "/system/kosz/view/{BookId:int}"
+
 @layout ManagementLayout
 @inject IBookRepository BookRepository
 @inject IDictionaryRepository DictionaryRepository
@@ -37,7 +42,7 @@ else
                 </button>
 
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="/bookslist/edit/@book.Id?returnUrl=/bookslist/view/@book.Id"
+                    <a href="/system/zasoby/edit/@book.Id?returnUrl=/system/zasoby/view/@book.Id"
                        class="btn btn-outline-primary"
                        title="Edytuj">
                         <i class="bi bi-pencil-square"></i> Edytuj
@@ -172,7 +177,7 @@ else
             <AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
                 <div class="row pb-3">
                     <div class="col-12 text-end">
-                        <a href="/bookslist/view/@book.Id/create?returnUrl=/bookslist/view/@book.Id" class="btn btn-lg btn-primary">
+                        <a href="/system/zasoby/view/@book.Id/create?returnUrl=/system/zasoby/view/@book.Id" class="btn btn-lg btn-primary">
                             <i class="bi bi-journal-plus"></i> Dodaj nowy egzemplarz
                         </a>
                     </div>
@@ -207,7 +212,7 @@ else
                                     <td>
 
                                         <div class="d-flex justify-content-start gap-2">
-                                            <a href="/bookslist/view/@book.Id/edit/@copy.Id?returnUrl=/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                            <a href="/system/zasoby/view/@book.Id/edit/@copy.Id?returnUrl=/system/zasoby/view/@book.Id" class="btn btn-outline-primary btn-sm" title="Edytuj">
                                                 <i class="bi bi-pencil-square"></i> Edytuj
                                             </a>
                                             <button class="btn btn-outline-danger btn-sm" title="Usuń">
@@ -305,6 +310,6 @@ else
         if (!string.IsNullOrEmpty(ReturnUrl))
             NavigationManager.NavigateTo(ReturnUrl);
         else
-            NavigationManager.NavigateTo("/bookslist");
+            NavigationManager.NavigateTo("/system/zasoby");
     }
 }

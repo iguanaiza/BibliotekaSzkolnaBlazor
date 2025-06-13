@@ -21,7 +21,7 @@
                         <Authorized>
                             <li class="nav-item">
                                 <a class="nav-link p-2 theme-font-color btn btn-nav" href="Account/Manage">
-                                    Witaj, @context?.User?.Identity?.Name
+                                    <i class="bi bi-person-circle"></i> Witaj, @context?.User?.Identity?.Name
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -29,7 +29,7 @@
                                     <AntiforgeryToken />
                                     <input type="hidden" name="ReturnUrl" value="" />
                                     <button type="submit" class="nav-link p-2 theme-font-color btn btn-nav">
-                                        <span class="bi bi-arrow-bar-left-nav-menu"></span> Wyloguj
+                                        Wyloguj <i class="bi bi-box-arrow-right"></i>
                                     </button>
                                 </form>
                             </li>
@@ -37,7 +37,7 @@
                         <NotAuthorized>
                             <li class="nav-item">
                                 <a class="nav-link p-2 theme-font-color btn btn-nav" href="Account/Login">
-                                    <span class="bi bi-person-badge-nav-menu"></span> Zaloguj
+                                    <i class="bi bi-box-arrow-left"></i> Zaloguj
                                 </a>
                             </li>
                         </NotAuthorized>

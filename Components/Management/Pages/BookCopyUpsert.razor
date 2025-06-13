@@ -1,5 +1,5 @@
-﻿@page "/bookslist/view/{BookId:int}/create"
-@page "/bookslist/view/{BookId:int}/edit/{CopyId:int}"
+﻿@page "/system/zasoby/view/{BookId:int}/create"
+@page "/system/zasoby/view/{BookId:int}/edit/{CopyId:int}"
 @layout ManagementLayout
 @inject ICopyRepository CopyRepository
 @inject IBookRepository BookRepository
@@ -166,7 +166,7 @@ else
         {
             _pendingError = true;
             _pendingErrorMessage = "Nie znaleziono książki.";
-            NavigationManager.NavigateTo("/bookslist");
+            NavigationManager.NavigateTo("/system/zasoby");
             return;
         }
 
@@ -177,7 +177,7 @@ else
             {
                 _pendingError = true;
                 _pendingErrorMessage = "Nie znaleziono egzemplarza.";
-                NavigationManager.NavigateTo($"/bookslist/view/{BookId}");
+                NavigationManager.NavigateTo($"/system/zasoby/view/{BookId}");
                 return;
             }
 
@@ -241,6 +241,6 @@ else
 
     private void GoBack()
     {
-        NavigationManager.NavigateTo(ReturnUrl ?? $"/bookslist/view/{BookId}");
+        NavigationManager.NavigateTo(ReturnUrl ?? $"/system/zasoby/view/{BookId}");
     }
 }

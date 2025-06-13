@@ -1,4 +1,4 @@
-﻿@page "/system/zasoby"
+﻿@page "/system/lektury"
 @layout ManagementLayout
 @inject IBookRepository BookRepository
 @inject IJSRuntime JS
@@ -30,7 +30,7 @@ else
     <div class="card-body p-4">
         <div class="row pb-3">
             <div class="col-12 text-end">
-                <a href="/system/zasoby/create?returnUrl=/system/zasoby" class="btn btn-lg btn-primary">
+                <a href="/system/zasoby/create?returnUrl=/system/lektury" class="btn btn-lg btn-primary">
                     <i class="bi bi-journal-plus"></i> Dodaj nową książkę
                 </a>
             </div>
@@ -44,6 +44,7 @@ else
                         <tr>
                             <th>#</th>
                             <th></th>
+                            <th>Klasa</th>
                             <th>Tytuł</th>
                             <th>Autor</th>
                             <th>Ilość</th>
@@ -51,7 +52,6 @@ else
                             <th>Wydawca</th>
                             <th>Rok wydania</th>
                             <th>Katalog</th>
-                            <th>Oznaczenia</th>
                             <th>Akcje</th>
                         </tr>
                     </thead>
@@ -64,28 +64,20 @@ else
                             <tr>
                                 <td>@index</td>
                                 <td>
-                                    <a href="/system/zasoby/view/@book.Id" class="btn btn-outline-primary btn-sm">
+                                    <a href="/system/lektury/view/@book.Id?returnUrl=/system/lektury" class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-info-square"></i>
                                     </a>
                                 </td>
-                                <td class="text-truncate">@book.Title</td>
+                                <td>@book.Class</td>
+                                <td>@book.Title</td>
                                 <td>@book.BookAuthor</td>
                                 <td>@book.CopyCount</td>
                                 <td>@book.Isbn</td>
-                                <td class="text-truncate">@book.BookPublisher</td>
+                                <td>@book.BookPublisher</td>
                                 <td>@book.Year</td>
                                 <td>@(book.IsVisible ? "Tak" : "Nie")</td>
-                                <td>
-                                    @if (book.BookSpecialTags != null && book.BookSpecialTags.Any())
-                                    {
-                                        foreach (var tag in book.BookSpecialTags)
-                                        {
-                                            <label class="@GetBadgeClass(tag) me-1">@tag</label>
-                                        }
-                                    }
-                                </td>
                                 <td class="text-center d-flex justify-content-start gap-2">
-                                    <a href="/system/zasoby/edit/@book.Id?returnUrl=/system/zasoby" class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                    <a href="/system/zasoby/edit/@book.Id?returnUrl=/system/lektury" class="btn btn-outline-primary btn-sm" title="Edytuj">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <button class="btn btn-outline-danger btn-sm" @onclick="() => HandleDelete(book.Id)" title="Usuń">
@@ -136,7 +128,7 @@ else
 
     private async Task LoadBooks()
     {
-        Books = await BookRepository.GetBooksAsync();
+        Books = await BookRepository.GetLekturyAsync();
         TotalCount = Books.Count();
         LoadFilteredBooks();
     }
@@ -189,16 +181,5 @@ else
 
         DeleteBookID = 0;
         IsLoading = false;
-    }
-
-    private string GetBadgeClass(string tag)
-    {
-        return tag switch
-        {
-            "Polecane" => "badge bg-success",
-            "Nowości" => "badge bg-warning text-dark",
-            "Popularne" => "badge bg-info text-dark",
-            _ => "badge bg-secondary"
-        };
     }
 }

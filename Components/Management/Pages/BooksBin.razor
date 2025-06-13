@@ -1,4 +1,4 @@
-﻿@page "/booksbin"
+﻿@page "/system/kosz"
 @layout ManagementLayout
 @inject IBookRepository BookRepository
 @inject IJSRuntime JS
@@ -61,7 +61,7 @@ else
                                 <td>@index</td>
 
                                 <td>
-                                    <a href="/bookslist/view/@book.Id" class="btn btn-outline-primary btn-sm">
+                                    <a href="/system/zasoby/view/@book.Id" class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-info-square"></i>
                                     </a>
                                 </td>

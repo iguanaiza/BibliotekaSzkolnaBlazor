@@ -1,4 +1,4 @@
-﻿@page "/userslist/create"
+﻿@page "/system/czytelnicy/create"
 @layout ManagementLayout
 @inject IJSRuntime JS
 
@@ -24,7 +24,7 @@
     <div class="row pb-3">
         <div class="col-12 text-end">
             <div class="col-12 text-start">
-                <a href="/userslist" class="btn btn-primary">
+                <a href="/system/czytelnicy" class="btn btn-primary">
                     <i class="bi bi-arrow-bar-left"></i> Powrót
                 </a>
             </div>
@@ -39,9 +39,9 @@
 
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="row mb-3">
-                    <label for="firstname" class="col-sm-2 col-form-label text-end">Numer karty</label>
+                    <label for="cardnumber" class="col-sm-2 col-form-label text-end">Numer karty</label>
                     <div class="col-sm-10">
-                        <InputNumber @bind-Value="Input.LibraryId" class="form-control p2" aria-required="true" placeholder="10005" />
+                        <InputNumber id="cardnumber" @bind-Value="Input.LibraryId" class="form-control p2" aria-required="true" placeholder="10005" />
                         <ValidationMessage For="() => Input.LibraryId" class="text-danger" />
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                 <div class="row mb-3">
                     <label for="firstname" class="col-sm-2 col-form-label text-end">Imię</label>
                     <div class="col-sm-10">
-                        <InputText @bind-Value="Input.FirstName" class="form-control p2" aria-required="true" placeholder="Imię" />
+                        <InputText id="firstname" @bind-Value="Input.FirstName" class="form-control p2" aria-required="true" placeholder="Imię" />
                         <ValidationMessage For="() => Input.FirstName" class="text-danger" />
                     </div>
                 </div>
@@ -58,8 +58,17 @@
                 <div class="row mb-3">
                     <label for="lastname" class="col-sm-2 col-form-label text-end">Nazwisko</label>
                     <div class="col-sm-10">
-                        <InputText @bind-Value="Input.LastName" class="form-control p2" aria-required="true" placeholder="Nazwisko" />
+                        <InputText id="lastname" @bind-Value="Input.LastName" class="form-control p2" aria-required="true" placeholder="Nazwisko" />
                         <ValidationMessage For="() => Input.LastName" class="text-danger" />
+                    </div>
+                </div>
+
+                <ValidationSummary class="text-danger" role="alert" />
+                <div class="row mb-3">
+                    <label for="class" class="col-sm-2 col-form-label text-end">Klasa</label>
+                    <div class="col-sm-10">
+                        <InputText id="class" @bind-Value="Input.Class" class="form-control p2" aria-required="true" placeholder="1A" />
+                        <ValidationMessage For="() => Input.Class" class="text-danger" />
                     </div>
                 </div>
 
@@ -67,7 +76,7 @@
                 <div class="row mb-3">
                     <label for="email" class="col-sm-2 col-form-label text-end">E-mail</label>
                     <div class="col-sm-10">
-                        <InputText @bind-Value="Input.Email" class="form-control p2" autocomplete="username" aria-required="true" placeholder="imie@test.pl" />
+                        <InputText id="email" @bind-Value="Input.Email" class="form-control p2" autocomplete="username" aria-required="true" placeholder="imie@test.pl" />
                         <ValidationMessage For="() => Input.Email" class="text-danger" />
                     </div>
                 </div>
@@ -76,7 +85,7 @@
                 <div class="row mb-3">
                     <label for="password" class="col-sm-2 col-form-label text-end">Hasło</label>
                     <div class="col-sm-10">
-                        <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="hasło" />
+                        <InputText id="password" type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="hasło" />
                         <ValidationMessage For="() => Input.Password" class="text-danger" />
                     </div>
                 </div>
@@ -85,7 +94,7 @@
                 <div class="row mb-3">
                     <label for="confirm-password" class="col-sm-2 col-form-label text-end">Potwierdź hasło</label>
                     <div class="col-sm-10">
-                        <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="hasło" />
+                        <InputText id="confirm-password" type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="hasło" />
                         <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
                     </div>
                 </div>
@@ -109,7 +118,7 @@
                 <!--Przyciski-->
                 <div class="row">
                     <div class="d-flex justify-content-between mt-3">
-                        <a href="/userslist" class="btn btn-lg btn-gray">
+                        <a href="/system/czytelnicy" class="btn btn-lg btn-outline-primary">
                             <i class="bi bi-x-circle"></i> Anuluj
                         </a>
 
@@ -145,6 +154,13 @@
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
+
+        user.UserName = Input.Email;
+        user.Email = Input.Email;
+        user.LibraryId = Input.LibraryId;
+        user.FirstName = Input.FirstName;
+        user.LastName = Input.LastName;
+        user.Class = Input.Class;
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
@@ -191,7 +207,6 @@
                 new() { ["email"] = Input.Email, ["returnUrl"] = ReturnUrl });
         }
 
-        await SignInManager.SignInAsync(user, isPersistent: false);
         RedirectManager.RedirectTo(ReturnUrl);
     }
 
@@ -219,35 +234,33 @@
 
     private sealed class InputModel
     {
-        [Required]
-        [Range(5, 5, ErrorMessage = "Numer karty musi składać się z 5 cyfr.")]
+        [Range(10000, 99999, ErrorMessage = "Numer karty musi składać się z 5 cyfr.")]
         public int LibraryId { get; set; }
 
-        [Required]
         [StringLength(100, ErrorMessage = "Imię musi mieć co najmniej 2 znaki.", MinimumLength = 2)]
-        public string FirstName { get; set; } = "";
+        public string? FirstName { get; set; }
 
-        [Required]
         [StringLength(100, ErrorMessage = "Nazwisko musi mieć co najmniej 2 znaki.", MinimumLength = 2)]
-        public string LastName { get; set; } = "";
+        public string? LastName { get; set; }
 
-        public string Class { get; set; } = "";
+        [StringLength(3, ErrorMessage = "Klasa musi mieć co najmniej 2 znaki.", MinimumLength = 2)]
+        public string? Class { get; set; }
 
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
-        public string Email { get; set; } = "";
+        public string Email { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "Hasło musi mieć co najmniej 6 znaków.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Hasło")]
-        public string Password { get; set; } = "";
+        [Display(Name = "Password")]
+        public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Potwierdź hasło")]
-        [Compare("Hasło", ErrorMessage = "Hasło i potwierdzenie nie pasują do siebie.")]
-        public string ConfirmPassword { get; set; } = "";
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "Hasło i potwierdzenie nie pasują do siebie.")]
+        public string ConfirmPassword { get; set; }
 
         public string? Role { get; set; }
     }

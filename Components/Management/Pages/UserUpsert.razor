@@ -1,4 +1,4 @@
-﻿@page "/userslist/edit/{LibraryId:int}"
+﻿@page "/system/czytelnicy/edit/{LibraryId:int}"
 @layout ManagementLayout
 
 @inject NavigationManager NavigationManager
@@ -12,7 +12,7 @@
     <div class="row pb-3">
         <div class="col-12 text-end">
             <div class="col-12 text-start">
-                <a href="/userslist" class="btn btn-primary">
+                <a href="/system/czytelnicy" class="btn btn-primary">
                     <i class="bi bi-arrow-bar-left"></i> Powrót
                 </a>
             </div>
@@ -51,6 +51,14 @@
                 </div>
 
                 <div class="row mb-3">
+                    <label for="class" class="col-sm-2 col-form-label text-end">Klasa</label>
+                    <div class="col-sm-10">
+                        <InputText @bind-Value="Input.Class" class="form-control p2" autocomplete="username" aria-required="true" placeholder="1A" />
+                        <ValidationMessage For="() => Input.Class" class="text-danger" />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
                     <label for="email" class="col-sm-2 col-form-label text-end">E-mail</label>
                     <div class="col-sm-10">
                         <InputText @bind-Value="Input.Email" class="form-control p2" autocomplete="username" aria-required="true" placeholder="imie@test.pl" />
@@ -61,7 +69,7 @@
                 <!--Przyciski-->
                 <div class="row">
                     <div class="d-flex justify-content-between mt-3">
-                        <a href="/userslist" class="btn btn-lg btn-gray">
+                        <a href="/system/czytelnicy" class="btn btn-lg btn-outline-primary">
                             <i class="bi bi-x-circle"></i> Anuluj
                         </a>
 
@@ -86,7 +94,7 @@
         var userDto = await UserRepository.GetUserByLibraryIdAsync(LibraryId);
         if (userDto == null)
         {
-            NavigationManager.NavigateTo("/userslist");
+            NavigationManager.NavigateTo("/system/czytelnicy");
             return;
         }
 
@@ -118,13 +126,13 @@
         {
             await JS.ToastrSuccess("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Użytkownik zaktualizowany pomyślnie");
             await Task.Delay(5000);
-            NavigationManager.NavigateTo("/userslist");
+            NavigationManager.NavigateTo("/system/czytelnicy");
         }
         else
         {
             await JS.ToastrError("Za chwilę nastąpi przekierowanie do poprzedniej strony", "Nie udało się zaktualizować użytkownika.");
             await Task.Delay(5000);
-            NavigationManager.NavigateTo("/userslist");
+            NavigationManager.NavigateTo("/system/czytelnicy");
         }
     }
 }

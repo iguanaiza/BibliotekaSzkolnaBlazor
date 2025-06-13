@@ -1,4 +1,4 @@
-﻿@page "/loanslist"
+﻿@page "/system/wypozyczenia"
 @layout ManagementLayout
 @inject IBookLoanRepository BookLoanRepository
 @inject IJSRuntime JS
@@ -27,7 +27,7 @@ else
     <div class="card-body p-4">
         @if (Loans.Any())
         {
-            <div class="table-responsive">
+            <div class="table-responsive tbl-list">
                 <table class="table table-striped table-bordered table-hover table-sm text-nowrap">
                     <thead>
                         <tr>

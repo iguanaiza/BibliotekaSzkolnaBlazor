@@ -1,5 +1,5 @@
-﻿@page "/bookslist/create"
-@page "/bookslist/edit/{BookId:int}"
+﻿@page "/system/zasoby/create"
+@page "/system/zasoby/edit/{BookId:int}"
 @layout ManagementLayout
 @inject IBookRepository BookRepository
 @inject IDictionaryRepository DictionaryRepository
@@ -316,12 +316,26 @@ else
                         </div>
                     </div>
 
+                    <!--Widoczność w katalogu-->
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label text-end">Widoczność</label>
+                        <div class="col-sm-10">
+                            <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                        <InputCheckbox class="form-check-input" @bind-Value="book.IsVisible" />
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--Przyciski-->
                     <div class="row">
                         <div class="d-flex justify-content-between mt-3">
-                            <button @onclick="GoBack" class="btn btn-lg btn-gray">
+                            <a @onclick="GoBack" class="btn btn-lg btn-outline-primary">
                                 <i class="bi bi-x-circle"></i> Anuluj
-                            </button>
+                            </a>
 
                             <button class="btn btn-lg btn-primary" type="submit">
                                 <i class="bi bi-check-circle"></i>
@@ -426,7 +440,7 @@ else
             if (author == null || publisher == null || type == null || series == null || category == null)
             {
                 await JS.ToastrError("Wystąpił błąd ładowania", "Nie udało się odnaleźć wszystkich danych.");
-                NavigationManager.NavigateTo("/bookslist");
+                NavigationManager.NavigateTo("/system/zasoby");
                 return;
             }
 
@@ -488,8 +502,6 @@ else
                 GoBack();
             }
         }
-
-        //NavigationManager.NavigateTo("/bookslist");
     }
 
     private void ToggleGenre(int genreId)
@@ -557,7 +569,7 @@ else
         if (!string.IsNullOrEmpty(ReturnUrl))
             NavigationManager.NavigateTo(ReturnUrl);
         else
-            NavigationManager.NavigateTo("/bookslist");
+            NavigationManager.NavigateTo("system/zasoby");
     }
 
     private string GetBadgeClass(string tag)
