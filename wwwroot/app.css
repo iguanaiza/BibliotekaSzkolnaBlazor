@@ -82,6 +82,12 @@ a {
     font-size: var(--font-size);
 }
 
+    .btn:disabled {
+        color: #808080;
+        background-color: var(--gray-75);
+        border-color: var(--gray);
+    }
+
 .btn-primary {
     color: var(--font-secondary);
     background-color: var(--primary-75);
@@ -282,3 +288,10 @@ input[type=number] {
     color: var(--font-primary);
 }
 
+.tbl-list {
+    width: 100%;
+    vertical-align: top;
+    border: 1px solid var(--primary);
+    background: white;
+    padding-bottom: 0.5rem;
+}

@@ -8,6 +8,12 @@
 
 @rendermode InteractiveServer
 
+<PageTitle>
+    @(CopyId == null || CopyId == 0
+        ? $"Dodaj"
+        : $"Edytuj") egzemplarz
+</PageTitle>
+
 @if (IsLoading)
 {
     <div class="text-center m-5">
@@ -22,8 +28,8 @@ else
             <div class="col-12 text-center">
                 <h2 class="py-2">
                     @(CopyId == null || CopyId == 0
-                        ? $"Dodaj egzemplarz książki „{book?.Title}”"
-                        : $"Edytuj egzemplarz książki „{book?.Title}”")
+                        ? $"Dodaj"
+                        : $"Edytuj") egzemplarz książki „{book?.Title}”
                 </h2>
             </div>
         </div>

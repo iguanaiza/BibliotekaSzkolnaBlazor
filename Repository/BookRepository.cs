@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BibliotekaSzkolnaBlazor.Repository
 {
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
     public class BookRepository : IBookRepository
     {
         private readonly ApplicationDbContext _context;
@@ -18,6 +19,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
         #region GETs
         public async Task<IEnumerable<BookGetDto>> GetBooksAsync()
         {
+
             return await _context.Books
                 .Where(b => !b.IsDeleted)
                 .Include(b => b.BookAuthor)
@@ -59,6 +61,7 @@ namespace BibliotekaSzkolnaBlazor.Repository
                         c.BookLoans == null || c.BookLoans.All(l => l.ReturnDate != null))
                 })
                 .ToListAsync();
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         }
 
         public async Task<BookGetDto?> GetBookByIdAsync(int id)

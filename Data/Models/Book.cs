@@ -6,23 +6,14 @@ namespace BibliotekaSzkolnaBlazor.Data.Models
     public class Book
     {
         public int Id { get; set; }
-
         public DateTime Created { get; set; } = DateTime.Now;
-
         public string Title { get; set; } = null!;
-
         public int Year { get; set; }
-
         public string Description { get; set; } = null!;//krótki opis ksiazki
-
         public string Isbn { get; set; } = null!; //numer ISBN
-
         public int PageCount { get; set; } //ilość stron
-
         public bool IsDeleted { get; set; } = false;//do soft delete
-
         public bool IsVisible { get; set; } = true;//do widoku w katalogu
-
         public string? ImageUrl { get; set; } //okładka książki - URL do folderu
         public string? Subject { get; set; } //przedmiot (dla podrecznikow)
         public string? Class { get; set; } //klasa (dla lektur)

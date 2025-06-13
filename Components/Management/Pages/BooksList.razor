@@ -5,6 +5,8 @@
 
 @rendermode InteractiveServer
 
+<PageTitle>Lista zasobów</PageTitle>
+
 <BinModal OnModalConfirmation="ConfirmDelete_Click" />
 
 @if (IsLoading)
@@ -36,7 +38,7 @@ else
 
         @if (Books.Any())
         {
-            <div class="table-responsive">
+            <div class="table-responsive tbl-list">
                 <table class="table table-striped table-bordered table-hover table-sm text-nowrap">
                     <thead>
                         <tr>
