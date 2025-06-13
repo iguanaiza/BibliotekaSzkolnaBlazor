@@ -263,12 +263,18 @@ input[type=number] {
 .details {
     width: 100%;
     margin-bottom: 1rem;
-    vertical-align: top;
     background: transparent;
 }
 
     .details > :not(caption) > * > * {
         padding: 0.5rem;
+        vertical-align: central;
+    }
+
+    .details th {
+        min-width: 8rem;
+        text-align: end;
+        font-weight: bold;
     }
 
 .details-image {
@@ -290,8 +296,20 @@ input[type=number] {
 
 .tbl-list {
     width: 100%;
-    vertical-align: top;
     border: 1px solid var(--primary);
     background: white;
     padding-bottom: 0.5rem;
+}
+    .tbl-list > :not(caption) > * > * {
+        padding: 0.5rem;
+        vertical-align: middle;
+    }
+
+    .tbl-list th {
+        text-align: center;
+        font-weight: bold;
+    }
+
+.td-center {
+    text-align: center;
 }

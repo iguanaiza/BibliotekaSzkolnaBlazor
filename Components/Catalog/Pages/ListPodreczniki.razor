@@ -38,34 +38,32 @@ else
                     <table class="table table-striped table-bordered table-hover table-sm text-nowrap">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th></th>
-                                <th>Klasa</th>
-                                <th>Przedmiot</th>
-                                <th>Tytuł</th>
-                                <th>Autor</th>
-                                <th>Wydawca</th>
-                                <th>Rok wydania</th>
+                                <th ></th>
+                                <th >#</th>
+                                <th >Klasa</th>
+                                <th >Przedmiot</th>
+                                <th >Autor</th>
+                                <th >Tytuł</th>
+                                <th >Wydawca</th>
+                                <th >Rok wydania</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var book in Books)
                             {
                                 <tr>
-
-                                    <td>@index</td>
-
                                     <td>
                                         <a href="/lektury/view/@book.Id" class="btn btn-outline-primary btn-sm">
                                             <i class="bi bi-info-square"></i>
                                         </a>
                                     </td>
-                                    <td>@book.Class</td>
+                                    <td class="td-center fw-bold">@index</td>
+                                    <td class="td-center">@book.Class</td>
                                     <td>@book.Subject</td>
-                                    <td>@book.Title</td>
                                     <td>@book.BookAuthor</td>
+                                    <td>@book.Title</td>
                                     <td>@book.BookPublisher</td>
-                                    <td>@book.Year</td>
+                                    <td class="td-center">@book.Year</td>
                                 </tr>
                                 index++;
                             }

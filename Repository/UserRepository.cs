@@ -21,11 +21,12 @@ namespace BibliotekaSzkolnaBlazor.Repository
         public async Task<IEnumerable<UserGetDto>> GetUsersAsync()
         {
             var users = await _context.Users
-               .Include(u => u.BookLoans)
-                   .ThenInclude(l => l.BookCopy)
-                       .ThenInclude(c => c.Book)
-               .Include(u => u.FavoriteBooks)
-                   .ThenInclude(fb => fb.Book)
+                 .Include(u => u.BookLoans)
+                    .ThenInclude(l => l.BookCopy)
+                        .ThenInclude(c => c.Book)
+                .Include(u => u.FavoriteBooks)
+                    .ThenInclude(fb => fb.Book)
+                .OrderBy(u => u.LibraryId)
                .ToListAsync();
 
             return users.Select(user => new UserGetDto
@@ -93,29 +94,6 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 BookLoans = user.BookLoans.ToList(),
                 FavoriteBooks = user.FavoriteBooks.ToList()
             };
-        }
-
-        public async Task<IdentityResult> CreateUserAsync(UserUpsertDto dto, string password)
-        {
-            var user = new ApplicationUser
-            {
-                UserName = dto.Email,
-                Email = dto.Email,
-                LibraryId = dto.LibraryId,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Class = dto.Class
-            };
-
-            var result = await _userManager.CreateAsync(user, password);
-            if (!result.Succeeded)
-                return result;
-
-            var roleResult = await _userManager.AddToRoleAsync(user, dto.Role);
-            if (!roleResult.Succeeded)
-                return IdentityResult.Failed(roleResult.Errors.ToArray());
-
-            return IdentityResult.Success;
         }
 
         public async Task<UserGetDto?> UpdateUserAsync(string userId, UserUpsertDto dto)

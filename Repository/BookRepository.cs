@@ -30,6 +30,8 @@ namespace BibliotekaSzkolnaBlazor.Repository
                 .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
                 .Include(b => b.BookCopies).ThenInclude(c => c.BookLoans)
                 .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
+                .OrderBy(b => b.BookAuthor.Surname)
+                    .ThenBy(b=> b.Title)
                 .Select(b => new BookGetDto
                 {
                     Id = b.Id,
@@ -159,17 +161,18 @@ namespace BibliotekaSzkolnaBlazor.Repository
             const int CategoryId = 1;
 
             return await _context.Books
-                .Where(b => !b.IsDeleted)
-                .Include(b => b.BookCategory).Where(b => b.BookCategoryId == CategoryId)
+                 .Where(b => !b.IsDeleted && b.BookCategoryId == CategoryId)
+                .Include(b => b.BookCategory)
                 .Include(b => b.BookAuthor)
-                .Include(b => b.BookPublisher)
                 .Include(b => b.BookPublisher)
                 .Include(b => b.BookSeries)
                 .Include(b => b.BookType)
-                .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
                 .Include(b => b.BookCopies)
                 .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
+                .OrderBy(b => b.Class)
+                    .ThenBy(b => b.BookAuthor.Surname)
+                        .ThenBy(b => b.Title)
                 .Select(b => new BookGetDto
                 {
                     Id = b.Id,
@@ -206,17 +209,18 @@ namespace BibliotekaSzkolnaBlazor.Repository
             const int CategoryId = 2;
 
             return await _context.Books
-                .Where(b => !b.IsDeleted)
-                .Include(b => b.BookCategory).Where(b => b.BookCategoryId == CategoryId)
+                .Where(b => !b.IsDeleted && b.BookCategoryId == CategoryId)
+                .Include(b => b.BookCategory)
                 .Include(b => b.BookAuthor)
-                .Include(b => b.BookPublisher)
                 .Include(b => b.BookPublisher)
                 .Include(b => b.BookSeries)
                 .Include(b => b.BookType)
-                .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
                 .Include(b => b.BookCopies)
                 .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
+                .OrderBy(b => b.Class)
+                    .ThenBy(b => b.BookAuthor.Surname)
+                        .ThenBy(b => b.Title)
                 .Select(b => new BookGetDto
                 {
                     Id = b.Id,
@@ -253,17 +257,18 @@ namespace BibliotekaSzkolnaBlazor.Repository
             const int CategoryId = 3;
 
             return await _context.Books
-                .Where(b => !b.IsDeleted)
-                .Include(b => b.BookCategory).Where(b => b.BookCategoryId == CategoryId)
+                .Where(b => !b.IsDeleted && b.BookCategoryId == CategoryId)
+                .Include(b => b.BookCategory)
                 .Include(b => b.BookAuthor)
-                .Include(b => b.BookPublisher)
                 .Include(b => b.BookPublisher)
                 .Include(b => b.BookSeries)
                 .Include(b => b.BookType)
-                .Include(b => b.BookCategory)
                 .Include(b => b.BookBookGenres).ThenInclude(bb => bb.BookGenre)
                 .Include(b => b.BookCopies)
                 .Include(b => b.BookBookSpecialTags).ThenInclude(bb => bb.BookSpecialTag)
+                .OrderBy(b => b.Class)
+                    .ThenBy(b => b.BookAuthor.Surname)
+                        .ThenBy(b => b.Title)
                 .Select(b => new BookGetDto
                 {
                     Id = b.Id,
