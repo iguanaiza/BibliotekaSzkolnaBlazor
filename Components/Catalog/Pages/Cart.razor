@@ -24,8 +24,8 @@
     <div class="row gx-3 p-3">
         <div class="col-12 col-lg-6 order-1 order-lg-2 mb-1 mb-lg-0">
             <div class="card p-3 shadow-sm">
-                <h5 class="mb-3">Podsumowanie</h5>
-                <p>Razem do wypożyczenia: @Books.Count()</p>
+                <h5 class="mb-3 theme-font-col-pri">Podsumowanie</h5>
+                <p class="theme-font-col-pri">Razem do wypożyczenia: @Books.Count()</p>
                 <button class="btn btn-primary w-100" @onclick="OnBorrowClicked">Wypożycz</button>
             </div>
         </div>
@@ -49,22 +49,20 @@
                         </div>
 
                         <div class="col-md-8 d-flex flex-column justify-content-between p-3">
-                            <div class="d-flex flex-wrap justify-content-end align-items-center gap-2 mb-2">
-                                <div class="d-flex flex-wrap gap-2">
-                                    <a href="/catalog/view/@book.Id?returnUrl=/ulubione" class="btn btn-outline-primary btn-sm">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                    <a href="/catalog/view/@book.Id?returnUrl=/ulubione" class="btn btn-primary btn-sm">
                                         <i class="bi bi-info-square"></i> Szczegóły
                                     </a>
 
-                                    <button class="btn btn-outline-danger btn-sm" @onclick="() => RemoveFromCart(book.Id)">
+                                    <button class="btn btn-outline-primary btn-sm" @onclick="() => RemoveFromCart(book.Id)">
                                         <i class="bi bi-trash"></i> Usuń z koszyka
                                     </button>
-                                </div>
                             </div>
 
                             <div class="card-body p-0">
-                                <h5 class="card-title">@book.BookTitle</h5>
-                                <p class="card-text"><small class="text-body-secondary">@book.AuthorName</small></p>
-                                <p class="card-text truncate-3-lines mb-0">Egzemplarz: @book.Signature</p>
+                                <h5 class="card-title theme-font-col-pri">@book.BookTitle</h5>
+                                <p class="card-text"><small class="theme-font-col-pri">@book.AuthorName</small></p>
+                                <p class="card-text theme-font-col-pri truncate-3-lines mb-0">Egzemplarz: @book.Signature</p>
                             </div>
                         </div>
                     </div>

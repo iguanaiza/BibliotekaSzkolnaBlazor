@@ -5,10 +5,12 @@
 @using BibliotekaSzkolnaBlazor.Data
 @inject UserManager<ApplicationUser> UserManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
+@rendermode InteractiveServer
 
 <PageTitle>Konto czytelnika</PageTitle>
 
-<h3>Dane czytelnika</h3>
+<h3 class="theme-font-col-pri">Dane czytelnika</h3>
 
 <div class="row">
     <div class="col-xl-6">
@@ -44,6 +46,14 @@
         {
             user = await UserManager.GetUserAsync(claimsUser);
             username = await UserManager.GetUserNameAsync(user);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("applyUserPreferences");
         }
     }
 }

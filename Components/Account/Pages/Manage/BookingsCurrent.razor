@@ -108,7 +108,6 @@ else
             await BookLoanRepository.ProlongLoanAsync(loanId);
             await JS.InvokeVoidAsync("alert", "Wypożyczenie zostało przedłużone o 30 dni.");
 
-            // Odśwież listę po przedłużeniu
             var authState = await AuthStateProvider.GetAuthenticationStateAsync();
             var userId = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (!string.IsNullOrEmpty(userId))

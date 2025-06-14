@@ -55,19 +55,19 @@
 
                                 <div class="col-8 d-flex flex-column justify-content-between p-3">
                                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                                        <a href="/catalog/view/@book.Id?returnUrl=/ulubione" class="btn btn-outline-primary btn-sm">
+                                        <a href="/catalog/view/@book.Id?returnUrl=/ulubione" class="btn btn-primary btn-sm">
                                             <i class="bi bi-info-square"></i> Szczegóły
                                         </a>
 
-                                        <button class="btn btn-secondary btn-sm" @onclick="() => RemoveFromFavorites(book.Id)">
+                                        <button class="btn btn-outline-primary btn-sm" @onclick="() => RemoveFromFavorites(book.Id)">
                                             <i class="bi bi-trash"></i> Usuń z ulubionych
                                         </button>
                                     </div>
 
                                     <div class="card-body p-0">
-                                        <h5 class="card-title">@book.Title</h5>
-                                        <p class="card-text truncate-3-lines mb-0">@book.Description</p>
-                                        <p class="card-text"><small class="text-body-secondary">@book.BookAuthor</small></p>
+                                        <h5 class="card-title theme-font-col-pri">@book.Title</h5>
+                                        <p class="card-text truncate-3-lines mb-0 theme-font-col-pri">@book.Description</p>
+                                        <p class="card-text"><small class="theme-font-col-pri">@book.BookAuthor</small></p>
                                     </div>
                                 </div>
                             </div>

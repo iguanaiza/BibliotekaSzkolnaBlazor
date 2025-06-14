@@ -23,7 +23,8 @@ namespace BibliotekaSzkolnaBlazor.Repository
                         .ThenInclude(b => b.BookAuthor)
                 .Include(bl => bl.User)
                 .Where(bl => bl.UserId == userId)
-                .OrderByDescending(bl => bl.BorrowDate)
+                .OrderBy(bl => bl.BorrowDate)
+                    .ThenBy(bl => bl.BookCopy.Signature)
                 .Select(bl => new LoanDto
                 {
                     LoanId = bl.Id,
@@ -52,6 +53,9 @@ namespace BibliotekaSzkolnaBlazor.Repository
                         .ThenInclude(b => b.BookAuthor)
                 .Include(bl => bl.User)
                 .Where(bl => bl.UserId == userId && bl.ReturnDate == null)
+                .OrderBy(bl => bl.BookCopy.Signature)
+                    .ThenBy(bl => bl.BorrowDate)
+                        .ThenBy(bl => bl.User.LibraryId)
                 .Select(bl => new LoanDto
                 {
                     LoanId = bl.Id,
@@ -173,7 +177,9 @@ namespace BibliotekaSzkolnaBlazor.Repository
             var totalCount = await query.CountAsync();
 
             var loans = await query
-                .OrderByDescending(l => l.BorrowDate)
+                .OrderBy(bl => bl.BookCopy.Signature)
+                    .ThenBy(bl => bl.BorrowDate)
+                        .ThenBy(bl => bl.User.LibraryId)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Select(l => new LoanDto

@@ -69,10 +69,10 @@ else
                                 </td>
                                 <td class="td-center fw-bold">@index</td>
                                 <td>@book.BookAuthor</td>
-                                <td class="text-truncate">@book.Title</td>
+                                <td class="text-truncate" style="max-width:200px;">@book.Title</td>
                                 <td class="td-center">@book.CopyCount</td>
                                 <td class="td-center">@book.Isbn</td>
-                                <td class="text-truncate">@book.BookPublisher</td>
+                                <td class="text-truncate" style="max-width:200px;">@book.BookPublisher</td>
                                 <td class="td-center">@book.Year</td>
                                 <td>@(book.IsVisible ? "Tak" : "Nie")</td>
                                 <td>

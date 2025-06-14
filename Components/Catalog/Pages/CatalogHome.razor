@@ -15,10 +15,10 @@
             <h2 class="fw-bold theme-font-col-pri">@tag</h2>
         </div>
 
-        <div class="carousel-outer px-2" id="carousel-@tag">
+        <div class="carousel-wrapper px-2" id="carousel-@tag">
             <button class="carousel-btn left" @onclick="() => Scroll(tag, -1)">&#10094;</button>
 
-            <div class="scroll-container">
+            <div class="carousel-container">
                 @foreach (var book in BooksByTag[tag])
                 {
                     <a href="/view/@book.Id?returnUrl=/" class="book-card text-decoration-none text-dark">

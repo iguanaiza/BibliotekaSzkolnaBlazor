@@ -32,14 +32,14 @@ else
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Sygnatura</th>
+                            <th>Data wypożyczenia</th>
+                            <th>Termin zwrotu</th>
                             <th>Numer karty</th>
                             <th>Nazwisko</th>
                             <th>Imię</th>
-                            <th>Sygnatura</th>
                             <th>Autor</th>
                             <th>Tytuł</th>
-                            <th>Data wypożyczenia</th>
-                            <th>Termin zwrotu</th>
                             <th>Kara (PLN)</th>
                             <th>Przedłużone</th>
                             <th>Akcje</th>
@@ -53,14 +53,14 @@ else
                         {
                             <tr>
                                 <td class="td-center fw-bold">@index</td>
+                                <td class="td-center">@loan.Signature</td>
+                                <td class="td-center">@loan.BorrowDate.ToString("yyyy-MM-dd")</td>
+                                <td class="td-center">@(loan.DueDate?.ToString("yyyy-MM-dd") ?? "")</td>
                                 <td class="td-center">@loan.LibraryCardNumber</td>
                                 <td>@loan.UserLastName</td>
                                 <td>@loan.UserFirstName</td>
-                                <td class="td-center">@loan.Signature</td>
                                 <td>@loan.AuthorFullName</td>
                                 <td class="text-truncate" style="max-width:200px;">@loan.Title</td>
-                                <td class="td-center">@loan.BorrowDate.ToString("yyyy-MM-dd")</td>
-                                <td class="td-center">@(loan.DueDate?.ToString("yyyy-MM-dd") ?? "")</td>
                                 <td class="td-center">@(loan.PenaltyAmount?.ToString("F2") ?? "")</td>
                                 <td class="td-center">@(loan.WasProlonged ? "Tak" : "Nie")</td>
                                 <td>
