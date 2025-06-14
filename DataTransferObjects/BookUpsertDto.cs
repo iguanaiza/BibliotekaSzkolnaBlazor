@@ -4,8 +4,8 @@ namespace BibliotekaSzkolnaBlazor.DataTransferObjects
 {
     public class BookUpsertDto
     {
-        [Required(ErrorMessage = "Wprowadź tytuł książki (maksymalnie 100 znaków).")]
-        [StringLength(100, ErrorMessage = "Niepoprawny tytuł: wpisz maksymalnie 100 znaków")]
+        [Required(ErrorMessage = "Wprowadź tytuł książki (maksymalnie 200 znaków).")]
+        [StringLength(200, ErrorMessage = "Niepoprawny tytuł: wpisz maksymalnie 200 znaków")]
         public string Title { get; set; } = null!;
 
         [Required(ErrorMessage = "Wprowadź rok wydania książki (zakres 1000-2200.")]

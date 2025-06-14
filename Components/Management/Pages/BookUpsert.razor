@@ -104,7 +104,7 @@ else
                             <div class="col-sm-10">
                                 <InputSelect @bind-Value="@book.Class" class="form-select">
                                     <option value="">-- Wybierz klasę --</option>
-                                    @foreach (var cls in Classes)
+                                    @foreach (var cls in Classes2)
                                     {
                                         <option value="@cls">@cls</option>
                                     }
@@ -138,7 +138,7 @@ else
                                        class="form-control p2"
                                        placeholder="Tytuł książki"
                                        minlength="3"
-                                       maxlength="60" />
+                                       maxlength="200" />
                         </div>
                     </div>
 
@@ -299,7 +299,7 @@ else
                                 <div class="d-flex align-items-start col-sm-10">
                                     <div class="d-flex flex-column align-items-center">
                                         <img src=@book.ImageUrl alt="Okładka książki" class="img-thumbnail" style="height:128px">
-                                        <button class="btn btn-sm btn-danger" @onclick="DeleteImage">
+                                        <button class="btn btn-sm btn-danger" type="button" @onclick="DeleteImage">
                                             <i class="bi bi-trash"></i> Usuń okładkę
                                         </button>
                                     </div>
@@ -387,7 +387,8 @@ else
                                             "Wiedza o społeczeństwie"
                                         };
 
-    private List<string> Classes = new() { "I", "II", "III", "IV", "V", "VI", "VII", "VIII" };
+    private List<string> Classes = new() { "I-III", "IV-VI", "VII-VIII" };
+    private List<string> Classes2 = new() { "I", "II", "III", "IV", "V", "VI", "VII", "VIII" };
 
     private string? SelectedSubject;
     private string? SelectedClass;

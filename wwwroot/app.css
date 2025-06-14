@@ -267,8 +267,8 @@ input[type=number] {
 }
 
     .details > :not(caption) > * > * {
-        padding: 0.5rem;
-        vertical-align: central;
+        padding: 0.25rem;
+        vertical-align: top;
     }
 
     .details th {
@@ -278,7 +278,7 @@ input[type=number] {
     }
 
 .details-image {
-    max-width: 324px;
+    max-width: 20rem;
     width: 100%; 
     height: auto; 
     padding: 0.5rem;
@@ -308,6 +308,21 @@ input[type=number] {
     .tbl-list th {
         text-align: center;
         font-weight: bold;
+    }
+
+.tbl-cat {
+    width: 100%;
+}
+
+    .tbl-cat > :not(caption) > * > * {
+        padding: 0.5rem;
+        vertical-align: middle;
+    }
+
+    .tbl-cat th {
+        text-align: center;
+        font-weight: bold;
+        background: var(--primary-50);
     }
 
 .td-center {
