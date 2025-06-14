@@ -279,6 +279,7 @@ else
             await JS.InvokeVoidAsync("applyUserPreferences");
         }
     }
+
     private async Task LoadData()
     {
         book = await BookRepository.GetBookByIdAsync(BookId);

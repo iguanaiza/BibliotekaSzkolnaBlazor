@@ -1,12 +1,27 @@
 ﻿@inherits LayoutComponentBase
 @layout BibliotekaSzkolnaBlazor.Components.Layout.MainLayout
+@inject NavigationManager NavigationManager
 
-<ManageNavbar />
+<AuthorizeView Roles="@($"{Roles.ADMIN}, {Roles.LIBRARIAN}")">
+    <Authorized>
+        <ManageNavbar />
 
- <div class="w-100">
-     <div class="mx-auto px-3 manage-width">
-         <div class="card shadow border-0 m-4 ">
-            @Body
+         <div class="w-100">
+             <div class="mx-auto px-3 manage-width">
+                 <div class="card shadow border-0 m-4 ">
+                    @Body
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+    </Authorized>
+
+    <NotAuthorized>
+        <div class="d-flex justify-content-center align-items-center min-vh-100">
+            <div class="text-center">
+                <h1 class="text-danger">Odmowa dostępu</h1>
+                <p class="text-danger">Nie posiadasz dostępu do tej strony.</p>
+            </div>
+        </div>
+    </NotAuthorized>
+
+</AuthorizeView>

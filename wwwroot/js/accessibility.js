@@ -1,7 +1,8 @@
-﻿window.fontSizes = ['font-small', 'font-normal', 'font-large'];
-window.themes = ['theme-green', 'theme-blue']; // bez kontrastu
+﻿//dostepne zmienne
+window.fontSizes = ['font-small', 'font-normal', 'font-large'];
+window.themes = ['theme-green', 'theme-blue'];
 
-// Zapisujemy ostatni normalny motyw (zielony lub niebieski)
+//Zapis ustawień
 window.setTheme = (themeClass) => {
     localStorage.setItem('theme', themeClass);
     window.applyUserPreferences();
@@ -22,18 +23,17 @@ window.cycleFontSize = () => {
     window.applyUserPreferences();
 };
 
-// Cykliczna zmiana motywu (bez kontrastu)
+// Cykliczna zmiana motywu 
 window.cycleTheme = () => {
     const current = localStorage.getItem('theme') || 'theme-green';
 
-    // Jeśli jesteśmy w kontraście — wracamy do ostatniego normalnego motywu lub 'theme-green'
     if (current === 'theme-contrast') {
         const fallback = localStorage.getItem('lastTheme') || 'theme-green';
         localStorage.setItem('theme', fallback);
     } else {
         const index = window.themes.indexOf(current);
         const next = window.themes[(index + 1) % window.themes.length];
-        localStorage.setItem('lastTheme', next); // zapamiętaj
+        localStorage.setItem('lastTheme', next);
         localStorage.setItem('theme', next);
     }
 
@@ -47,7 +47,6 @@ window.toggleContrast = () => {
         const fallback = localStorage.getItem('lastTheme') || 'theme-green';
         localStorage.setItem('theme', fallback);
     } else {
-        // Zapisz aktualny jako "normalny"
         localStorage.setItem('lastTheme', current);
         localStorage.setItem('theme', 'theme-contrast');
     }
@@ -55,7 +54,6 @@ window.toggleContrast = () => {
     window.applyUserPreferences();
 };
 
-// Aplikuj preferencje do body
 window.applyUserPreferences = () => {
     const body = document.body;
     if (!body) return;
@@ -75,42 +73,3 @@ window.applyUserPreferences = () => {
 
     console.log('Applied classes:', body.className);
 };
-
-
-
-/*window.applyUserPreferences = () => {
-    const body = document.body;
-    if (!body) return;
-
-    const savedTheme = localStorage.getItem('theme');
-    const savedFontSize = localStorage.getItem('fontSize');
-
-    body.classList.remove(...Array.from(body.classList).filter(cls => cls.startsWith('theme-')));
-    if (savedTheme) {
-        body.classList.add(savedTheme);
-    }
-
-    body.classList.remove(...Array.from(body.classList).filter(cls => cls.startsWith('font-')));
-    if (savedFontSize) {
-        body.classList.add(savedFontSize);
-    }
-
-    console.log('Applied classes:', body.className);
-};
-
-window.setTheme = (themeClass) => {
-    localStorage.setItem('theme', themeClass);
-    window.applyUserPreferences();
-
-    const body = document.body;  // deklaracja
-    console.log('Applied classes:', body.className);
-};
-
-window.setFontSize = (fontSizeClass) => {
-    localStorage.setItem('fontSize', fontSizeClass);
-    window.applyUserPreferences();
-
-    const body = document.body;  // deklaracja
-    console.log('Applied classes:', body.className);
-};
-*/
