@@ -9,6 +9,8 @@
 
 <PageTitle>Szczegóły użytkownika</PageTitle>
 
+<BinModal OnModalConfirmation="ConfirmDelete_Click" />
+
 @if (IsLoading)
 {
     <div class="position-absolute w-75  h-75 d-flex flex-column align-items-center bg-white justify-content-center">
@@ -22,7 +24,7 @@ else
     <div class="card-header bg-theme bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="py-2">@userDto?.FirstName</h2>
+                <h2 class="py-2">Czytelnik @userDto?.LibraryId</h2>
             </div>
         </div>
     </div>
@@ -35,7 +37,15 @@ else
                 </button>
 
                 <div class="d-flex flex-wrap gap-2">
+                    <a href="/system/czytelnicy/edit/@userDto.LibraryId?returnUrl=/system/czytelnicy"
+                       class="btn btn-outline-primary"
+                       title="Edytuj">
+                        <i class="bi bi-pencil-square"></i> Edytuj
+                    </a>
 
+                    <button class="btn btn-outline-danger btn-sm" @onclick="() => HandleDelete(userDto.Id)" title="Dezaktywuj">
+                        <i class="bi bi-person-dash"></i> Dezaktywuj
+                    </button>
                 </div>
             </div>
         </div>
@@ -133,6 +143,7 @@ else
     private string userId = "";
     private UserGetDto? userDto;
     private List<LoanDto> Loans { get; set; } = new();
+    private string DisableUserID { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery]
@@ -152,6 +163,12 @@ else
         {
             await JS.InvokeVoidAsync("applyUserPreferences");
         }
+    }
+
+    private void HandleDelete(string id)
+    {
+        DisableUserID = id;
+        JS.InvokeVoidAsync("ShowConfirmationModal");
     }
 
     private async Task LoadData()
@@ -198,5 +215,27 @@ else
         public DateTime BorrowDate { get; set; }
         public DateTime? ReturnDate { get; set; }
         public decimal PenaltyAmount { get; set; }
+    }
+
+    private async Task ConfirmDelete_Click(bool isConfirmed)
+    {
+        IsLoading = true;
+        await JS.InvokeVoidAsync("HideConfirmationModal");
+
+        if (isConfirmed && DisableUserID != null)
+        {
+            var result = await UserRepository.DisableUserAsync(DisableUserID);
+
+            if (result == false)
+            {
+                await JS.ToastrError("Nie znaleziono użytkownika.", "Nie udało się wyłączyć konta użytkownika.");
+            }
+            else
+            {
+                await JS.ToastrSuccess("Konto zdezaktywowano pomyślnie.", "Konto wyłączone.");
+            }
+        }
+        DisableUserID = null;
+        IsLoading = false;
     }
 }

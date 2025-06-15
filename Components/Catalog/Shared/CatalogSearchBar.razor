@@ -5,10 +5,21 @@
     <div class="d-flex justify-content-center">
         <div class="card-body p-4" style="max-width: 800px; width: 100%;">
             <div class="d-flex flex-wrap justify-content-center p-4 gap-3">
-                <a class="btn btn-lg btn-primary" aria-current="Strona główna" href="/"><i class="bi bi-house"></i> Home</a>
-                <a class="btn btn-lg btn-primary" href="/catalog"> <i class="bi bi-book" aria-hidden="true"></i> Katalog</a>
-                <a class="btn btn-lg btn-primary" href="/lektury"><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i> Lektury</a>
-                <a class="btn btn-lg btn-primary" href="/podreczniki"><i class="bi bi-journals" aria-hidden="true"></i> Podręczniki</a>
+                <a class="btn btn-lg btn-primary" aria-current="Strona główna" href="/">
+                    <i class="bi bi-house"></i> Home
+                    </a>
+
+                <a class="btn btn-lg btn-primary" href="/catalog"> 
+                    <i class="bi bi-book" aria-hidden="true"></i> Katalog
+                    </a>
+
+                <a class="btn btn-lg btn-primary" href="/lektury">
+                    <i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i> Lektury
+                    </a>
+
+                <a class="btn btn-lg btn-primary" href="/podreczniki">
+                    <i class="bi bi-journals" aria-hidden="true"></i> Podręczniki
+                    </a>
             </div>
 
             <div class="d-flex align-items-center">
@@ -19,9 +30,13 @@
                 <form class="flex-grow-1" @onsubmit="OnFormSubmit">
                     <h1 class="mb-3 text-center theme-font-col-pri">Katalog Online</h1>
                     <div class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Szukaj" aria-label="Szukaj"
+                        <input class="form-control me-2" type="search" placeholder="Szukaj"
+                               aria-label="Szukaj"
                                @bind="SearchTerm">
-                        <button class="btn btn-lg btn-primary text-nowrap" type="submit"><i class="bi bi-search"></i> Szukaj</button>
+
+                        <button class="btn btn-lg btn-primary text-nowrap" type="submit">
+                            <i class="bi bi-search"></i> Szukaj
+                            </button>
                     </div>
                 </form>
             </div>
@@ -41,4 +56,3 @@
         Navigation.NavigateTo($"/search/?term={encodedTerm}");
     }
 }
-

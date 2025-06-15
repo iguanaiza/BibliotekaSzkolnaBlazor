@@ -58,7 +58,7 @@ else
                         @foreach (var user in Users)
                         {
                             <tr>
-                                <td>
+                                <td class="td-center fw-bold">
                                     <a href="/system/czytelnicy/view/@user.LibraryId" class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-info-square"></i>
                                     </a>
@@ -70,17 +70,14 @@ else
                                 <td>@user.Email</td>
                                 <td class="td-center">@user.Class</td>
                                 <td class="td-center">@user.TotalPenaltyAmount</td>
-                                <td class="text-end">
-                                    <div class="d-flex justify-content-end gap-2">
-                                        <a href="/system/czytelnicy/edit/@user.LibraryId?returnUrl=/system/czytelnicy" class="btn btn-outline-primary btn-sm" title="Edytuj">
-                                            <i class="bi bi-pencil-square"></i> Edytuj
-                                        </a>
-                                        <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(user.Id)" title="Dezaktywuj">
-                                            <i class="bi bi-trash3"></i> Dezaktywuj
-                                        </button>
-                                    </div>
+                                <td class="text-center d-flex justify-content-start gap-2">
+                                    <a href="/system/czytelnicy/edit/@user.LibraryId?returnUrl=/system/czytelnicy" class="btn btn-outline-primary btn-sm" title="Edytuj">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(user.Id)" title="Dezaktywuj">
+                                        <i class="bi bi-person-dash"></i>
+                                    </button>
                                 </td>
-
                             </tr>
                             index++;
                         }
