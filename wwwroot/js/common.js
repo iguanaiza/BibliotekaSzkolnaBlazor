@@ -21,7 +21,7 @@ window.scrollCarousel = (id, direction, loop = true) => {
     const wrapper = document.getElementById(id);
     if (!wrapper) return;
 
-    const container = wrapper.querySelector('.scroll-container');
+    const container = wrapper.querySelector('.carousel-container');
     if (!container) return;
 
     const card = container.querySelector('.book-card');

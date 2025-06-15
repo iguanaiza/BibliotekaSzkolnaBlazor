@@ -92,7 +92,7 @@
 
 @media (min-width: 700px) {
     .carousel-container {
-        max-width: 35rem;
+        max-width: 50rem;
     }
 }
 
@@ -107,17 +107,11 @@
     }
 
     .carousel-container {
-        max-width: 45rem;
+        max-width: 60rem;
     }
 }
 
-@media (min-width: 1100px) {
-    .carousel-container {
-        max-width: 55rem;
-    }
-}
-
-@media (min-width: 1300px) {
+@media (min-width: 1200px) {
     .carousel-container {
         max-width: 65rem;
     }
